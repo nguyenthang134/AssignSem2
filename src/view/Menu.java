@@ -12,7 +12,7 @@ public class Menu extends JFrame{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	public static final long serialVersionUID = 1L;
 	private static JLabel lblTitleMenu;
 	private static BufferedImage btnIconUser;
 	private static BufferedImage btnIconBook;
@@ -25,10 +25,14 @@ public class Menu extends JFrame{
 	private static JButton btnSearch;
 	private static JButton btnReport;
 	private static ArrayList<JButton> btnList;
+	private static BufferedImage btnIconBack;
+	private static BufferedImage btnIconExit;
+	private static JButton btnBack;
+	private static JButton btnExit;
 	
 	public static JLabel lblTitleMenu(){
 		lblTitleMenu = new JLabel("Phần mềm quản lý thư viện");
-		lblTitleMenu.setBounds(50, 20, 400, 50);
+		lblTitleMenu.setBounds(50, 10, 400, 50);
 		Font titleFont = new Font("Serif", Font.ITALIC, 30);
 		lblTitleMenu.setFont(titleFont);
 		return lblTitleMenu;
@@ -74,12 +78,29 @@ public class Menu extends JFrame{
 	public static JPanel panelMenu() throws IOException{
 		JPanel panelMenu = new JPanel();
 		panelMenu.setBounds(0, 0, 1200, 700);
-		panelMenu.setBackground(Color.CYAN);
 		panelMenu.setLayout(null);
 		panelMenu.add(lblTitleMenu());
 		panelMenu.add(panel());
+		panelMenu.add(btnBack());
+		panelMenu.add(btnExit());
 		
 		return panelMenu;
+	}
+	
+	public static JButton btnBack() throws IOException{
+		btnIconBack = ImageIO.read(new File("../AssignSem2/src/assets/back-icon.png"));
+		btnBack = new JButton(new ImageIcon(btnIconBack));
+		btnBack.setBounds(0, 550, 80, 80);
+		
+		return btnBack;
+	}
+	
+	public static JButton btnExit() throws IOException{
+		btnIconExit = ImageIO.read(new File("../AssignSem2/src/assets/exit-icon.png"));
+		btnExit = new JButton("", new ImageIcon(btnIconExit));
+		btnExit.setBounds(1105, 550, 80, 80);
+		
+		return btnExit;
 	}
 	
 	public static void main(String[] args) throws IOException {
