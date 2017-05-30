@@ -26,9 +26,17 @@ public class Menu extends Panel{
 	private JButton btnReport;
 	private ArrayList<JButton> btnList;
 	private BufferedImage btnIconBack;
-	private BufferedImage btnIconExit;
 	private JButton btnBackMenu;
-	private JButton btnExit;
+	
+	public Menu() throws IOException {
+		ButtonImportant btnImp = new ButtonImportant();
+		this.setBounds(0, 0, 1200, 700);
+		this.add(lblTitleMenu());
+		this.add(panel());
+		this.add(btnBackMenu());
+		this.add(btnImp.btnExit());
+		this.setLayout(null);
+	}
 	
 	public JLabel lblTitleMenu(){
 		lblTitleMenu = new JLabel("Phần mềm quản lý thư viện");
@@ -75,31 +83,22 @@ public class Menu extends Panel{
 		return panel;
 	}
 	
-	public JPanel panelMenu() throws IOException{
-		JPanel panelMenu = new JPanel();
-		panelMenu.setBounds(0, 0, 1200, 700);
-		panelMenu.setLayout(null);
-		panelMenu.add(lblTitleMenu());
-		panelMenu.add(panel());
-		panelMenu.add(btnBackMenu());
-		panelMenu.add(btnExit());
-		
-		return panelMenu;
-	}
-	
 	public JButton btnBackMenu() throws IOException{
 		btnIconBack = ImageIO.read(new File("../AssignSem2/src/assets/back-icon.png"));
 		btnBackMenu = new JButton(new ImageIcon(btnIconBack));
-		btnBackMenu.setBounds(0, 550, 80, 80);
+		btnBackMenu.setBounds(0, 575, 80, 80);
+		btnBackMenu.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+		btnBackMenu.setContentAreaFilled(false);
+		btnBackMenu.setFocusPainted(false);
 		
 		return btnBackMenu;
 	}
 	
-	public JButton btnExit() throws IOException{
-		btnIconExit = ImageIO.read(new File("../AssignSem2/src/assets/exit-icon.png"));
-		btnExit = new JButton("", new ImageIcon(btnIconExit));
-		btnExit.setBounds(1105, 550, 80, 80);
-		
-		return btnExit;
+	public static void main(String[] agrs) throws IOException {
+		LibraryFrame frmLib = new LibraryFrame();
+		Menu panelmenu = new Menu();
+		frmLib.add(panelmenu);
+		frmLib.setLayout(null);
+		frmLib.setVisible(true);
 	}
 }
