@@ -8,29 +8,29 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Menu extends JFrame{
+public class Menu extends Panel{
 	/**
 	 * 
 	 */
 	public static final long serialVersionUID = 1L;
-	private static JLabel lblTitleMenu;
-	private static BufferedImage btnIconUser;
-	private static BufferedImage btnIconBook;
-	private static BufferedImage btnIconBorrow;
-	private static BufferedImage btnIconSearch;
-	private static BufferedImage btnIconReport;
-	private static JButton btnUser;
-	private static JButton btnBook;
-	private static JButton btnBorrow;
-	private static JButton btnSearch;
-	private static JButton btnReport;
-	private static ArrayList<JButton> btnList;
-	private static BufferedImage btnIconBack;
-	private static BufferedImage btnIconExit;
-	private static JButton btnBack;
-	private static JButton btnExit;
+	private JLabel lblTitleMenu;
+	private BufferedImage btnIconUser;
+	private BufferedImage btnIconBook;
+	private BufferedImage btnIconBorrow;
+	private BufferedImage btnIconSearch;
+	private BufferedImage btnIconReport;
+	private JButton btnUser;
+	private JButton btnBook;
+	private JButton btnBorrow;
+	private JButton btnSearch;
+	private JButton btnReport;
+	private ArrayList<JButton> btnList;
+	private BufferedImage btnIconBack;
+	private BufferedImage btnIconExit;
+	private JButton btnBack;
+	private JButton btnExit;
 	
-	public static JLabel lblTitleMenu(){
+	public JLabel lblTitleMenu(){
 		lblTitleMenu = new JLabel("Phần mềm quản lý thư viện");
 		lblTitleMenu.setBounds(50, 10, 400, 50);
 		Font titleFont = new Font("Serif", Font.ITALIC, 30);
@@ -38,7 +38,7 @@ public class Menu extends JFrame{
 		return lblTitleMenu;
 	}
 	
-	public static JPanel panel() throws IOException{
+	public JPanel panel() throws IOException{
 		JPanel panel = new JPanel();
 		panel.setBounds(150, 80, 900, 550);
 		panel.setBorder(BorderFactory.createEmptyBorder());
@@ -75,7 +75,7 @@ public class Menu extends JFrame{
 		return panel;
 	}
 	
-	public static JPanel panelMenu() throws IOException{
+	public JPanel panelMenu() throws IOException{
 		JPanel panelMenu = new JPanel();
 		panelMenu.setBounds(0, 0, 1200, 700);
 		panelMenu.setLayout(null);
@@ -87,7 +87,7 @@ public class Menu extends JFrame{
 		return panelMenu;
 	}
 	
-	public static JButton btnBack() throws IOException{
+	public JButton btnBack() throws IOException{
 		btnIconBack = ImageIO.read(new File("../AssignSem2/src/assets/back-icon.png"));
 		btnBack = new JButton(new ImageIcon(btnIconBack));
 		btnBack.setBounds(0, 550, 80, 80);
@@ -95,21 +95,11 @@ public class Menu extends JFrame{
 		return btnBack;
 	}
 	
-	public static JButton btnExit() throws IOException{
+	public JButton btnExit() throws IOException{
 		btnIconExit = ImageIO.read(new File("../AssignSem2/src/assets/exit-icon.png"));
 		btnExit = new JButton("", new ImageIcon(btnIconExit));
 		btnExit.setBounds(1105, 550, 80, 80);
 		
 		return btnExit;
-	}
-	
-	public static void main(String[] args) throws IOException {
-		JFrame frmMenu = new JFrame();
-		frmMenu.setSize(1200, 700);
-		frmMenu.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		frmMenu.add(panelMenu());
-		frmMenu.setLocationRelativeTo(null);
-		frmMenu.setLayout(null);
-		frmMenu.setVisible(true);
 	}
 }
