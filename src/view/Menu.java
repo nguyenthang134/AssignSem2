@@ -27,7 +27,7 @@ public class Menu extends Panel{
 	private ArrayList<JButton> btnList;
 	private BufferedImage btnIconBack;
 	private BufferedImage btnIconExit;
-	private JButton btnBack;
+	private JButton btnBackMenu;
 	private JButton btnExit;
 	
 	public JLabel lblTitleMenu(){
@@ -81,18 +81,18 @@ public class Menu extends Panel{
 		panelMenu.setLayout(null);
 		panelMenu.add(lblTitleMenu());
 		panelMenu.add(panel());
-		panelMenu.add(btnBack());
+		panelMenu.add(btnBackMenu());
 		panelMenu.add(btnExit());
 		
 		return panelMenu;
 	}
 	
-	public JButton btnBack() throws IOException{
+	public JButton btnBackMenu() throws IOException{
 		btnIconBack = ImageIO.read(new File("../AssignSem2/src/assets/back-icon.png"));
-		btnBack = new JButton(new ImageIcon(btnIconBack));
-		btnBack.setBounds(0, 550, 80, 80);
+		btnBackMenu = new JButton(new ImageIcon(btnIconBack));
+		btnBackMenu.setBounds(0, 550, 80, 80);
 		
-		return btnBack;
+		return btnBackMenu;
 	}
 	
 	public JButton btnExit() throws IOException{
