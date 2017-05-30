@@ -1,6 +1,9 @@
 package view;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.ResultSet;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -14,6 +17,11 @@ import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
+import com.mysql.cj.api.jdbc.Statement;
+import com.mysql.cj.api.mysqla.result.Resultset;
+
+import controller.DatabaseLibConnection;
+
 public class BorrowPanel {
 	private JPanel user;
 	private JLabel lblUserId;
@@ -26,12 +34,12 @@ public class BorrowPanel {
 	private JLabel lblOverdueBooks;
 	private JTextField txtOverdueBooks;
 
-	public JPanel userPanel(){
+	public JPanel userPanel() {
 		user = new JPanel();
 		user.setBackground(Color.WHITE);
 		user.setBounds(20, 50, 200, 420);
 		user.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-		
+
 		lblUserId = new JLabel("Borrower ID: ");
 		lblUserId.setBounds(10, 10, 100, 30);
 		txtUserId = new JTextField();
@@ -55,7 +63,7 @@ public class BorrowPanel {
 		txtOverdueBooks = new JTextField();
 		txtOverdueBooks.setBounds(10, 330, 50, 30);
 		txtOverdueBooks.setEditable(false);
-		
+
 		user.add(lblUserId);
 		user.add(txtUserId);
 		user.add(btnTest);
@@ -65,12 +73,41 @@ public class BorrowPanel {
 		user.add(txtBorrowedBooks);
 		user.add(lblOverdueBooks);
 		user.add(txtOverdueBooks);
-		
+
+		btnTest.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				checkBorrowerInfo();
+
+			}
+		});
+
 		user.setLayout(null);
 		return user;
 	}
-	
-	public JScrollPane booksTable(){
+
+	public void checkBorrowerInfo() {
+		try {
+			java.sql.Statement stm = DatabaseLibConnection.getConnection().createStatement();
+			ResultSet rs = stm.executeQuery("Select * from borrowers where identification = " + txtUserId.getText());
+			while(rs.next()){
+				//int id = rs.getInt(1);
+				String name = rs.getString(2);
+				int borrow = rs.getInt(6);
+				int overdue = rs.getInt(7);
+				
+				//txtUserId.setText(String.valueOf(id));
+				txtUserName.setText(name);
+				txtBorrowedBooks.setText(String.valueOf(borrow));
+				txtOverdueBooks.setText(String.valueOf(overdue));
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+
+	public JScrollPane booksTable() {
 		DefaultTableModel model = new DefaultTableModel();
 		JTable table = new JTable();
 		JScrollPane scrollPane = new JScrollPane(table);
@@ -83,10 +120,10 @@ public class BorrowPanel {
 		model.addColumn("Price");
 		model.addColumn("Status");
 		table.setModel(model);
-		
+
 		return scrollPane;
 	}
-	
+
 	private JPanel book;
 	private JLabel lblBookId;
 	private JTextField txtBookId;
@@ -95,13 +132,13 @@ public class BorrowPanel {
 	private JButton btnBorrow;
 	private JTextArea txtArea;
 	private JButton btnCancel;
-	
-	public JPanel bookPanel(){
+
+	public JPanel bookPanel() {
 		book = new JPanel();
 		book.setBackground(Color.WHITE);
 		book.setBounds(240, 50, 200, 420);
 		book.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-		
+
 		lblBookId = new JLabel("Book ID: ");
 		lblBookId.setBounds(10, 10, 100, 30);
 		txtBookId = new JTextField();
@@ -125,7 +162,7 @@ public class BorrowPanel {
 		btnCancel.setBounds(35, 320, 135, 30);
 		btnCancel.setBackground(new Color(239, 3, 3));
 		btnCancel.setForeground(Color.WHITE);
-		
+
 		book.add(lblBookId);
 		book.add(txtBookId);
 		book.add(btnCheckInfo);
@@ -133,14 +170,13 @@ public class BorrowPanel {
 		book.add(txtArea);
 		book.add(btnBorrow);
 		book.add(btnCancel);
-		
+
 		book.setLayout(null);
-		
+
 		return book;
 	}
-	
 
-	public JPanel borrowPanel(){
+	public JPanel borrowPanel() {
 		BorrowPanel borrow = new BorrowPanel();
 		JPanel borrowBook = new JPanel();
 		borrowBook.setBackground(Color.WHITE);
@@ -150,5 +186,5 @@ public class BorrowPanel {
 		borrowBook.setLayout(null);
 		return borrowBook;
 	}
-	
+
 }
