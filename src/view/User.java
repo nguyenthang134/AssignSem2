@@ -15,10 +15,24 @@ public class User extends JPanel{
 	private JButton btnMod;
 	private JButton btnDel;
 	private JButton btnReset;
+	private JButton btnIdCheck;
+	private JLabel lblid;
+	private JLabel lblname;
+	private JLabel lblmail;
+	private JLabel lbladd;
+	private JLabel lblphone;
+	private JLabel lblstatus;
+	public JTextField txtid;
+	public JTextField txtname;
+	public JTextField txtmail;
+	public JTextField txtadd;
+	public JTextField txtphone;
+	public JComboBox<String> cbstatus;
 	
 	public User() throws IOException {
 		ButtonImportant btnImp = new ButtonImportant();
 		this.setBounds(0, 0, 1200, 700);
+		this.setBackground(Color.WHITE);
 		this.add(panelForm());
 		this.add(panelModel());
 		this.add(panelTable());
@@ -30,6 +44,7 @@ public class User extends JPanel{
 	public JPanel panelModel(){
 		JPanel panelModel = new JPanel();
 		panelModel.setBounds(10, 10, 550, 60);
+		panelModel.setBackground(Color.WHITE);
 		panelModel.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 10));
 		btnAdd = new JButton("Add");
 		btnMod = new JButton("Modify");
@@ -42,11 +57,10 @@ public class User extends JPanel{
 		btnListModel.add(btnReset);
 		Font btnModelFont = new Font("Serif", Font.PLAIN, 20);
 		for(int i=0;i<btnListModel.size();i++){
-			btnListModel.get(i).setBackground(new Color(89, 194, 255));
+			btnListModel.get(i).setBackground(new Color(50, 166, 254));
 			btnListModel.get(i).setFont(btnModelFont);
 			btnListModel.get(i).setForeground(Color.WHITE);
 			btnListModel.get(i).setPreferredSize(new Dimension(100, 40));
-			btnListModel.get(i).setBorder(BorderFactory.createBevelBorder(0));
 			panelModel.add(btnListModel.get(i));
 		}
 		return panelModel;
@@ -55,32 +69,44 @@ public class User extends JPanel{
 	public JPanel panelForm(){
 		JPanel panelForm = new JPanel();
 		panelForm.setBounds(10, 80, 275, 500);
+		panelForm.setBackground(Color.WHITE);
 		panelForm.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(89, 194, 255)), BorderFactory.createLineBorder(Color.BLACK)));
 		
-		JLabel lblname = new JLabel("Borrower's name");
-		lblname.setBounds(10, 20, 100, 30);
-		JTextField txtname = new JTextField();
-		txtname.setBounds(10, 50, 250, 30);
+		lblid = new JLabel("Identification");
+		lblid.setBounds(10, 0, 100, 30);
+		txtid = new JTextField();
+		txtid.setBounds(10, 30, 250, 30);
 		
-		JLabel lblid = new JLabel("Identification");
-		lblid.setBounds(10, 100, 100, 30);
-		JTextField txtid = new JTextField();
-		txtid.setBounds(10, 130, 250, 30);
+		btnIdCheck = new JButton("Verify");
+		btnIdCheck.setBounds(80, 70, 100, 20);
+		btnIdCheck.setBackground(Color.RED);
+		btnIdCheck.setForeground(Color.WHITE);
 		
-		JLabel lblmail = new JLabel("Email");
+		lblname = new JLabel("Borrower's name");
+		lblname.setBounds(10, 100, 100, 30);
+		txtname = new JTextField();
+		txtname.setBounds(10, 130, 250, 30);
+			
+		lblmail = new JLabel("Email");
 		lblmail.setBounds(10, 180, 100, 30);
-		JTextField txtmail = new JTextField();
+		txtmail = new JTextField();
 		txtmail.setBounds(10, 210, 250, 30);
 		
-		JLabel lbladd = new JLabel("Address");
+		lbladd = new JLabel("Address");
 		lbladd.setBounds(10, 260, 100, 30);
-		JTextField txtadd = new JTextField();
+		txtadd = new JTextField();
 		txtadd.setBounds(10, 290, 250, 30);
 		
-		JLabel lblphone = new JLabel("Phone");
+		lblphone = new JLabel("Phone");
 		lblphone.setBounds(10, 340, 100, 30);
-		JTextField txtphone = new JTextField();
+		txtphone = new JTextField();
 		txtphone.setBounds(10, 370, 250, 30);
+		
+		lblstatus = new JLabel("Status");
+		lblstatus.setBounds(10, 420, 100, 30);
+		String status[] = {"Select status", "0", "1"};
+		cbstatus = new JComboBox<String>(status);
+		cbstatus.setBounds(10, 450, 250, 30);
 		
 		panelForm.add(lblname);
 		panelForm.add(txtname);
@@ -92,6 +118,9 @@ public class User extends JPanel{
 		panelForm.add(txtadd);
 		panelForm.add(lblphone);
 		panelForm.add(txtphone);
+		panelForm.add(lblstatus);
+		panelForm.add(cbstatus);
+		panelForm.add(btnIdCheck);
 		panelForm.setLayout(null);
 		return panelForm;
 	}
@@ -99,12 +128,13 @@ public class User extends JPanel{
 	public JPanel panelTable(){
 		JPanel panelTable = new JPanel();
 		panelTable.setBounds(300, 80, 875, 500);
+		panelTable.setBackground(Color.WHITE);
 		panelTable.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(89, 194, 255)), BorderFactory.createLineBorder(Color.BLACK)));
 		
-		String data[][]= {{"101","Amit","670000","","",""},
-			              {"102","Jai","780000","","",""},  
-		                  {"101","Sachin","700000","","",""}};
-		String userColumn[] = {"Identification","Name","Email","Address","Phone","Status"};
+		String data[][]= {{"101","Amit","670000","","","",""},
+			              {"102","Jai","780000","","","",""},  
+		                  {"101","Sachin","700000","","","",""}};
+		String userColumn[] = {"Identification","Name","Email","Address","Phone","","Status"};
 		JTable userTable = new JTable(data, userColumn);
 		
 		JScrollPane scrollTable = new JScrollPane(userTable,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);

@@ -31,6 +31,7 @@ public class Menu extends Panel{
 	public Menu() throws IOException {
 		ButtonImportant btnImp = new ButtonImportant();
 		this.setBounds(0, 0, 1200, 700);
+		this.setBackground(Color.WHITE);
 		this.add(lblTitleMenu());
 		this.add(panel());
 		this.add(btnBackMenu());
@@ -49,6 +50,7 @@ public class Menu extends Panel{
 	public JPanel panel() throws IOException{
 		JPanel panel = new JPanel();
 		panel.setBounds(150, 80, 900, 550);
+		panel.setBackground(Color.WHITE);
 		panel.setBorder(BorderFactory.createEmptyBorder());
 		panel.setLayout( new FlowLayout(FlowLayout.CENTER,100,50));
 		
