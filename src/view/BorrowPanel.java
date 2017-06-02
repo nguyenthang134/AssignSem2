@@ -15,12 +15,14 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 import com.mysql.cj.api.jdbc.Statement;
 import com.mysql.cj.api.mysqla.result.Resultset;
-
 import controller.DatabaseLibConnection;
+import model.BorrowModel;
 
 public class BorrowPanel {
 	private JPanel user;
@@ -33,7 +35,13 @@ public class BorrowPanel {
 	private JTextField txtBorrowedBooks;
 	private JLabel lblOverdueBooks;
 	private JTextField txtOverdueBooks;
+	private DefaultTableModel model;
+	// When you change to extends JPanel, you can use this. to access multiple
+	// methods
+	static BorrowPanel borrow = new BorrowPanel();
+	static BorrowModel borrowModel = new BorrowModel();
 
+	//User panel in main borrow panel
 	public JPanel userPanel() {
 		user = new JPanel();
 		user.setBackground(Color.WHITE);
@@ -75,40 +83,20 @@ public class BorrowPanel {
 		user.add(txtOverdueBooks);
 
 		btnTest.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				checkBorrowerInfo();
-
+				borrowModel.checkBorrowerInfo(borrow);
 			}
 		});
 
+		borrowModel.checkOverdueBooks();
 		user.setLayout(null);
 		return user;
 	}
 
-	public void checkBorrowerInfo() {
-		try {
-			java.sql.Statement stm = DatabaseLibConnection.getConnection().createStatement();
-			ResultSet rs = stm.executeQuery("Select * from borrowers where identification = " + txtUserId.getText());
-			while(rs.next()){
-				//int id = rs.getInt(1);
-				String name = rs.getString(2);
-				int borrow = rs.getInt(6);
-				int overdue = rs.getInt(7);
-				
-				//txtUserId.setText(String.valueOf(id));
-				txtUserName.setText(name);
-				txtBorrowedBooks.setText(String.valueOf(borrow));
-				txtOverdueBooks.setText(String.valueOf(overdue));
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-	}
-
+	//Book table in main borrow panel
 	public JScrollPane booksTable() {
-		DefaultTableModel model = new DefaultTableModel();
+		model = new DefaultTableModel();
 		JTable table = new JTable();
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBounds(460, 50, 700, 420);
@@ -120,6 +108,12 @@ public class BorrowPanel {
 		model.addColumn("Price");
 		model.addColumn("Status");
 		table.setModel(model);
+		table.getColumnModel().getColumn(0).setMaxWidth(50);
+		table.getColumnModel().getColumn(1).setMinWidth(120);
+		table.getColumnModel().getColumn(2).setMinWidth(120);
+		table.getColumnModel().getColumn(3).setMinWidth(120);
+		table.getColumnModel().getColumn(4).setMaxWidth(50);
+		table.getColumnModel().getColumn(5).setMaxWidth(70);
 
 		return scrollPane;
 	}
@@ -133,6 +127,7 @@ public class BorrowPanel {
 	private JTextArea txtArea;
 	private JButton btnCancel;
 
+	//Book panel in borrow main panel
 	public JPanel bookPanel() {
 		book = new JPanel();
 		book.setBackground(Color.WHITE);
@@ -170,14 +165,70 @@ public class BorrowPanel {
 		book.add(txtArea);
 		book.add(btnBorrow);
 		book.add(btnCancel);
-
 		book.setLayout(null);
-
+		
+		btnAdd.setEnabled(false);
+		txtArea.setEditable(false);
+		txtBookId.getDocument().addDocumentListener(new DocumentListener() {
+			
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				btnAdd.setEnabled(false);
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				btnAdd.setEnabled(true);
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		btnCheckInfo.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				model.setRowCount(0);
+				borrowModel.checkBookInfo(borrow);
+			}
+		});
+		
+		btnAdd.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				borrowModel.addBooksToBorrow(borrow);
+			}
+		});
+		
+		btnBorrow.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				borrowModel.confirmBooksToBorrow(borrow);
+			}
+		});
+		
+		btnCancel.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				borrowModel.cancelOrder(borrow);
+			}
+		});
 		return book;
 	}
 
+	// Add user panel, book panel and book table into the main borrow panel
 	public JPanel borrowPanel() {
-		BorrowPanel borrow = new BorrowPanel();
 		JPanel borrowBook = new JPanel();
 		borrowBook.setBackground(Color.WHITE);
 		borrowBook.add(borrow.booksTable());
@@ -185,6 +236,54 @@ public class BorrowPanel {
 		borrowBook.add(borrow.bookPanel());
 		borrowBook.setLayout(null);
 		return borrowBook;
+	}
+	
+	public DefaultTableModel getModel() {
+		return model;
+	}
+
+	public JTextField getTxtUserId() {
+		return txtUserId;
+	}
+
+	public JButton getBtnTest() {
+		return btnTest;
+	}
+
+	public JTextField getTxtUserName() {
+		return txtUserName;
+	}
+
+	public JTextField getTxtBorrowedBooks() {
+		return txtBorrowedBooks;
+	}
+
+	public JTextField getTxtOverdueBooks() {
+		return txtOverdueBooks;
+	}
+
+	public JTextField getTxtBookId() {
+		return txtBookId;
+	}
+
+	public JButton getBtnCheckInfo() {
+		return btnCheckInfo;
+	}
+
+	public JButton getBtnAdd() {
+		return btnAdd;
+	}
+
+	public JButton getBtnBorrow() {
+		return btnBorrow;
+	}
+
+	public JTextArea getTxtArea() {
+		return txtArea;
+	}
+
+	public JButton getBtnCancel() {
+		return btnCancel;
 	}
 
 }
