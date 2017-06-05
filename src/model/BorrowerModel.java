@@ -1,104 +1,105 @@
 package model;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 import com.mysql.cj.jdbc.PreparedStatement;
 
 import controller.DatabaseLibConnection;
-import view.LibraryFrame;
 import view.User;
 
 public class BorrowerModel {
-	
-	public boolean CheckID() throws SQLException, IOException{
-		User user = new User();
-		LibraryFrame myfrm = new LibraryFrame();
-		
-		if(Integer.parseInt(user.txtid.getText()) != 0){
-			String checkId = "SELECT * FROM users WHERE identification = '" + Integer.parseInt(user.txtid.getText()) + "'";
-			Connection connect =  DatabaseLibConnection.getConnection();
-			Statement stt = connect.createStatement();
-			ResultSet rs = stt.executeQuery(checkId);
-			while(rs.next()){
-				user.txtname.setText(rs.getString("name"));
-				user.txtmail.setText(rs.getString("email"));
-				user.txtadd.setText(rs.getString("address"));
-				user.txtphone.setText(Integer.toString(rs.getInt("phone")));
-				user.cbstatus.setSelectedIndex(rs.getInt("status"));
+
+	public boolean CheckID() throws SQLException, IOException {
+		if (User.txtid.getText().length() == 0) {
+			JOptionPane.showMessageDialog(null, "Please input id which you want to verify");
+		}
+		String checkId = "SELECT * FROM borrowers WHERE identification = '" + Integer.parseInt(User.txtid.getText())
+				+ "'";
+		Connection connect = DatabaseLibConnection.getConnection();
+		Statement stt = connect.createStatement();
+		ResultSet rs = stt.executeQuery(checkId);
+		boolean idNotExist = true;
+		while (rs.next()) {
+			idNotExist = false;
+			User.txtname.setText(rs.getString("name"));
+			User.txtmail.setText(rs.getString("email"));
+			User.txtadd.setText(rs.getString("address"));
+			User.txtphone.setText(Integer.toString(rs.getInt("phone")));
+			if (rs.getInt("status") == 1) {
+				User.cbstatus.setSelectedIndex(2);
+			} else if (rs.getInt("status") == 0) {
+				User.cbstatus.setSelectedIndex(1);
 			}
-			return true;
 		}
-		else{
-			JOptionPane.showMessageDialog(myfrm, "This id is not exist");
-			return false;
+		if (idNotExist) {
+			JOptionPane.showMessageDialog(null, "This id is not exist");
 		}
+		return true;
 	}
-	
-	public void Insert() throws IOException, SQLException{
-		User user = new User();
-		LibraryFrame myfrm = new LibraryFrame();
-		if(CheckID() == true){
-			JOptionPane.showMessageDialog(myfrm, "This id is exist");
-		}
-		else if(user.cbstatus.getSelectedIndex() == 0 || user.cbstatus.getSelectedIndex() == 1){
-			JOptionPane.showMessageDialog(myfrm, "Please change status to 1");
-		}
-		else{
-			String checkId = "INSERT INTO users (identification, name, email, address, phone, overdue_limit, status) VALUES(?,?,?,?,?,?,?)";
-			Connection connect =  DatabaseLibConnection.getConnection();
+
+	public void Insert() throws IOException, SQLException {
+		if (User.cbstatus.getSelectedIndex() == 0 || User.cbstatus.getSelectedIndex() == 1) {
+			JOptionPane.showMessageDialog(null, "Please change status to 1");
+		} else {
+			String checkId = "INSERT INTO borrowers (identification, name, email, address, phone, status) VALUES(?,?,?,?,?,?)";
+			Connection connect = DatabaseLibConnection.getConnection();
 			PreparedStatement stt = (PreparedStatement) connect.prepareStatement(checkId);
-			stt.setInt(1, Integer.parseInt(user.txtid.getText()));
-			stt.setString(2, user.txtname.getText());
-			stt.setString(3, user.txtmail.getText());
-			stt.setString(4, user.txtadd.getText());
-			stt.setInt(5, Integer.parseInt(user.txtphone.getText()));
-			stt.setObject(7, user.cbstatus.getSelectedIndex());
+			stt.setInt(1, Integer.parseInt(User.txtid.getText()));
+			stt.setString(2, User.txtname.getText());
+			stt.setString(3, User.txtmail.getText());
+			stt.setString(4, User.txtadd.getText());
+			stt.setInt(5, Integer.parseInt(User.txtphone.getText()));
+			stt.setObject(6, User.cbstatus.getSelectedItem());
 			stt.executeUpdate();
+			JOptionPane.showMessageDialog(null, "Success");
 		}
 	}
-	
-	public void Modify() throws IOException, SQLException{
-		User user = new User();
-		
-		if(CheckID() == true){
-			String mod = "UPDATE users SET name=?, email=?, address=?, phone=? WHERE identification = ?";
-			Connection connect =  DatabaseLibConnection.getConnection();
-			PreparedStatement stt = (PreparedStatement) connect.prepareStatement(mod);
-			stt.setString(1, user.txtname.getText());
-			stt.setString(2, user.txtmail.getText());
-			stt.setString(3, user.txtadd.getText());
-			stt.setInt(4, Integer.parseInt(user.txtphone.getText()));
-			stt.setInt(5, Integer.parseInt(user.txtid.getText()));
-			stt.executeUpdate();
-		}
+
+	public void Modify() throws IOException, SQLException {
+		String mod = "UPDATE borrowers SET name=?, email=?, address=?, phone=? WHERE identification = ?";
+		Connection connect = DatabaseLibConnection.getConnection();
+		PreparedStatement stt = (PreparedStatement) connect.prepareStatement(mod);
+		stt.setString(1, User.txtname.getText());
+		stt.setString(2, User.txtmail.getText());
+		stt.setString(3, User.txtadd.getText());
+		stt.setInt(4, Integer.parseInt(User.txtphone.getText()));
+		stt.setInt(5, Integer.parseInt(User.txtid.getText()));
+		stt.executeUpdate();
+		JOptionPane.showMessageDialog(null, "Success");
+
 	}
-	
-	public void Delete() throws IOException, SQLException{
-		User user = new User();
-		
-		if(CheckID() == true){
-			String mod = "UPDATE users SET status=? WHERE identification = ?";
-			Connection connect =  DatabaseLibConnection.getConnection();
-			PreparedStatement stt = (PreparedStatement) connect.prepareStatement(mod);
-			stt.setInt(1, user.cbstatus.getSelectedIndex());
-			stt.setInt(2, Integer.parseInt(user.txtid.getText()));
-			stt.executeUpdate();
-		}
+
+	public void Delete() throws IOException, SQLException {
+		String mod = "UPDATE borrowers SET status=? WHERE identification = ?";
+		Connection connect = DatabaseLibConnection.getConnection();
+		PreparedStatement stt = (PreparedStatement) connect.prepareStatement(mod);
+		stt.setObject(1, User.cbstatus.getSelectedItem());
+		stt.setInt(2, Integer.parseInt(User.txtid.getText()));
+		stt.executeUpdate();
+		JOptionPane.showMessageDialog(null, "Success");
 	}
-	
-	public void Reset() throws IOException{
-		User user = new User();
-		user.txtid.setText("");
-		user.txtname.setText("");
-		user.txtmail.setText("");
-		user.txtadd.setText("");
-		user.txtphone.setText("");
-		user.cbstatus.setSelectedIndex(0);
+
+	public void Reset() throws IOException {
+		ArrayList<JTextField> resetList = new ArrayList<JTextField>();
+		resetList.add(User.txtid);
+		resetList.add(User.txtname);
+		resetList.add(User.txtmail);
+		resetList.add(User.txtadd);
+		resetList.add(User.txtphone);
+		for (JTextField item : resetList) {
+			item.setText("");
+			item.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		}
+		User.cbstatus.setSelectedIndex(0);
 	}
 }
