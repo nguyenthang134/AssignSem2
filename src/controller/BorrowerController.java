@@ -6,7 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
-import view.User;
+
+import view.PanelBorrowers;
 
 public class BorrowerController {
 	String regexInt = "[\\d]+";
@@ -15,47 +16,49 @@ public class BorrowerController {
 
 	public boolean RegexInt() {
 		Pattern p = Pattern.compile(regexInt);
-		Matcher m = p.matcher(User.txtid.getText());
+		Matcher m = p.matcher(PanelBorrowers.cbId.getEditor().getItem().toString());
 		return m.find();
 	}
 
 	public boolean RegexMail() {
 		Pattern p = Pattern.compile(regexEmail, Pattern.CASE_INSENSITIVE);
-		Matcher m = p.matcher(User.txtmail.getText());
+		Matcher m = p.matcher(PanelBorrowers.txtmail.getText());
 		return m.find();
 	}
 
 	public boolean RegexName() {
 		Pattern p = Pattern.compile(regexName);
-		Matcher m = p.matcher(User.txtname.getText());
+		Matcher m = p.matcher(PanelBorrowers.txtname.getText());
 		return m.find();
 	}
 
 	public void Validate() throws IOException {
 
-		if (User.txtid.getText().length() > 11 || RegexInt() != true || User.txtid.getText().length() == 0) {
-			User.txtid.setBorder(BorderFactory.createLineBorder(Color.RED));
-			User.txtid.setText("");
+		if (PanelBorrowers.cbId.getEditor().getItem().toString().length() > 11 || RegexInt() != true || PanelBorrowers.cbId.getEditor().getItem().toString().length() == 0) {
+			PanelBorrowers.cbId.setBorder(BorderFactory.createLineBorder(Color.RED));
 		}
 
-		if (User.txtmail.getText().length() > 50 || RegexMail() != true || User.txtmail.getText().length() == 0) {
-			User.txtmail.setBorder(BorderFactory.createLineBorder(Color.RED));
-			User.txtmail.setText("");
+		if (PanelBorrowers.txtmail.getText().length() > 50 || RegexMail() != true
+				|| PanelBorrowers.txtmail.getText().length() == 0) {
+			PanelBorrowers.txtmail.setBorder(BorderFactory.createLineBorder(Color.RED));
+			PanelBorrowers.txtmail.setText("");
 		}
 
-		if (User.txtname.getText().length() > 20 || RegexName() != true || User.txtname.getText().length() == 0) {
-			User.txtname.setBorder(BorderFactory.createLineBorder(Color.RED));
-			User.txtname.setText("");
+		if (PanelBorrowers.txtname.getText().length() > 20 || RegexName() != true
+				|| PanelBorrowers.txtname.getText().length() == 0) {
+			PanelBorrowers.txtname.setBorder(BorderFactory.createLineBorder(Color.RED));
+			PanelBorrowers.txtname.setText("");
 		}
 
-		if (User.txtadd.getText().length() == 0) {
-			User.txtadd.setBorder(BorderFactory.createLineBorder(Color.RED));
-			User.txtadd.setText("");
+		if (PanelBorrowers.txtadd.getText().length() == 0) {
+			PanelBorrowers.txtadd.setBorder(BorderFactory.createLineBorder(Color.RED));
+			PanelBorrowers.txtadd.setText("");
 		}
 
-		if (User.txtphone.getText().length() > 11 || RegexInt() != true || User.txtphone.getText().length() == 0) {
-			User.txtphone.setBorder(BorderFactory.createLineBorder(Color.RED));
-			User.txtphone.setText("");
+		if (PanelBorrowers.txtphone.getText().length() > 11 || RegexInt() != true
+				|| PanelBorrowers.txtphone.getText().length() == 0) {
+			PanelBorrowers.txtphone.setBorder(BorderFactory.createLineBorder(Color.RED));
+			PanelBorrowers.txtphone.setText("");
 		}
 	}
 }
