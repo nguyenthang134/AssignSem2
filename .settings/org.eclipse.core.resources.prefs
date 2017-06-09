@@ -1,6 +1,10 @@
 eclipse.preferences.version=1
+<<<<<<< HEAD
+encoding//src/controller/ButtonController.java=UTF-8
+=======
 encoding//src/model/BorrowModel.java=UTF-8
 encoding//src/view/LogInAdmin.java=UTF-8
+>>>>>>> 1791ec25e99dae71ac3ebc6a9157dd9539bbe8b6
 encoding//src/view/LibraryFrame.java=UTF-8
-encoding//src/view/Menu.java=UTF-8
-encoding//src/view/User.java=UTF-8
+encoding//src/view/PanelBorrowers.java=UTF-8
+encoding//src/view/PanelMenu.java=UTF-8
