@@ -59,7 +59,7 @@ public class BorrowModel {
 					+ "From books " + "Join authors " + "On authors.id = books.author_id " + "Join publishers "
 					+ "On publishers.id = books.publisher_id where " + selectBy + "'%" + field
 					+ "%' order by books.status DESC";
-			System.out.println("SQL: " + sql);
+//			System.out.println("SQL: " + sql);
 			ResultSet rs = stm.executeQuery(sql);
 			while (rs.next()) {
 				int id = rs.getInt("books.id");
