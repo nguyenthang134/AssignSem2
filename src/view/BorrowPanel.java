@@ -7,16 +7,21 @@ import java.sql.ResultSet;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import com.mysql.cj.api.jdbc.Statement;
@@ -24,7 +29,7 @@ import com.mysql.cj.api.mysqla.result.Resultset;
 import controller.DatabaseLibConnection;
 import model.BorrowModel;
 
-public class BorrowPanel {
+public class BorrowPanel{
 	private JPanel user;
 	private JLabel lblUserId;
 	private JTextField txtUserId;
@@ -36,11 +41,67 @@ public class BorrowPanel {
 	private JLabel lblOverdueBooks;
 	private JTextField txtOverdueBooks;
 	private DefaultTableModel model;
-	// When you change to extends JPanel, you can use this. to access multiple
-	// methods
-	static BorrowPanel borrow = new BorrowPanel();
-	static BorrowModel borrowModel = new BorrowModel();
+	private JTable table;
+	private JPanel book;
+	private JLabel lblBookId;
+	private JComboBox cb;
+	private JLabel lblSearchBy;
+	private JTextField txtBookId;
+	private JButton btnAdd;
+	private JButton btnConfirm;
+	private JTextArea txtArea;
+	private JButton btnCancel;
+	private BorrowPanel borrow;
+	private BorrowModel borrowModel = new BorrowModel();
+	
+	public JTable getTable() {
+		return table;
+	}
 
+	public DefaultTableModel getModel() {
+		return model;
+	}
+
+	public JTextField getTxtUserId() {
+		return txtUserId;
+	}
+
+	public JTextField getTxtUserName() {
+		return txtUserName;
+	}
+
+	public JTextField getTxtBorrowedBooks() {
+		return txtBorrowedBooks;
+	}
+
+	public JTextField getTxtOverdueBooks() {
+		return txtOverdueBooks;
+	}
+
+	public JTextField getTxtBookId() {
+		return txtBookId;
+	}
+
+	public JButton getBtnAdd() {
+		return btnAdd;
+	}
+
+	public JTextArea getTxtArea() {
+		return txtArea;
+	}
+
+	public JComboBox getCb() {
+		return cb;
+	}
+
+	public BorrowPanel getBorrow() {
+		return borrow;
+	}
+
+	public void setBorrow(BorrowPanel borrow) {
+		this.borrow = borrow;
+	}
+	
 	//User panel in main borrow panel
 	public JPanel userPanel() {
 		user = new JPanel();
@@ -97,7 +158,7 @@ public class BorrowPanel {
 	//Book table in main borrow panel
 	public JScrollPane booksTable() {
 		model = new DefaultTableModel();
-		JTable table = new JTable();
+		table = new JTable();
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBounds(460, 50, 700, 420);
 		scrollPane.getViewport().setBackground(Color.WHITE);
@@ -114,18 +175,18 @@ public class BorrowPanel {
 		table.getColumnModel().getColumn(3).setMinWidth(120);
 		table.getColumnModel().getColumn(4).setMaxWidth(50);
 		table.getColumnModel().getColumn(5).setMaxWidth(70);
-
+		ListSelectionModel listModel = table.getSelectionModel();
+		listModel.addListSelectionListener(new ListSelectionListener() {
+			
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				// TODO Auto-generated method stub
+				int rowIndex = table.getSelectedRow();
+				
+			}
+		});
 		return scrollPane;
 	}
-
-	private JPanel book;
-	private JLabel lblBookId;
-	private JTextField txtBookId;
-	private JButton btnCheckInfo;
-	private JButton btnAdd;
-	private JButton btnBorrow;
-	private JTextArea txtArea;
-	private JButton btnCancel;
 
 	//Book panel in borrow main panel
 	public JPanel bookPanel() {
@@ -134,36 +195,36 @@ public class BorrowPanel {
 		book.setBounds(240, 50, 200, 420);
 		book.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 
-		lblBookId = new JLabel("Book ID: ");
-		lblBookId.setBounds(10, 10, 100, 30);
+		lblBookId = new JLabel("Books: ");
+		lblBookId.setBounds(10, 10, 50, 30);
+		String[] comboList = {"--------Choose-------","Book ID","Book name"};
+		cb = new JComboBox(comboList);
+		cb.setBounds(60, 10, 130, 30);
 		txtBookId = new JTextField();
 		txtBookId.setBounds(10, 50, 180, 30);
-		btnCheckInfo = new JButton("Check infomation");
-		btnCheckInfo.setBounds(35, 90, 135, 30);
-		btnCheckInfo.setBackground(new Color(50, 166, 254));
-		btnCheckInfo.setForeground(Color.WHITE);
+		txtBookId.setEditable(false);
 		btnAdd = new JButton("Add");
-		btnAdd.setBounds(35, 130, 135, 30);
+		btnAdd.setBounds(35, 90, 135, 30);;
 		btnAdd.setBackground(new Color(50, 166, 254));
 		btnAdd.setForeground(Color.WHITE);
 		txtArea = new JTextArea();
-		txtArea.setBounds(10, 170, 180, 100);
+		txtArea.setBounds(10, 130, 180, 150);
 		txtArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-		btnBorrow = new JButton("Confirm");
-		btnBorrow.setBounds(35, 280, 135, 30);
-		btnBorrow.setBackground(new Color(50, 166, 254));
-		btnBorrow.setForeground(Color.WHITE);
+		btnConfirm = new JButton("Confirm");
+		btnConfirm.setBounds(35, 300, 135, 30);
+		btnConfirm.setBackground(new Color(50, 166, 254));
+		btnConfirm.setForeground(Color.WHITE);
 		btnCancel = new JButton("Cancel");
-		btnCancel.setBounds(35, 320, 135, 30);
+		btnCancel.setBounds(35, 350, 135, 30);
 		btnCancel.setBackground(new Color(239, 3, 3));
 		btnCancel.setForeground(Color.WHITE);
 
 		book.add(lblBookId);
+		book.add(cb);
 		book.add(txtBookId);
-		book.add(btnCheckInfo);
 		book.add(btnAdd);
 		book.add(txtArea);
-		book.add(btnBorrow);
+		book.add(btnConfirm);
 		book.add(btnCancel);
 		book.setLayout(null);
 		
@@ -175,12 +236,30 @@ public class BorrowPanel {
 			public void removeUpdate(DocumentEvent e) {
 				// TODO Auto-generated method stub
 				btnAdd.setEnabled(false);
+				if(!txtBookId.getText().equals("")){
+					borrowModel.checkBookInfo(borrow);
+				} else {
+					int rowCount = model.getRowCount();
+					//Remove rows one by one from the end of the table
+					for (int i = rowCount - 1; i >= 0; i--) {
+					    model.removeRow(i);
+					}
+				}
 			}
 			
 			@Override
 			public void insertUpdate(DocumentEvent e) {
 				// TODO Auto-generated method stub
 				btnAdd.setEnabled(true);
+				if(!txtBookId.getText().equals("")){
+					borrowModel.checkBookInfo(borrow);
+				} else {
+					int rowCount = model.getRowCount();
+					//Remove rows one by one from the end of the table
+					for (int i = rowCount - 1; i >= 0; i--) {
+					    model.removeRow(i);
+					}
+				}
 			}
 			
 			@Override
@@ -190,13 +269,20 @@ public class BorrowPanel {
 			}
 		});
 		
-		btnCheckInfo.addActionListener(new ActionListener() {
-			
+		cb.addActionListener(new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				model.setRowCount(0);
-				borrowModel.checkBookInfo(borrow);
+				int choice = cb.getSelectedIndex();
+				if(choice == 1){
+					txtBookId.setEditable(true);
+					borrowModel.setSelectBy("books.id Like ");
+				}else if(choice == 2){
+					txtBookId.setEditable(true);
+					borrowModel.setSelectBy("books.name Like ");
+				} else if(choice == 0){
+					txtBookId.setEditable(false);
+				}
 			}
 		});
 		
@@ -204,11 +290,11 @@ public class BorrowPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				borrowModel.addBooksToBorrow(borrow);
+				borrowModel.addBooksToBorrow(borrow,table);
 			}
 		});
 		
-		btnBorrow.addActionListener(new ActionListener() {
+		btnConfirm.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -237,53 +323,4 @@ public class BorrowPanel {
 		borrowBook.setLayout(null);
 		return borrowBook;
 	}
-	
-	public DefaultTableModel getModel() {
-		return model;
-	}
-
-	public JTextField getTxtUserId() {
-		return txtUserId;
-	}
-
-	public JButton getBtnTest() {
-		return btnTest;
-	}
-
-	public JTextField getTxtUserName() {
-		return txtUserName;
-	}
-
-	public JTextField getTxtBorrowedBooks() {
-		return txtBorrowedBooks;
-	}
-
-	public JTextField getTxtOverdueBooks() {
-		return txtOverdueBooks;
-	}
-
-	public JTextField getTxtBookId() {
-		return txtBookId;
-	}
-
-	public JButton getBtnCheckInfo() {
-		return btnCheckInfo;
-	}
-
-	public JButton getBtnAdd() {
-		return btnAdd;
-	}
-
-	public JButton getBtnBorrow() {
-		return btnBorrow;
-	}
-
-	public JTextArea getTxtArea() {
-		return txtArea;
-	}
-
-	public JButton getBtnCancel() {
-		return btnCancel;
-	}
-
 }

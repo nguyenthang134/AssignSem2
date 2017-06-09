@@ -3,17 +3,15 @@ package view;
 import java.awt.Color;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 
 public class BorrowReturnMainPanel extends JFrame{
-
+	
 	public static void main(String[] args) {
 		BorrowPanel borrowPanel = new BorrowPanel();
 		ReturnPanel returnPanel = new ReturnPanel();
+		borrowPanel.setBorrow(borrowPanel);
+		returnPanel.setReturnPanel(returnPanel);
 		BorrowReturnMainPanel bar = new BorrowReturnMainPanel();
 		JFrame frame = new JFrame();
 		frame.setSize(1200, 700);

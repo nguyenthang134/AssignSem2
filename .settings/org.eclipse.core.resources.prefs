@@ -1,4 +1,6 @@
 eclipse.preferences.version=1
+encoding//src/model/BorrowModel.java=UTF-8
+encoding//src/view/LogInAdmin.java=UTF-8
 encoding//src/view/LibraryFrame.java=UTF-8
 encoding//src/view/Menu.java=UTF-8
 encoding//src/view/User.java=UTF-8
