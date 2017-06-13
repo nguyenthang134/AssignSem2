@@ -8,12 +8,18 @@ public class DatabaseLibConnection {
 	private static final String URL = "jdbc:mysql:";
     private static final String DATABASE = "library";
     private static final String HOST_PORT = "//localhost/";
-    private static final String USERNAME = "?user=root";
+    private static final String USERNAME = "?useUnicode=true&characterEncoding=utf-8&user=root";
     private static final String PASSWORD = "";
 
-    public static Connection getConnection() throws SQLException {
-        String url = URL + HOST_PORT + DATABASE + USERNAME + PASSWORD;
-        Connection connect = DriverManager.getConnection(url);
+    public static Connection getConnection(){
+    	Connection connect = null;
+    	String url = URL + HOST_PORT + DATABASE + USERNAME + PASSWORD;
+    	try{
+            connect = DriverManager.getConnection(url);
+        }
+    	catch(SQLException e){
+    		e.printStackTrace();
+    	}
         return connect;
     }
 }

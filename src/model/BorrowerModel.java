@@ -1,153 +1,155 @@
 package model;
 
-import java.awt.Color;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
 import com.mysql.cj.jdbc.PreparedStatement;
 
 import controller.DatabaseLibConnection;
-import view.PanelBorrowers;
+import entity.Borrowers;
 
 public class BorrowerModel {
-	
-	public void CheckID() throws SQLException, IOException {
-		if (PanelBorrowers.cbId.getEditor().getItem().toString().length() == 0) {
-			JOptionPane.showMessageDialog(null, "Please input id which you want to verify");
-		}else{
-			String checkId = "SELECT * FROM borrowers WHERE identification = '" + Integer.parseInt(PanelBorrowers.cbId.getEditor().getItem().toString()) + "'";
-			Connection connect = DatabaseLibConnection.getConnection();
-			Statement stt = connect.createStatement();
-			ResultSet rs = stt.executeQuery(checkId);
-			boolean idNotExist = true;
-			while (rs.next()) {
-				idNotExist = false;
-				PanelBorrowers.txtname.setText(rs.getString("name"));
-				PanelBorrowers.txtmail.setText(rs.getString("email"));
-				PanelBorrowers.txtadd.setText(rs.getString("address"));
-				PanelBorrowers.txtphone.setText(Integer.toString(rs.getInt("phone")));
-				if (rs.getInt("status") == 1) {
-					PanelBorrowers.cbstatus.setSelectedIndex(2);
-				} else if (rs.getInt("status") == 0) {
-					PanelBorrowers.cbstatus.setSelectedIndex(1);
-				}
-			}
-			if (idNotExist) {
-				JOptionPane.showMessageDialog(null, "This id is not exist");
-			}
-		}	
+
+	private String searchBy;
+
+	public String getSearchBy() {
+		return searchBy;
 	}
 
-	public void Insert() throws IOException, SQLException {
-		if (PanelBorrowers.cbstatus.getSelectedIndex() == 0 || PanelBorrowers.cbstatus.getSelectedIndex() == 1) {
-			JOptionPane.showMessageDialog(null, "Please change status to 1");
-		} else {
+	public void setSearchBy(String searchBy) {
+		this.searchBy = searchBy;
+	}
+
+	public boolean insert(Borrowers borrower) {
+		try {
 			String checkId = "INSERT INTO borrowers (identification, name, email, address, phone, status) VALUES(?,?,?,?,?,?)";
 			Connection connect = DatabaseLibConnection.getConnection();
 			PreparedStatement stt = (PreparedStatement) connect.prepareStatement(checkId);
-			stt.setInt(1, Integer.parseInt(PanelBorrowers.cbId.getEditor().getItem().toString()));
-			stt.setString(2, PanelBorrowers.txtname.getText());
-			stt.setString(3, PanelBorrowers.txtmail.getText());
-			stt.setString(4, PanelBorrowers.txtadd.getText());
-			stt.setInt(5, Integer.parseInt(PanelBorrowers.txtphone.getText()));
-			stt.setObject(6, PanelBorrowers.cbstatus.getSelectedItem());
+			stt.setInt(1, borrower.getIdentification());
+			stt.setString(2, borrower.getBorrowers_name());
+			stt.setString(3, borrower.getBorrowers_mail());
+			stt.setString(4, borrower.getBorrowers_address());
+			stt.setInt(5, borrower.getBorrowers_phone());
+			stt.setInt(6, 1);
 			stt.executeUpdate();
-			JOptionPane.showMessageDialog(null, "Success");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
 		}
+		return true;
 	}
 
-	public void Modify() throws IOException, SQLException {
-		String mod = "UPDATE borrowers SET name=?, email=?, address=?, phone=? WHERE identification = ?";
-		Connection connect = DatabaseLibConnection.getConnection();
-		PreparedStatement stt = (PreparedStatement) connect.prepareStatement(mod);
-		stt.setString(1, PanelBorrowers.txtname.getText());
-		stt.setString(2, PanelBorrowers.txtmail.getText());
-		stt.setString(3, PanelBorrowers.txtadd.getText());
-		stt.setInt(4, Integer.parseInt(PanelBorrowers.txtphone.getText()));
-		stt.setInt(5, Integer.parseInt(PanelBorrowers.cbId.getEditor().getItem().toString()));
-		stt.executeUpdate();
-		JOptionPane.showMessageDialog(null, "Success");
-
-	}
-
-	public void Delete() throws IOException, SQLException {
-		String mod = "UPDATE borrowers SET status=? WHERE identification = ?";
-		Connection connect = DatabaseLibConnection.getConnection();
-		PreparedStatement stt = (PreparedStatement) connect.prepareStatement(mod);
-		stt.setObject(1, PanelBorrowers.cbstatus.getSelectedItem());
-		stt.setInt(2, Integer.parseInt(PanelBorrowers.cbId.getEditor().getItem().toString()));
-		stt.executeUpdate();
-		JOptionPane.showMessageDialog(null, "Success");
-	}
-
-	public void Reset() throws IOException {
-		ArrayList<JTextField> resetList = new ArrayList<JTextField>();
-//		resetList.add(PanelBorrowers.txtId);
-		resetList.add(PanelBorrowers.txtname);
-		resetList.add(PanelBorrowers.txtmail);
-		resetList.add(PanelBorrowers.txtadd);
-		resetList.add(PanelBorrowers.txtphone);
-		for (JTextField item : resetList) {
-			item.setText("");
-			item.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+	public boolean modify(Borrowers borrower) {
+		if (borrower.getIdentification() <= 0) {
+			System.err.println("Where is your id?");
+			return false;
 		}
-		PanelBorrowers.cbId.setSelectedIndex(-1);;
-		PanelBorrowers.cbstatus.setSelectedIndex(0);
+		try {
+			String mod = "UPDATE borrowers SET name=?, email=?, address=?, phone=? WHERE identification = ?";
+			Connection connect = DatabaseLibConnection.getConnection();
+			PreparedStatement stt = (PreparedStatement) connect.prepareStatement(mod);
+			stt.setString(1, borrower.getBorrowers_name());
+			stt.setString(2, borrower.getBorrowers_mail());
+			stt.setString(3, borrower.getBorrowers_address());
+			stt.setInt(4, borrower.getBorrowers_phone());
+			stt.setInt(5, borrower.getIdentification());
+			stt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 
-	public void Show() {
-//		ArrayList<String> borrowersList = new ArrayList<String>();
-		try{
-			String show = "SELECT * FROM borrowers";
+	public boolean delete(int id) {
+		try {
+			String del = "UPDATE borrowers SET status=? WHERE identification = ?";
+			Connection connect = DatabaseLibConnection.getConnection();
+			PreparedStatement stt = (PreparedStatement) connect.prepareStatement(del);
+			stt.setInt(1, 0);
+			stt.setInt(2, id);
+			stt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	public ArrayList<Borrowers> getList() {
+		ArrayList<Borrowers> borrowersList = new ArrayList<Borrowers>();
+		try {
+			String show = "SELECT identification, name, email, address, phone, borrowed_books, overdue_books, overdue_limit FROM borrowers WHERE status = 1";
 			Connection connect = DatabaseLibConnection.getConnection();
 			Statement stt = connect.createStatement();
 			ResultSet rs = stt.executeQuery(show);
 			while (rs.next()) {
-				String id = Integer.toString(rs.getInt("identification"));
-				String name = rs.getString("name");
-				String email = rs.getString("email");
-				String address = rs.getString("address");
-				String phone = Integer.toString(rs.getInt("phone"));
-				String borrowed_books = Integer.toString(rs.getInt("borrowed_books"));
-				String overdue_books = Integer.toString(rs.getInt("overdue_books"));
-				String overdue_limit = Double.toString(rs.getDouble("overdue_limit"));
-				String status = Integer.toString(rs.getInt("status"));
-				String[] values = { id, name, email, address, phone, borrowed_books, overdue_books, overdue_limit, status };
-//				for(int i = 0; i<borrowersList.size();i++){
-//					borrowersList.add(borrowersList.get(i));
-//				}
-				PanelBorrowers.tableModel.addRow(values);
+				Borrowers borrowers = new Borrowers();
+				borrowers.setIdentification(rs.getInt("identification"));
+				borrowers.setBorrowers_name(rs.getString("name"));
+				borrowers.setBorrowers_mail(rs.getString("email"));
+				borrowers.setBorrowers_address(rs.getString("address"));
+				borrowers.setBorrowers_phone(rs.getInt("phone"));
+				borrowers.setBorrowed_books(rs.getInt("borrowed_books"));
+				borrowers.setOverdue_books(rs.getInt("overdue_books"));
+				borrowers.setOverdue_limit(rs.getDouble("overdue_limit"));
+				borrowersList.add(borrowers);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-		}catch (SQLException e) {
-			System.err.println(e.getMessage());
-		}
-//		return borrowersList;
+		return borrowersList;
 	}
-	
-	public DefaultComboBoxModel<String> getList(String s) {
-		DefaultComboBoxModel<String> cbmodel = new DefaultComboBoxModel<String>();
+
+	public ArrayList<Borrowers> searchBy(String str) {
+		ArrayList<Borrowers> borrowersList = new ArrayList<Borrowers>();
+		Borrowers borrower = null;
 		try {
-			String query = "SELECT identification FROM borrowers WHERE identification LIKE '" + Integer.parseInt(s) + "%';";
+			String check = "SELECT identification, name, email, address, phone, borrowed_books, overdue_books, overdue_limit FROM borrowers WHERE " + searchBy + " LIKE '%"
+					+ str + "%' AND status = 1";
 			Connection connect = DatabaseLibConnection.getConnection();
 			Statement stt = connect.createStatement();
-			ResultSet rs = stt.executeQuery(query);
+			ResultSet rs = stt.executeQuery(check);
 			while (rs.next()) {
-				cbmodel.addElement(Integer.toString(rs.getInt("identification")));
+				borrower = new Borrowers();
+				borrower.setIdentification(rs.getInt("identification"));
+				borrower.setBorrowers_name(rs.getString("name"));
+				borrower.setBorrowers_mail(rs.getString("email"));
+				borrower.setBorrowers_address(rs.getString("address"));
+				borrower.setBorrowers_phone(rs.getInt("phone"));
+				borrower.setBorrowed_books(rs.getInt("borrowed_books"));
+				borrower.setOverdue_books(rs.getInt("overdue_books"));
+				borrower.setOverdue_limit(rs.getDouble("overdue_limit"));
+				borrowersList.add(borrower);
 			}
-		} catch (SQLException ex) {
-			Logger.getLogger(BorrowerModel.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-		return cbmodel;
+		return borrowersList;
+	}
+	
+	public Borrowers getById(int id) {
+		Borrowers borrower = null;
+		try {
+			String check = "SELECT identification, name, email, address, phone FROM borrowers WHERE identification = "
+					+ id;
+			Connection connect = DatabaseLibConnection.getConnection();
+			Statement stt = connect.createStatement();
+			ResultSet rs = stt.executeQuery(check);
+			if (rs.next()) {
+				borrower = new Borrowers();
+				borrower.setIdentification(rs.getInt("identification"));
+				borrower.setBorrowers_name(rs.getString("name"));
+				borrower.setBorrowers_mail(rs.getString("email"));
+				borrower.setBorrowers_address(rs.getString("address"));
+				borrower.setBorrowers_phone(rs.getInt("phone"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return borrower;
 	}
 }

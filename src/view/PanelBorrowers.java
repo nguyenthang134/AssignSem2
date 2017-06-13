@@ -1,19 +1,33 @@
 package view;
 
-import java.awt.*;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import javax.swing.*;
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.text.JTextComponent;
 
 import controller.BorrowerController;
 import controller.ButtonController;
+import entity.Borrowers;
 import model.BorrowerModel;
 
 public class PanelBorrowers extends JPanel {
@@ -27,261 +41,354 @@ public class PanelBorrowers extends JPanel {
 	private JLabel lblmail;
 	private JLabel lbladd;
 	private JLabel lblphone;
-	private JLabel lblstatus;
 
-	public JButton btnAdd;
-	public JButton btnMod;
-	public JButton btnDel;
-	public JButton btnReset;
-	public JButton btnIdCheck;
+	private JButton btnSave;
+	private JButton btnReset;
+	private JButton btnDel;
+	private JButton btnShow;
 
-	public static JComboBox<String> cbId;
+	public JTextField txtId;
+	public JTextField txtname;
+	public JTextField txtmail;
+	public JTextField txtadd;
+	public JTextField txtphone;
 
-//	public static JTextField txtId;
-	public static JTextField txtname;
-	public static JTextField txtmail;
-	public static JTextField txtadd;
-	public static JTextField txtphone;
-	public static JComboBox<String> cbstatus;
-	public static DefaultTableModel tableModel;
-	
-	public BorrowerController validate;
-	public BorrowerModel model;
-	public ButtonController bc;
+	private DefaultTableModel tableModel;
+
+	private BorrowerController validate;
+	private BorrowerModel model;
+	private ButtonController bc;
+	private int action = 1; // 1-> create, 2-> edit.
 
 	public PanelBorrowers() {
 		this.validate = new BorrowerController();
-		this.model = new BorrowerModel();
 		this.bc = new ButtonController();
-		
+		this.model = new BorrowerModel();
 		this.setBounds(0, 0, 1200, 700);
 		this.setBackground(Color.WHITE);
 		this.add(panelForm());
-		this.add(panelModel());
 		this.add(panelTable());
+		this.add(panelSearch());
 		this.add(bc.btnBackBorrowers());
 		this.add(bc.btnExit());
 		this.setLayout(null);
 	}
 
-	public JPanel panelModel() {
-		JPanel panelModel = new JPanel();
-		panelModel.setBounds(10, 10, 550, 60);
-		panelModel.setBackground(Color.WHITE);
-		panelModel.setLayout(new FlowLayout(FlowLayout.LEFT, 30, 10));
-		
-		btnAdd = new JButton("Add");
-		btnMod = new JButton("Modify");
-		btnDel = new JButton("Delete");
-		btnReset = new JButton("Reset");
-
-		btnAdd.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					validate.Validate();
-					model.Insert();
-				} catch (IOException | SQLException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-
-		btnMod.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					validate.Validate();
-					model.Modify();
-				} catch (IOException | SQLException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-
-		btnDel.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					validate.Validate();
-					model.Delete();
-				} catch (IOException | SQLException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-
-		btnReset.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					model.Reset();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
-
-		ArrayList<JButton> btnListModel = new ArrayList<JButton>();
-		btnListModel.add(btnAdd);
-		btnListModel.add(btnMod);
-		btnListModel.add(btnDel);
-		btnListModel.add(btnReset);
-
-		Font btnModelFont = new Font("Serif", Font.PLAIN, 20);
-		for (int i = 0; i < btnListModel.size(); i++) {
-			btnListModel.get(i).setBackground(new Color(50, 166, 254));
-			btnListModel.get(i).setFont(btnModelFont);
-			btnListModel.get(i).setForeground(Color.WHITE);
-			btnListModel.get(i).setPreferredSize(new Dimension(100, 40));
-			panelModel.add(btnListModel.get(i));
-		}
-
-		return panelModel;
-	}
-
 	public JPanel panelForm() {
 		JPanel panelForm = new JPanel();
-		panelForm.setBounds(10, 80, 275, 500);
+		panelForm.setBounds(10, 40, 275, 530);
 		panelForm.setBackground(Color.WHITE);
 		panelForm.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(89, 194, 255)),
 				BorderFactory.createLineBorder(Color.BLACK)));
 
 		lblid = new JLabel("Identification");
 		lblid.setBounds(10, 0, 100, 30);
-//		txtId = new JTextField();
-//		txtId.setBounds(10, 30, 250, 30);
-		
-		cbId = new JComboBox<String>();
-		cbId.setBounds(10, 30, 250, 30);
-		cbId.setEditable(true);
-		
-		cbId.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
-			public void keyReleased(KeyEvent evt){
-				String s = cbId.getEditor().getItem().toString();
-				if(evt.getKeyCode() >= 48 && evt.getKeyCode() <= 57 || evt.getKeyCode() == 8){
-					cbId.setModel(model.getList(s));
-					if(cbId.getItemCount() > 0){
-						cbId.showPopup();
-						if(evt.getKeyCode() != 8){
-							((JTextComponent) cbId.getEditor().getEditorComponent()).select(s.length(), cbId.getEditor().getItem().toString().length());
-						}else{
-							cbId.getEditor().setItem(s);
-						}
-					}else{
-						cbId.addItem(s);
-					}
-				}
-			}
-		});
-		
-
-		btnIdCheck = new JButton("Verify");
-		btnIdCheck.setBounds(80, 70, 100, 20);
-		btnIdCheck.setBackground(new Color(1, 215, 58));
-		btnIdCheck.setForeground(Color.WHITE);
-
-		btnIdCheck.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					model.CheckID();
-				} catch (SQLException | IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
+		txtId = new JTextField();
+		txtId.setBounds(10, 30, 250, 30);
 
 		lblname = new JLabel("Borrower's name");
-		lblname.setBounds(10, 100, 100, 30);
+		lblname.setBounds(10, 80, 100, 30);
 		txtname = new JTextField();
-		txtname.setBounds(10, 130, 250, 30);
+		txtname.setBounds(10, 110, 250, 30);
 
 		lblmail = new JLabel("Email");
-		lblmail.setBounds(10, 180, 100, 30);
+		lblmail.setBounds(10, 160, 100, 30);
 		txtmail = new JTextField();
-		txtmail.setBounds(10, 210, 250, 30);
+		txtmail.setBounds(10, 190, 250, 30);
 
 		lbladd = new JLabel("Address");
-		lbladd.setBounds(10, 260, 100, 30);
+		lbladd.setBounds(10, 240, 100, 30);
 		txtadd = new JTextField();
-		txtadd.setBounds(10, 290, 250, 30);
+		txtadd.setBounds(10, 270, 250, 30);
 
 		lblphone = new JLabel("Phone");
-		lblphone.setBounds(10, 340, 100, 30);
+		lblphone.setBounds(10, 320, 100, 30);
 		txtphone = new JTextField();
-		txtphone.setBounds(10, 370, 250, 30);
+		txtphone.setBounds(10, 350, 250, 30);
 
-		lblstatus = new JLabel("Status");
-		lblstatus.setBounds(10, 420, 100, 30);
-		String status[] = { "Select status", "0", "1" };
-		cbstatus = new JComboBox<String>(status);
-		cbstatus.setBounds(10, 450, 250, 30);
+		btnSave = new JButton("Save");
+		btnSave.setBounds(15, 410, 110, 30);
+
+		btnSave.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				validate.Validate(null);
+				try {
+					// Cần validate đối tượng trước khi lưu.
+					Borrowers borrower = new Borrowers();
+					borrower.setIdentification(Integer.parseInt(txtId.getText()));
+					borrower.setBorrowers_name(txtname.getText());
+					borrower.setBorrowers_mail(txtmail.getText());
+					borrower.setBorrowers_address(txtadd.getText());
+					borrower.setBorrowers_phone(Integer.parseInt(txtphone.getText()));
+					if (action == 1) {
+						if (model.insert(borrower)) {
+							JOptionPane.showMessageDialog(null, "Action success!");
+						} else {
+							JOptionPane.showMessageDialog(null, "Action fails!", "Error Message",
+									JOptionPane.ERROR_MESSAGE);
+						}
+					} else if (action == 2) {
+						if (model.modify(borrower)) {
+							JOptionPane.showMessageDialog(null, "Action success!");
+						} else {
+							JOptionPane.showMessageDialog(null, "Action fails!", "Error Message",
+									JOptionPane.ERROR_MESSAGE);
+						}
+					} else {
+						System.err.println("Invalid action.");
+						JOptionPane.showMessageDialog(null, "Invalid action!", "Error Message",
+								JOptionPane.ERROR_MESSAGE);
+					}
+					ArrayList<Borrowers> borrowersList = model.getList();
+					showBorrowers(borrowersList);
+					resetForm();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+					JOptionPane.showMessageDialog(null, e2.getMessage(), "Error Message", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+
+		btnDel = new JButton("Delete");
+		btnDel.setBounds(145, 410, 110, 30);
+		btnDel.setEnabled(false);
+
+		btnDel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Confirm lại người dùng khi delete.
+				int conf = JOptionPane.showConfirmDialog(null, "Are you sure wanna delete this borrower?");
+				if (JOptionPane.YES_OPTION == conf) {
+					int id = Integer.parseInt(txtId.getText());
+					Borrowers borrower = model.getById(id);
+					if (borrower == null) {
+						JOptionPane.showMessageDialog(null, "Not found or has been deleted!", "Error Massage",
+								JOptionPane.ERROR_MESSAGE);
+					} else if (borrower != null && model.delete(id)) {
+						JOptionPane.showMessageDialog(null, "Action success!");
+					} else {
+						JOptionPane.showMessageDialog(null, "Action fails!", "Error Massage",
+								JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				ArrayList<Borrowers> borrowersList = model.getList();
+				showBorrowers(borrowersList);
+				resetForm();
+			}
+		});
+
+		btnShow = new JButton("Show");
+		btnShow.setBounds(15, 460, 110, 30);
+
+		btnShow.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ArrayList<Borrowers> borrowersList = model.getList();
+				showBorrowers(borrowersList);
+			}
+		});
+
+		btnReset = new JButton("Reset");
+		btnReset.setBounds(145, 460, 110, 30);
+
+		btnReset.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				resetForm();
+				btnDel.setEnabled(false);
+			}
+		});
+
+		ArrayList<JButton> btnList = new ArrayList<JButton>();
+		btnList.add(btnSave);
+		btnList.add(btnDel);
+		btnList.add(btnShow);
+		btnList.add(btnReset);
+
+		for (JButton item : btnList) {
+			item.setBackground(new Color(50, 166, 254));
+			item.setForeground(Color.WHITE);
+		}
 
 		panelForm.add(lblname);
 		panelForm.add(txtname);
 		panelForm.add(lblid);
-//		panelForm.add(txtId);
-		panelForm.add(cbId);
+		panelForm.add(txtId);
 		panelForm.add(lblmail);
 		panelForm.add(txtmail);
 		panelForm.add(lbladd);
 		panelForm.add(txtadd);
 		panelForm.add(lblphone);
 		panelForm.add(txtphone);
-		panelForm.add(lblstatus);
-		panelForm.add(cbstatus);
-		panelForm.add(btnIdCheck);
+
+		panelForm.add(btnSave);
+		panelForm.add(btnDel);
+		panelForm.add(btnShow);
+		panelForm.add(btnReset);
+
 		panelForm.setLayout(null);
 		return panelForm;
 	}
 
-	public JPanel panelTable(){
-//		ArrayList<String> list = model.Show();
+	public JPanel panelTable() {
 		JPanel panelTable = new JPanel();
-		panelTable.setBounds(300, 80, 875, 500);
+		JTable borrowerTable = new JTable();
+		tableModel = new DefaultTableModel();
+		panelTable.setBounds(300, 40, 875, 530);
 		panelTable.setBackground(Color.WHITE);
 		panelTable.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(89, 194, 255)),
 				BorderFactory.createLineBorder(Color.BLACK)));
 
 		String[] userColumn = { "Identification", "Name", "Email", "Address", "Phone", "Borrowed_books",
-				"Overdue_books", "Overdue_limit", "Status" };
+				"Overdue_books", "Overdue_limit" };
 
-		tableModel = new DefaultTableModel();
-		tableModel.fireTableDataChanged();
 		for (int i = 0; i < userColumn.length; i++) {
 			tableModel.addColumn(userColumn[i]);
 		}
-		
-//		for(int k = 0;k < list.size();k++ ){
-//			Object[] row = {list.get(k)};	
-//			tableModel.addRow(row);
-//		}
-		
-		model.Show();
-		JTable userTable = new JTable();
-		userTable.setModel(tableModel);
-		JScrollPane scrollTable = new JScrollPane(userTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		borrowerTable.setModel(tableModel);
+		JScrollPane scrollTable = new JScrollPane(borrowerTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollTable.setBounds(10, 10, 855, 480);
-		
+		scrollTable.setBounds(10, 10, 855, 510);
 		panelTable.add(scrollTable);
 		panelTable.setLayout(null);
+
+		borrowerTable.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent me) {
+				try {
+					action = 2;
+					int id = Integer.parseInt(String.valueOf(tableModel.getValueAt(borrowerTable.getSelectedRow(), 0)));
+					Borrowers borrower = model.getById(id);
+					if (borrower == null) {
+						JOptionPane.showMessageDialog(null, "Not found or has been deleted!", "Error Massage",
+								JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					txtId.setText(String.valueOf(borrower.getIdentification()));
+					txtname.setText(borrower.getBorrowers_name());
+					txtmail.setText(borrower.getBorrowers_mail());
+					txtadd.setText(borrower.getBorrowers_address());
+					txtphone.setText(String.valueOf(borrower.getBorrowers_phone()));
+					btnDel.setEnabled(true);
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(null, e.getMessage(), "Error Massage", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
 		return panelTable;
 	}
-	
+
+	public JPanel panelSearch() {
+		JPanel panelSearch = new JPanel();
+		panelSearch.setBounds(0, 0, 600, 40);
+		panelSearch.setBackground(Color.WHITE);
+
+		BufferedImage iconSearch = null;
+		try {
+			iconSearch = ImageIO.read(new File("../AssignSem2/src/assets/Search-icon1.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		JButton btnIconSearch = new JButton(new ImageIcon(iconSearch));
+		btnIconSearch.setBounds(10, 3, 30, 30);
+		btnIconSearch.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+		btnIconSearch.setContentAreaFilled(false);
+		btnIconSearch.setFocusPainted(false);
+
+		JTextField txtSearch = new JTextField();
+		txtSearch.setBounds(186, 5, 275, 30);
+		txtSearch.setEditable(false);
+		txtSearch.getDocument().addDocumentListener(new DocumentListener() {
+
+			public void changedUpdate(DocumentEvent e) {
+				process();
+			}
+
+			public void removeUpdate(DocumentEvent e) {
+				process();
+			}
+
+			public void insertUpdate(DocumentEvent e) {
+				process();
+			}
+
+			public void process() {
+				try {
+					String parsedStr = txtSearch.getText();
+					if (parsedStr.length() > 0) {
+						ArrayList<Borrowers> listResult = model.searchBy(parsedStr);
+						showBorrowers(listResult);
+					}
+				} catch (NumberFormatException e) {
+					System.out.println(e.getMessage());
+				}
+			}
+		});
+
+		JComboBox<String> cbSearch = new JComboBox<String>();
+		cbSearch.setBounds(40, 5, 145, 29);
+		cbSearch.addItem("----------Select----------");
+		cbSearch.addItem("Search by ID");
+		cbSearch.addItem("Search by Name");
+		cbSearch.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int slt = cbSearch.getSelectedIndex();
+				switch (slt) {
+				case 1:
+					txtSearch.setEditable(true);
+					model.setSearchBy("identification");
+					break;
+				case 2:
+					txtSearch.setEditable(true);
+					model.setSearchBy("name");
+					break;
+				default:
+					txtSearch.setEditable(false);
+					break;
+				}
+			}
+		});
+
+		panelSearch.add(btnIconSearch);
+		panelSearch.add(txtSearch);
+		panelSearch.add(cbSearch);
+		panelSearch.setLayout(null);
+		return panelSearch;
+	}
+
+	public void resetForm() {
+		ArrayList<JTextField> resetList = new ArrayList<JTextField>();
+		resetList.add(txtId);
+		resetList.add(txtname);
+		resetList.add(txtmail);
+		resetList.add(txtadd);
+		resetList.add(txtphone);
+		for (JTextField item : resetList) {
+			item.setText("");
+			item.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+		}
+	}
+
+	public void showBorrowers(ArrayList<Borrowers> borrowersList) {
+		tableModel.setRowCount(0);
+		for (Borrowers item : borrowersList) {
+			Object[] row = { item.getIdentification(), item.getBorrowers_name(), item.getBorrowers_mail(),
+					item.getBorrowers_address(), item.getBorrowers_phone(), item.getBorrowed_books(),
+					item.getOverdue_books(), item.getOverdue_limit() };
+			tableModel.addRow(row);
+		}
+	}
+
 	public static void main(String[] args) {
-////		 LibraryFrame frmLib = new LibraryFrame();
-//		 JFrame frm = new JFrame("Test");
-//		 frm.setSize(1200, 700);
-//		 PanelBorrowers pb = new PanelBorrowers();
-//		 frm.add(pb);
-//		 frm.setLayout(null);
-//		 frm.setVisible(true);
+//		 LibraryFrame frmLib = new LibraryFrame();
+		JFrame frm = new JFrame("Test");
+		frm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frm.setSize(1200, 700);
+		PanelBorrowers pb = new PanelBorrowers();
+		frm.add(pb);
+		frm.setLayout(null);
+		frm.setVisible(true);
 	}
 }
