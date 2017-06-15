@@ -1,11 +1,10 @@
 package controller;
 
 import java.awt.Color;
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
 
 import view.PanelBorrowers;
 
@@ -13,52 +12,57 @@ public class BorrowerController {
 	String regexInt = "[\\d]+";
 	String regexEmail = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
 	String regexName = "[\\w\\s]+";
-
-	public boolean RegexInt() {
+	
+	public boolean RegexInt(PanelBorrowers pb) {
 		Pattern p = Pattern.compile(regexInt);
-		Matcher m = p.matcher(PanelBorrowers.cbId.getEditor().getItem().toString());
+		Matcher m = p.matcher(pb.txtId.getText());
 		return m.find();
 	}
 
-	public boolean RegexMail() {
+	public boolean RegexMail(PanelBorrowers pb) {
 		Pattern p = Pattern.compile(regexEmail, Pattern.CASE_INSENSITIVE);
-		Matcher m = p.matcher(PanelBorrowers.txtmail.getText());
+		Matcher m = p.matcher(pb.txtmail.getText());
 		return m.find();
 	}
 
-	public boolean RegexName() {
+	public boolean RegexName(PanelBorrowers pb) {
 		Pattern p = Pattern.compile(regexName);
-		Matcher m = p.matcher(PanelBorrowers.txtname.getText());
+		Matcher m = p.matcher(pb.txtname.getText());
 		return m.find();
 	}
 
-	public void Validate() throws IOException {
+	public void Validate(PanelBorrowers pb){
+//		try{
+			if (RegexInt(pb) != true || pb.txtId.getText().length() <= 0) {
+				pb.txtId.setBorder(BorderFactory.createLineBorder(Color.RED));
+			}
 
-		if (PanelBorrowers.cbId.getEditor().getItem().toString().length() > 11 || RegexInt() != true || PanelBorrowers.cbId.getEditor().getItem().toString().length() == 0) {
-			PanelBorrowers.cbId.setBorder(BorderFactory.createLineBorder(Color.RED));
-		}
+			if (pb.txtmail.getText().length() > 50 || RegexMail(pb) != true
+					|| pb.txtmail.getText().length() == 0) {
+				pb.txtmail.setBorder(BorderFactory.createLineBorder(Color.RED));
+				pb.txtmail.setText("");
+			}
 
-		if (PanelBorrowers.txtmail.getText().length() > 50 || RegexMail() != true
-				|| PanelBorrowers.txtmail.getText().length() == 0) {
-			PanelBorrowers.txtmail.setBorder(BorderFactory.createLineBorder(Color.RED));
-			PanelBorrowers.txtmail.setText("");
-		}
+			if (pb.txtname.getText().length() > 20 || RegexName(pb) != true
+					|| pb.txtname.getText().length() == 0) {
+				pb.txtname.setBorder(BorderFactory.createLineBorder(Color.RED));
+				pb.txtname.setText("");
+			}
 
-		if (PanelBorrowers.txtname.getText().length() > 20 || RegexName() != true
-				|| PanelBorrowers.txtname.getText().length() == 0) {
-			PanelBorrowers.txtname.setBorder(BorderFactory.createLineBorder(Color.RED));
-			PanelBorrowers.txtname.setText("");
-		}
+			if (pb.txtadd.getText().length() == 0) {
+				pb.txtadd.setBorder(BorderFactory.createLineBorder(Color.RED));
+				pb.txtadd.setText("");
+			}
 
-		if (PanelBorrowers.txtadd.getText().length() == 0) {
-			PanelBorrowers.txtadd.setBorder(BorderFactory.createLineBorder(Color.RED));
-			PanelBorrowers.txtadd.setText("");
-		}
-
-		if (PanelBorrowers.txtphone.getText().length() > 11 || RegexInt() != true
-				|| PanelBorrowers.txtphone.getText().length() == 0) {
-			PanelBorrowers.txtphone.setBorder(BorderFactory.createLineBorder(Color.RED));
-			PanelBorrowers.txtphone.setText("");
-		}
+			if (pb.txtphone.getText().length() > 11 || RegexInt(pb) != true
+					|| pb.txtphone.getText().length() == 0) {
+				pb.txtphone.setBorder(BorderFactory.createLineBorder(Color.RED));
+				pb.txtphone.setText("");
+			}
+//		}
+//		catch (Exception e) {
+//			e.printStackTrace();
+//			JOptionPane.showMessageDialog(null, "Please input your form first","Error Message",JOptionPane.ERROR_MESSAGE);
+//		}
 	}
 }
