@@ -10,6 +10,7 @@ public class LibraryFrame extends JFrame {
 
 	private PanelMenu panelMenu;
 	private PanelBorrowers panelBorrowers;
+	private PanelStatistic panelStatistic;
 	public static JPanel mainPanel = new JPanel();
 	public static CardLayout cl = new CardLayout();
 	/**
@@ -19,16 +20,18 @@ public class LibraryFrame extends JFrame {
 
 	public LibraryFrame() {
 		this.setTitle("Phần mềm quản lý thư viện");
-		this.setSize(1200, 700);
+		this.setSize(1200, 725);
 
 		this.panelMenu = new PanelMenu();
 		this.panelBorrowers = new PanelBorrowers();
+		this.panelStatistic = new PanelStatistic();
 		
 		mainPanel.setLayout(cl);
 		mainPanel.setBounds(0, 0, 1200, 700);
 		mainPanel.setBackground(Color.WHITE);
 		mainPanel.add(this.panelMenu, "Menu");
 		mainPanel.add(this.panelBorrowers, "Borrowers");
+		mainPanel.add(this.panelStatistic, "Statistic");
 
 		cl.show(mainPanel, "Menu");
 

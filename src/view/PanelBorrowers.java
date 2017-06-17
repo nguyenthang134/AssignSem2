@@ -69,7 +69,7 @@ public class PanelBorrowers extends JPanel {
 		this.add(panelForm());
 		this.add(panelTable());
 		this.add(panelSearch());
-		this.add(bc.btnBackBorrowers());
+		this.add(bc.btnBack());
 		this.add(bc.btnExit());
 		this.setLayout(null);
 	}
