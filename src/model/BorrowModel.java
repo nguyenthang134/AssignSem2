@@ -40,9 +40,11 @@ public class BorrowModel {
 				String name = rs.getString(2);
 				int borrow = rs.getInt(6);
 				int overdue = rs.getInt(7);
+				int limit = rs.getInt(8);
 				borrowPanel.getTxtUserName().setText(name);
 				borrowPanel.getTxtBorrowedBooks().setText(String.valueOf(borrow));
 				borrowPanel.getTxtOverdueBooks().setText(String.valueOf(overdue));
+				borrowPanel.getTxtLimit().setText(String.valueOf(limit));
 			}
 		} catch (Exception e) {
 			System.out.println(e);
@@ -59,7 +61,7 @@ public class BorrowModel {
 					+ "From books " + "Join authors " + "On authors.id = books.author_id " + "Join publishers "
 					+ "On publishers.id = books.publisher_id where " + selectBy + "'%" + field
 					+ "%' order by books.status DESC";
-//			System.out.println("SQL: " + sql);
+			// System.out.println("SQL: " + sql);
 			ResultSet rs = stm.executeQuery(sql);
 			while (rs.next()) {
 				int id = rs.getInt("books.id");
@@ -68,8 +70,10 @@ public class BorrowModel {
 				String status;
 				if (rs.getInt("books.status") == 1) {
 					status = "Ready";
-				} else {
+				} else if(rs.getInt("books.status") == 0){
 					status = "Borrowed";
+				} else {
+					status = "Overdue";
 				}
 				String authorName = rs.getString("authors.name");
 				String publisherName = rs.getString("publishers.name");
@@ -86,24 +90,26 @@ public class BorrowModel {
 	public void addBooksToBorrow(BorrowPanel borrowPanel, JTable table) {
 		try {
 			if (table.getSelectedRow() == -1) {
-				table.setRowSelectionInterval(0, 0);
-			}
-			String sqlId = table.getValueAt(table.getSelectedRow(), 0).toString();
-			String sql = "Select * from books where id = " + table.getValueAt(table.getSelectedRow(), 0)
-					+ " and status = 1";
-			ResultSet rs = DatabaseLibConnection.getConnection().createStatement().executeQuery(sql);
-			if (rs.next()) {
-				arr.add(sqlId);
-				borrowPanel.getTxtArea().append(sqlId + "\n");
-				String[] lines = borrowPanel.getTxtArea().getText().split("\n");
-				lineCount = lines.length;
-				if (lineCount == 3) {
-					borrowPanel.getBtnAdd().setEnabled(false);
+				// table.setRowSelectionInterval(0, 0);
+				JOptionPane.showMessageDialog(null, "Please choose book to borrow ");
+			} else {
+				String sqlId = table.getValueAt(table.getSelectedRow(), 0).toString();
+				String sql = "Select * from books where id = " + table.getValueAt(table.getSelectedRow(), 0)
+						+ " and status = 1";
+				ResultSet rs = DatabaseLibConnection.getConnection().createStatement().executeQuery(sql);
+				if (rs.next()) {
+					arr.add(sqlId);
+					borrowPanel.getTxtArea().append(sqlId + "\n");
+					String[] lines = borrowPanel.getTxtArea().getText().split("\n");
+					lineCount = lines.length;
+					if (lineCount == 3) {
+						borrowPanel.getBtnAdd().setEnabled(false);
+					}
 				}
+				String sql1 = "Update books set status = 0 where id = " + sqlId;
+				DatabaseLibConnection.getConnection().createStatement().execute(sql1);
+				checkBookInfo(borrowPanel);
 			}
-			String sql1 = "Update books set status = 0 where id = " + sqlId;
-			DatabaseLibConnection.getConnection().createStatement().execute(sql1);
-			checkBookInfo(borrowPanel);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -171,6 +177,7 @@ public class BorrowModel {
 					}
 					JOptionPane.showMessageDialog(null, "Order confirmed !");
 					borrowPanel.getModel().setRowCount(0);
+					borrowPanel.getTxtArea().setText("");
 					checkBookInfo(borrowPanel);
 					checkBorrowerInfo(borrowPanel);
 				}
@@ -179,11 +186,11 @@ public class BorrowModel {
 			System.out.println(e);
 		}
 	}
-	
+
 	// Cancel order
 	public void cancelOrder(BorrowPanel borrowPanel) {
 		try {
-//			System.out.println(borrowPanel.getTxtBookId().getText());
+			// System.out.println(borrowPanel.getTxtBookId().getText());
 			for (String string : arr) {
 				String sql1 = "Update books set status = 1 where id = " + string;
 				DatabaseLibConnection.getConnection().createStatement().execute(sql1);
@@ -194,40 +201,6 @@ public class BorrowModel {
 				borrowPanel.getBtnAdd().setEnabled(true);
 			}
 			checkBookInfo(borrowPanel);
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-	}
-
-	// Check overdue books
-	public void checkOverdueBooks() {
-		try {
-			Date currentDate = new Date();
-			String sql = "Select return_date from orders";
-			ResultSet rs = DatabaseLibConnection.getConnection().createStatement().executeQuery(sql);
-			while (rs.next()) {
-				Date returnDate = rs.getTimestamp(1);
-				if (currentDate.after(returnDate)) {
-					String sql1 = "Update orders set status = 0 where return_date = '" + rs.getDate(1) + "'";
-					DatabaseLibConnection.getConnection().createStatement().execute(sql1);
-					String sql2 = "Select borrowers.overdue_books, orders.fine, orders.book_id, borrowers.identification ,books.price, borrowers.overdue_limit "
-							+ "From orders " + "Join borrowers " + "On borrowers.identification = orders.user_id "
-							+ "Join books " + "On books.id = orders.book_id " + "where orders.return_date= '"
-							+ rs.getDate(1) + "'";
-					ResultSet rs1 = DatabaseLibConnection.getConnection().createStatement().executeQuery(sql2);
-					if (rs1.next()) {
-						int borrowerId = rs1.getInt("borrowers.identification");
-						int overdueBooks = rs1.getInt("borrowers.overdue_books") + 1;
-						double fine = rs1.getDouble("books.price") * 2;
-						int ovedueLimit = 10 - overdueBooks;
-						DatabaseLibConnection.getConnection().createStatement()
-								.execute("Update borrowers set overdue_books = " + overdueBooks + ",overdue_limit ="
-										+ ovedueLimit + "  where identification =" + borrowerId);
-						DatabaseLibConnection.getConnection().createStatement().execute(
-								"Update orders set fine =" + fine + " where return_date ='" + rs.getDate(1) + "'");
-					}
-				}
-			}
 		} catch (Exception e) {
 			System.out.println(e);
 		}

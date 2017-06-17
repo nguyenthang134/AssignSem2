@@ -26,15 +26,15 @@ public class ReturnPanel {
 	private JLabel lblBorrowerId;
 	private JComboBox cbBorrower;
 	private JLabel lblBookId;
-	private JLabel lblFine;
+//	private JLabel lblFine;
 	private JComboBox cbBook;
 	private JButton btnReturn;
-	private JButton btnLost;
-	private JButton btnCancel;
+	private JButton btnReturnOrder;
+//	private JButton btnCancel;
 	private JLabel lblSearchBy;
 	private JTextField txtBorrowerId;
 	private JTextField txtBookId;
-	private JTextField txtFine;
+//	private JTextField txtFine;
 	private DefaultTableModel model;
 	private JTable table;
 	private ReturnPanel returnPanel;
@@ -47,11 +47,6 @@ public class ReturnPanel {
 	public JTextField getTxtBookId() {
 		return txtBookId;
 	}
-
-	public JTextField getTxtFine() {
-		return txtFine;
-	}
-
 	public DefaultTableModel getModel() {
 		return model;
 	}
@@ -78,6 +73,7 @@ public class ReturnPanel {
 		model.addColumn("Book_name");
 		model.addColumn("Borrow_date");
 		model.addColumn("Status");
+		model.addColumn("Fine");
 		table.setModel(model);
 
 		return scrollPane;
@@ -98,30 +94,30 @@ public class ReturnPanel {
 		txtBorrowerId = new JTextField();
 		txtBorrowerId.setBounds(10, 50, 180, 30);
 		txtBorrowerId.setEditable(false);
-		lblBookId = new JLabel("Book ID: ");
-		lblBookId.setBounds(10, 90, 70, 30);
+		lblBookId = new JLabel("Search book: ");
+		lblBookId.setBounds(10, 110, 100, 30);
 		String[] comboList = { "------Choose-----", "Book ID", "Book name" };
 		cbBook = new JComboBox(comboList);
-		cbBook.setBounds(80, 90, 115, 30);
+		cbBook.setBounds(90, 110, 105, 30);
 		txtBookId = new JTextField();
-		txtBookId.setBounds(10, 130, 180, 30);
+		txtBookId.setBounds(10, 150, 180, 30);
 		txtBookId.setEditable(false);
-		btnReturn = new JButton("Return");
+		btnReturn = new JButton("Return book");
 		btnReturn.setBounds(35, 210, 135, 30);
 		btnReturn.setBackground(new Color(50, 166, 254));
 		btnReturn.setForeground(Color.WHITE);
-		btnLost = new JButton("Lost");
-		btnLost.setBounds(35, 250, 135, 30);
-		btnLost.setBackground(new Color(50, 166, 254));
-		btnLost.setForeground(Color.WHITE);
-		lblFine = new JLabel("FINE: ");
-		lblFine.setBounds(10, 290, 100, 30);
-		txtFine = new JTextField();
-		txtFine.setBounds(10, 330, 180, 30);
-		btnCancel = new JButton("Cancel");
-		btnCancel.setBounds(35, 370, 135, 30);
-		btnCancel.setForeground(Color.WHITE);
-		btnCancel.setBackground(new Color(239, 3, 3));
+		btnReturnOrder = new JButton("Return order");
+		btnReturnOrder.setBounds(35, 250, 135, 30);
+		btnReturnOrder.setBackground(new Color(50, 166, 254));
+		btnReturnOrder.setForeground(Color.WHITE);
+//		lblFine = new JLabel("FINE: ");
+//		lblFine.setBounds(10, 290, 100, 30);
+//		txtFine = new JTextField();
+//		txtFine.setBounds(10, 330, 180, 30);
+//		btnCancel = new JButton("Cancel");
+//		btnCancel.setBounds(35, 370, 135, 30);
+//		btnCancel.setForeground(Color.WHITE);
+//		btnCancel.setBackground(new Color(239, 3, 3));
 
 		panel.add(lblBorrowerId);
 		panel.add(cbBorrower);
@@ -130,10 +126,10 @@ public class ReturnPanel {
 		panel.add(cbBook);
 		panel.add(txtBookId);
 		panel.add(btnReturn);
-		panel.add(btnLost);
-		panel.add(lblFine);
-		panel.add(txtFine);
-		panel.add(btnCancel);
+//		panel.add(btnReturnOrder);
+//		panel.add(lblFine);
+//		panel.add(txtFine);
+//		panel.add(btnCancel);
 		panel.setLayout(null);
 
 		txtBorrowerId.getDocument().addDocumentListener(new DocumentListener() {
@@ -258,7 +254,8 @@ public class ReturnPanel {
 				
 			}
 		});
-
+		
+		returnModel.checkOverdueBooks(returnPanel);
 		return panel;
 	}
 
