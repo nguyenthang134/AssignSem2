@@ -41,6 +41,8 @@ public class BorrowPanel{
 	private JLabel lblOverdueBooks;
 	private JTextField txtOverdueBooks;
 	private DefaultTableModel model;
+	private JLabel lblLimit;
+	private JTextField txtLimit;
 	private JTable table;
 	private JPanel book;
 	private JLabel lblBookId;
@@ -102,7 +104,11 @@ public class BorrowPanel{
 		this.borrow = borrow;
 	}
 	
-	//User panel in main borrow panel
+	public JTextField getTxtLimit() {
+		return txtLimit;
+	}
+
+	//Borrower panel in main borrow panel
 	public JPanel userPanel() {
 		user = new JPanel();
 		user.setBackground(Color.WHITE);
@@ -123,15 +129,20 @@ public class BorrowPanel{
 		txtUserName.setBounds(10, 170, 180, 30);
 		txtUserName.setEditable(false);
 		lblBorrowedBooks = new JLabel("Borrowed books: ");
-		lblBorrowedBooks.setBounds(10, 210, 100, 30);
+		lblBorrowedBooks.setBounds(10, 220, 100, 30);
 		txtBorrowedBooks = new JTextField();
-		txtBorrowedBooks.setBounds(10, 250, 50, 30);
+		txtBorrowedBooks.setBounds(110, 220, 50, 30);
 		txtBorrowedBooks.setEditable(false);
 		lblOverdueBooks = new JLabel("Overdue books: ");
 		lblOverdueBooks.setBounds(10, 290, 100, 30);
 		txtOverdueBooks = new JTextField();
-		txtOverdueBooks.setBounds(10, 330, 50, 30);
+		txtOverdueBooks.setBounds(110, 290, 50, 30);
 		txtOverdueBooks.setEditable(false);
+		lblLimit = new JLabel("Limit:");
+		lblLimit.setBounds(70, 360, 100, 30);
+		txtLimit = new JTextField();
+		txtLimit.setBounds(110, 360, 50, 30);
+		txtLimit.setEditable(false);
 
 		user.add(lblUserId);
 		user.add(txtUserId);
@@ -142,6 +153,8 @@ public class BorrowPanel{
 		user.add(txtBorrowedBooks);
 		user.add(lblOverdueBooks);
 		user.add(txtOverdueBooks);
+		user.add(lblLimit);
+		user.add(txtLimit);
 
 		btnTest.addActionListener(new ActionListener() {
 			@Override
@@ -149,8 +162,6 @@ public class BorrowPanel{
 				borrowModel.checkBorrowerInfo(borrow);
 			}
 		});
-
-		borrowModel.checkOverdueBooks();
 		user.setLayout(null);
 		return user;
 	}
@@ -175,16 +186,16 @@ public class BorrowPanel{
 		table.getColumnModel().getColumn(3).setMinWidth(120);
 		table.getColumnModel().getColumn(4).setMaxWidth(50);
 		table.getColumnModel().getColumn(5).setMaxWidth(70);
-		ListSelectionModel listModel = table.getSelectionModel();
-		listModel.addListSelectionListener(new ListSelectionListener() {
-			
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				// TODO Auto-generated method stub
-				int rowIndex = table.getSelectedRow();
-				
-			}
-		});
+//		ListSelectionModel listModel = table.getSelectionModel();
+//		listModel.addListSelectionListener(new ListSelectionListener() {
+//			
+//			@Override
+//			public void valueChanged(ListSelectionEvent e) {
+//				// TODO Auto-generated method stub
+//				int rowIndex = table.getSelectedRow();
+//				
+//			}
+//		});
 		return scrollPane;
 	}
 
@@ -235,10 +246,11 @@ public class BorrowPanel{
 			@Override
 			public void removeUpdate(DocumentEvent e) {
 				// TODO Auto-generated method stub
-				btnAdd.setEnabled(false);
+				btnAdd.setEnabled(true);
 				if(!txtBookId.getText().equals("")){
 					borrowModel.checkBookInfo(borrow);
 				} else {
+					btnAdd.setEnabled(false);
 					int rowCount = model.getRowCount();
 					//Remove rows one by one from the end of the table
 					for (int i = rowCount - 1; i >= 0; i--) {
