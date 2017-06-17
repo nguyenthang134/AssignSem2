@@ -18,7 +18,7 @@ public class ButtonController {
 	private BufferedImage btnIconExit;
 	private JButton btnExit;
 	private BufferedImage btnIconBack;
-	private JButton btnBackBorrowers;
+	private JButton btnBack;
 	private JButton btnBackMenu;
 
 	public JButton btnExit() {
@@ -43,20 +43,20 @@ public class ButtonController {
 		return btnExit;
 	}
 
-	public JButton btnBackBorrowers() {
+	public JButton btnBack() {
 		try {
 			btnIconBack = ImageIO.read(new File("../AssignSem2/src/assets/back-icon.png"));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 
-		btnBackBorrowers = new JButton(new ImageIcon(btnIconBack));
-		btnBackBorrowers.setBounds(0, 575, 80, 80);
-		btnBackBorrowers.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
-		btnBackBorrowers.setContentAreaFilled(false);
-		btnBackBorrowers.setFocusPainted(false);
+		btnBack = new JButton(new ImageIcon(btnIconBack));
+		btnBack.setBounds(0, 575, 80, 80);
+		btnBack.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+		btnBack.setContentAreaFilled(false);
+		btnBack.setFocusPainted(false);
 
-		btnBackBorrowers.addActionListener(new ActionListener() {
+		btnBack.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -64,7 +64,7 @@ public class ButtonController {
 			}
 		});
 
-		return btnBackBorrowers;
+		return btnBack;
 	}
 
 	public JButton btnBackMenu() {

@@ -84,6 +84,14 @@ public class PanelMenu extends JPanel {
 				LibraryFrame.cl.show(LibraryFrame.mainPanel, "Borrowers");
 			}
 		});
+		
+		btnReport.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LibraryFrame.cl.show(LibraryFrame.mainPanel, "Statistic");
+			}
+		});
 
 		btnList = new ArrayList<JButton>();
 		btnList.add(btnBorrowers);
