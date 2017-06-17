@@ -55,13 +55,13 @@ public class PanelBorrowers extends JPanel {
 
 	private DefaultTableModel tableModel;
 
-	private BorrowerController validate;
+//	private BorrowerController validate;
 	private BorrowerModel model;
 	private ButtonController bc;
 	private int action = 1; // 1-> create, 2-> edit.
 
 	public PanelBorrowers() {
-		this.validate = new BorrowerController();
+//		this.validate = new BorrowerController();
 		this.bc = new ButtonController();
 		this.model = new BorrowerModel();
 		this.setBounds(0, 0, 1200, 700);
@@ -112,7 +112,10 @@ public class PanelBorrowers extends JPanel {
 		btnSave.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				validate.Validate(null);
+//					System.out.println("1");
+//					validate.Validate();
+//					System.out.println("2");
+				
 				try {
 					// Cần validate đối tượng trước khi lưu.
 					Borrowers borrower = new Borrowers();
@@ -382,7 +385,7 @@ public class PanelBorrowers extends JPanel {
 	}
 
 	public static void main(String[] args) {
-//		 LibraryFrame frmLib = new LibraryFrame();
+		// LibraryFrame frmLib = new LibraryFrame();
 		JFrame frm = new JFrame("Test");
 		frm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frm.setSize(1200, 700);
