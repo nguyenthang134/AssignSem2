@@ -25,6 +25,7 @@ public class LibraryFrame extends JFrame {
 		this.panelMenu = new PanelMenu();
 		this.panelBorrowers = new PanelBorrowers();
 		this.panelStatistic = new PanelStatistic();
+		panelStatistic.setPs(panelStatistic);
 		
 		mainPanel.setLayout(cl);
 		mainPanel.setBounds(0, 0, 1200, 700);

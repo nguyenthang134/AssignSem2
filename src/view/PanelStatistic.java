@@ -8,7 +8,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -41,6 +40,17 @@ public class PanelStatistic extends JTabbedPane {
 	private JButton btnPrint;
 	private DefaultTableModel statModel;
 	private Date day1;
+	private PanelStatistic ps;
+	
+	
+	public PanelStatistic getPs() {
+		return ps;
+	}
+
+	public void setPs(PanelStatistic ps) {
+		this.ps = ps;
+	}
+
 	public Date getDay1() {
 		return day1;
 	}
@@ -61,15 +71,6 @@ public class PanelStatistic extends JTabbedPane {
 
 	private ButtonController bc;
 	private StatisticModel model;
-	private PanelStatistic ps = new PanelStatistic();
-
-	public PanelStatistic getPs() {
-		return ps;
-	}
-
-	public void setPs(PanelStatistic ps) {
-		this.ps = ps;
-	}
 
 	public PanelStatistic() {
 		this.bc = new ButtonController();
@@ -111,15 +112,17 @@ public class PanelStatistic extends JTabbedPane {
 		byDay1.setBounds(205, 80, 200, 30);
 		byDay2 = new JDateChooser();
 		byDay2.setBounds(580, 80, 200, 30);
+		
 
 		try {
 			SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
-			setDay1(sdf1.parse(byDay1.getDate().toString()));
+			day1 = sdf1.parse(byDay1.getDate().toString());
+//			setDay1(sdf1.parse(byDay1.getDate().toString()));
 			SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
 			setDay2(sdf2.parse(byDay2.getDate().toString()));
 		} catch (ParseException | NullPointerException e) {
-//			e.printStackTrace();
-			System.err.println("1");
+			e.printStackTrace();
+//			System.err.println(e);
 		}
 
 		JLabel lblByMonth = new JLabel("Năm");
@@ -138,16 +141,18 @@ public class PanelStatistic extends JTabbedPane {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try{
-					PanelStatistic ps = new PanelStatistic();
+					System.out.println(byDay1.getDate().toString());
+					System.out.println(day1.toString());
 					if (ps.getSelectedIndex() == 0) {
-						if (model.checkDate()) {
+						if (model.checkDate(ps)) {
 							ArrayList<Borrowers> borrowerList = model.Borrower();
 							showBorrower(borrowerList);
 						}
 					}
 				}
 				catch(Exception e1){
-					System.err.println("2");
+//					System.err.println(e1);
+					e1.printStackTrace();
 				}
 			}
 			
@@ -206,7 +211,7 @@ public class PanelStatistic extends JTabbedPane {
 			statModel.addRow(row);
 		}
 	}
-
+	
 	public static void main(String[] args) {
 		// LibraryFrame frmLib = new LibraryFrame();
 		// JFrame frm = new JFrame("Test");
