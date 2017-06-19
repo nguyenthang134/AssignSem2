@@ -164,7 +164,7 @@ public class SearchPanel extends JPanel{
 		this.add(panel);
 		this.add(scrollPane);
 		this.add(bc.btnExit());
-		this.add(bc.btnBackBorrowers());
+		this.add(bc.btnBack());
 		this.setLayout(null);
 	}
 }
