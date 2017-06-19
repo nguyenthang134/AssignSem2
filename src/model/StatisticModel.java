@@ -33,9 +33,7 @@ public class StatisticModel {
 		return borrowerList;
 	}
 	
-	public boolean checkDate(){
-		PanelStatistic ps = new PanelStatistic();
-		ps.setPs(ps);
+	public boolean checkDate(PanelStatistic ps){
 		try{
 			String checkDate = "SELECT created_at FROM orders WHERE status = 1";
 			Connection connect = DatabaseLibConnection.getConnection();
