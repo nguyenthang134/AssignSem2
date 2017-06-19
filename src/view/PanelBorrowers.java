@@ -55,13 +55,13 @@ public class PanelBorrowers extends JPanel {
 
 	private DefaultTableModel tableModel;
 
-//	private BorrowerController validate;
+	// private BorrowerController validate;
 	private BorrowerModel model;
 	private ButtonController bc;
 	private int action = 1; // 1-> create, 2-> edit.
 
 	public PanelBorrowers() {
-//		this.validate = new BorrowerController();
+		// this.validate = new BorrowerController();
 		this.bc = new ButtonController();
 		this.model = new BorrowerModel();
 		this.setBounds(0, 0, 1200, 700);
@@ -112,10 +112,10 @@ public class PanelBorrowers extends JPanel {
 		btnSave.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//					System.out.println("1");
-//					validate.Validate();
-//					System.out.println("2");
-				
+				// System.out.println("1");
+				// validate.Validate();
+				// System.out.println("2");
+
 				try {
 					// Cần validate đối tượng trước khi lưu.
 					Borrowers borrower = new Borrowers();
@@ -243,7 +243,7 @@ public class PanelBorrowers extends JPanel {
 		panelTable.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(89, 194, 255)),
 				BorderFactory.createLineBorder(Color.BLACK)));
 
-		String[] userColumn = { "Identification", "Name", "Email", "Address", "Phone", "Borrowed_books",
+		String[] userColumn = { "Orders", "Identification", "Name", "Email", "Address", "Phone", "Borrowed_books",
 				"Overdue_books", "Overdue_limit" };
 
 		for (int i = 0; i < userColumn.length; i++) {
@@ -376,8 +376,9 @@ public class PanelBorrowers extends JPanel {
 
 	public void showBorrowers(ArrayList<Borrowers> borrowersList) {
 		tableModel.setRowCount(0);
+		int i = 1;
 		for (Borrowers item : borrowersList) {
-			Object[] row = { item.getIdentification(), item.getBorrowers_name(), item.getBorrowers_mail(),
+			Object[] row = { i++, item.getIdentification(), item.getBorrowers_name(), item.getBorrowers_mail(),
 					item.getBorrowers_address(), item.getBorrowers_phone(), item.getBorrowed_books(),
 					item.getOverdue_books(), item.getOverdue_limit() };
 			tableModel.addRow(row);
