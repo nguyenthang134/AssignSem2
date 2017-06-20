@@ -5,62 +5,51 @@
  */
 package view;
 
-import entity.Authors;
 import entity.Categories;
+import entity.Publisher;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import model.AuthorModel;
 import model.CategoryModel;
+import model.PublisherModel;
 
 /**
  *
  * @author nnd2890
  */
-public class CategoriesViewPanel extends javax.swing.JPanel {
+public class PublisherViewPanel extends javax.swing.JPanel {
 
     /**
-     * Creates new form CategoriesViewPanel
+     * Creates new form PublisherViewPanel
      */
-    // set next/previous page
+    
+    // set next/previous page 
     private int currentPage = 1;
     private int limit = 5;
     private int totalPage;
-
-    public CategoriesViewPanel() {
+    
+    public PublisherViewPanel() {
         initComponents();
 //        showList();
 
         loadData();
         jButton_currentPage.setText(String.valueOf(this.currentPage));
+        
     }
 
-//    // Show list of Categories into table
-//    public void showList() {
-//        CategoryModel categoryModel = new CategoryModel();
-//        ArrayList<Categories> list = categoryModel.listCategory();
-//        DefaultTableModel model = (DefaultTableModel) jTable_category.getModel();
-//        model.setRowCount(0);
-//        for (Categories catergory : list) {
-//            Object[] row = {catergory.getId(),
-//                catergory.getName(),
-//                catergory.getDescription(),
-//                catergory.getCreated_at(),
-//                catergory.getUpdated_at(),
-//                catergory.getStatus()};
-//            model.addRow(row);
-//        }
-//    }
     // Reset
     public void resetFuntion() {
         jTextField_id.setText("");
-        JTextField_name.setText("");
+        jTextField_name.setText("");
+        jTextArea_address.setText("");
+        jTextField_phone.setText("");
         jTextField_createdDate.setText("");
         jTextField_updatedDate.setText("");
         jTextField_status.setText("");
     }
-
+    
     // next/previous page
     public void doFirst() {
         this.currentPage = 1;
@@ -109,27 +98,29 @@ public class CategoriesViewPanel extends javax.swing.JPanel {
         jButton_currentPage.setText(this.totalPage + "");
         loadData();
     }
-
+    
     public void loadData() {
-        CategoryModel categoryModel = new CategoryModel();
-        ArrayList<Categories> list = categoryModel.listCategoryLimit(this.limit, (this.currentPage - 1) * this.limit);
-        DefaultTableModel model = (DefaultTableModel) jTable_category.getModel();
+        PublisherModel publisherModel = new PublisherModel();
+        ArrayList<Publisher> list = publisherModel.listPublisherLimit(this.limit, (this.currentPage - 1) * this.limit);
+        DefaultTableModel model = (DefaultTableModel) jTable_publisher.getModel();
         model.setRowCount(0);
-        for (Categories category : list) {
+        for (Publisher publisher : list) {
             Object[] row = {
-                category.getId(),
-                category.getName(),
-                category.getCreated_at(),
-                category.getUpdated_at(),
-                category.getStatus()};
+                publisher.getId(),
+                publisher.getName(),
+                publisher.getAddress(),
+                publisher.getPhone(),
+                publisher.getCreated_at(),
+                publisher.getUpdated_at(),
+                publisher.getStatus()};
             model.addRow(row);
         }
     }
 
     public int countPage() {
         try {
-            CategoryModel categoryModel = new CategoryModel();
-            int countPage = categoryModel.countRow();
+            PublisherModel publisherModel = new PublisherModel();
+            int countPage = publisherModel.countRow();
             if (countPage % this.limit == 0) {
                 this.totalPage = countPage / this.limit;
             } else {
@@ -151,21 +142,26 @@ public class CategoriesViewPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        JTextField_name = new javax.swing.JTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable_category = new javax.swing.JTable();
-        jButton_insert = new javax.swing.JButton();
-        jButton_update = new javax.swing.JButton();
-        jButton_delete = new javax.swing.JButton();
-        jButton_resest = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
         jTextField_id = new javax.swing.JTextField();
+        jTextField_name = new javax.swing.JTextField();
+        jTextField_phone = new javax.swing.JTextField();
         jTextField_createdDate = new javax.swing.JTextField();
         jTextField_updatedDate = new javax.swing.JTextField();
         jTextField_status = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable_publisher = new javax.swing.JTable();
+        jButton_insert = new javax.swing.JButton();
+        jButton_update = new javax.swing.JButton();
+        jButton_delete = new javax.swing.JButton();
+        jButton_resest = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTextArea_address = new javax.swing.JTextArea();
         jButton_first = new javax.swing.JButton();
         jButton_previous = new javax.swing.JButton();
         jButton_currentPage = new javax.swing.JButton();
@@ -173,36 +169,40 @@ public class CategoriesViewPanel extends javax.swing.JPanel {
         jButton_last = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setPreferredSize(new java.awt.Dimension(1150, 650));
 
-        jLabel1.setText("Name");
-        jLabel1.setPreferredSize(new java.awt.Dimension(100, 20));
+        jLabel1.setText("Id");
 
-        JTextField_name.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                JTextField_nameActionPerformed(evt);
-            }
-        });
+        jLabel2.setText("Name");
 
-        jTable_category.setModel(new javax.swing.table.DefaultTableModel(
+        jLabel3.setText("Address");
+
+        jLabel4.setText("Phone");
+
+        jLabel5.setText("Created Date");
+
+        jLabel6.setText("Updated Date");
+
+        jLabel7.setText("Status");
+
+        jTable_publisher.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Id", "Name", "Created date", "Updated date", "Status"
+                "Id", "Name", "Address", "Phone", "Created date", "Updated date", "Status"
             }
         ));
-        jTable_category.addMouseListener(new java.awt.event.MouseAdapter() {
+        jTable_publisher.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable_categoryMouseClicked(evt);
+                jTable_publisherMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(jTable_category);
-        if (jTable_category.getColumnModel().getColumnCount() > 0) {
-            jTable_category.getColumnModel().getColumn(0).setPreferredWidth(10);
+        jScrollPane1.setViewportView(jTable_publisher);
+        if (jTable_publisher.getColumnModel().getColumnCount() > 0) {
+            jTable_publisher.getColumnModel().getColumn(0).setPreferredWidth(10);
         }
 
         jButton_insert.setBackground(new java.awt.Color(0, 153, 153));
@@ -241,25 +241,10 @@ public class CategoriesViewPanel extends javax.swing.JPanel {
             }
         });
 
-        jLabel3.setText("Id");
-
-        jLabel4.setText("Created Date");
-
-        jLabel5.setText("Updated Date");
-
-        jLabel6.setText("Status");
-
-        jTextField_createdDate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField_createdDateActionPerformed(evt);
-            }
-        });
-
-        jTextField_status.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField_statusActionPerformed(evt);
-            }
-        });
+        jTextArea_address.setColumns(20);
+        jTextArea_address.setRows(5);
+        jTextArea_address.setPreferredSize(new java.awt.Dimension(400, 300));
+        jScrollPane3.setViewportView(jTextArea_address);
 
         jButton_first.setText("<<");
         jButton_first.addActionListener(new java.awt.event.ActionListener() {
@@ -303,37 +288,45 @@ public class CategoriesViewPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(50, 50, 50)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(JTextField_name, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                                    .addComponent(jTextField_id, javax.swing.GroupLayout.Alignment.LEADING)))
-                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextField_status))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jTextField_status, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextField_updatedDate))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jTextField_updatedDate, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jTextField_phone)
+                                    .addComponent(jTextField_createdDate)))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jTextField_createdDate, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextField_name))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextField_id, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton_insert, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton_update, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton_insert, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton_resest, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 667, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 666, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(630, 630, 630)
+                        .addGap(638, 638, 638)
                         .addComponent(jButton_first)
                         .addGap(18, 18, 18)
                         .addComponent(jButton_previous)
@@ -343,96 +336,78 @@ public class CategoriesViewPanel extends javax.swing.JPanel {
                         .addComponent(jButton_next)
                         .addGap(18, 18, 18)
                         .addComponent(jButton_last)))
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(jTextField_id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton_insert))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(jTextField_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton_update))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jButton_insert)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jTextField_id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jButton_update)
-                                    .addComponent(JTextField_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(24, 24, 24)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jButton_delete)
-                                    .addComponent(jTextField_createdDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel4))
+                                .addComponent(jButton_delete)
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton_resest))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jTextField_updatedDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel5)))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextField_phone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(jTextField_createdDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextField_updatedDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jTextField_status, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel7))))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton_previous)
-                    .addComponent(jButton_first)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton_currentPage, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton_first)
+                        .addComponent(jButton_previous)
                         .addComponent(jButton_next)
-                        .addComponent(jButton_last))
-                    .addComponent(jButton_currentPage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(227, Short.MAX_VALUE))
+                        .addComponent(jButton_last)))
+                .addContainerGap(183, Short.MAX_VALUE))
         );
+
+        getAccessibleContext().setAccessibleName("");
     }// </editor-fold>//GEN-END:initComponents
-
-    private void JTextField_nameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JTextField_nameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_JTextField_nameActionPerformed
-
-    private void jButton_insertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_insertActionPerformed
-        // Insert 
-        CategoryModel categoryModel = new CategoryModel();
-        boolean bl = categoryModel.checkName("categories", JTextField_name.getText());
-        if (JTextField_name.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "Your characters are not valid", "Error", JOptionPane.ERROR_MESSAGE);
-            resetFuntion();
-        } else if (bl == true) {
-            JOptionPane.showMessageDialog(null, "Your author's name was existed", "Error", JOptionPane.ERROR_MESSAGE);
-            resetFuntion();
-        } else {
-            String name = JTextField_name.getText();
-            Categories ca = new Categories();
-            ca.setName(name);
-            try {
-                categoryModel.insertCategory(ca);
-                doLast();
-                resetFuntion();
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }//GEN-LAST:event_jButton_insertActionPerformed
-
-    private void jTextField_createdDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_createdDateActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField_createdDateActionPerformed
 
     private void jButton_updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_updateActionPerformed
         // Update
         int op = JOptionPane.showConfirmDialog(null, "Do you really want update", "Update", JOptionPane.YES_NO_OPTION);
         if (op == 0) {
             int id = Integer.parseInt(jTextField_id.getText());
-            String name = JTextField_name.getText();
-            Categories category = new Categories();
-            category.setId(id);
-            category.setName(name);
+            String name = jTextField_name.getText();
+            String address = jTextArea_address.getText();
+            int phone = Integer.parseInt(jTextField_phone.getText());
+            Publisher publisher = new Publisher();
+            publisher.setId(id);
+            publisher.setName(name);
+            publisher.setAddress(address);
+            publisher.setPhone(phone);
             try {
-                CategoryModel categoryModel = new CategoryModel();
-                categoryModel.updateCategory(category);
+                PublisherModel publiserModel = new PublisherModel();
+                publiserModel.updatePublisher(publisher);
                 JOptionPane.showMessageDialog(null, "Successful!");
 //                showList();
                 loadData();
@@ -448,55 +423,83 @@ public class CategoriesViewPanel extends javax.swing.JPanel {
         int op = JOptionPane.showConfirmDialog(null, "Do you really want delete", "Delete", JOptionPane.YES_NO_OPTION);
         if (op == 0) {
             try {
-                CategoryModel categoryModel = new CategoryModel();
+                PublisherModel publisherModel = new PublisherModel();
                 int id = Integer.parseInt(jTextField_id.getText());
-                Categories category = new Categories();
-                category.setId(id);
-                categoryModel.deleteCategory(category);
+                Publisher publisher = new Publisher();
+                publisher.setId(id);
+                publisherModel.deletePublisher(publisher);
                 JOptionPane.showMessageDialog(null, "Successful!");
+//                showList();
                 loadData();
                 resetFuntion();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
-
     }//GEN-LAST:event_jButton_deleteActionPerformed
+
+    private void jButton_insertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_insertActionPerformed
+        // Insert
+        PublisherModel publisherModel = new PublisherModel();
+        boolean bl = publisherModel.checkName("publishers", jTextField_name.getText());
+        if (jTextField_name.getText().equals("") || jTextField_phone.getText().equals("") || jTextArea_address.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Your characters are not valid", "Error", JOptionPane.ERROR_MESSAGE);
+            resetFuntion();
+        } else if(bl == true) {
+            JOptionPane.showMessageDialog(null, "Your author's name was existed", "Error", JOptionPane.ERROR_MESSAGE);
+            resetFuntion();
+        }else {
+            String name = jTextField_name.getText();
+            String address = jTextArea_address.getText();
+            int phone = Integer.parseInt(jTextField_phone.getText());
+            Publisher publisher = new Publisher();
+            publisher.setName(name);
+            publisher.setAddress(address);
+            publisher.setPhone(phone);
+            try {
+                publisherModel.insertPublisher(publisher);
+                JOptionPane.showMessageDialog(null, "Successful!");
+//                showList();
+                doLast();
+                resetFuntion();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }//GEN-LAST:event_jButton_insertActionPerformed
+
+    private void jTable_publisherMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_publisherMouseClicked
+        // Display selected row into JTextField
+        int i = jTable_publisher.getSelectedRow();
+        TableModel model = jTable_publisher.getModel();
+        jTextField_id.setText(model.getValueAt(i, 0).toString());
+        jTextField_name.setText(model.getValueAt(i, 1).toString());
+        jTextArea_address.setText(model.getValueAt(i, 2).toString());
+        jTextField_phone.setText(model.getValueAt(i, 3).toString());
+        jTextField_createdDate.setText(model.getValueAt(i, 4).toString());
+        jTextField_updatedDate.setText(model.getValueAt(i, 5).toString());
+        jTextField_status.setText(model.getValueAt(i, 6).toString());
+    }//GEN-LAST:event_jTable_publisherMouseClicked
 
     private void jButton_resestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_resestActionPerformed
         resetFuntion();
     }//GEN-LAST:event_jButton_resestActionPerformed
 
-    private void jTable_categoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_categoryMouseClicked
-        // Display selected row into JTextField
-        int i = jTable_category.getSelectedRow();
-        TableModel model = jTable_category.getModel();
-        jTextField_id.setText(model.getValueAt(i, 0).toString());
-        JTextField_name.setText(model.getValueAt(i, 1).toString());
-        jTextField_createdDate.setText(model.getValueAt(i, 2).toString());
-        jTextField_updatedDate.setText(model.getValueAt(i, 3).toString());
-        jTextField_status.setText(model.getValueAt(i, 4).toString());
-    }//GEN-LAST:event_jTable_categoryMouseClicked
-
-    private void jTextField_statusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_statusActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField_statusActionPerformed
+    private void jButton_firstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_firstActionPerformed
+        doFirst();
+    }//GEN-LAST:event_jButton_firstActionPerformed
 
     private void jButton_currentPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_currentPageActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton_currentPageActionPerformed
 
-    private void jButton_nextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_nextActionPerformed
-        doNext();
-    }//GEN-LAST:event_jButton_nextActionPerformed
-
-    private void jButton_firstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_firstActionPerformed
-        doFirst();
-    }//GEN-LAST:event_jButton_firstActionPerformed
-
     private void jButton_previousActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_previousActionPerformed
         doPrevious();
     }//GEN-LAST:event_jButton_previousActionPerformed
+
+    private void jButton_nextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_nextActionPerformed
+        doNext();
+    }//GEN-LAST:event_jButton_nextActionPerformed
 
     private void jButton_lastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_lastActionPerformed
         doLast();
@@ -504,7 +507,6 @@ public class CategoriesViewPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField JTextField_name;
     private javax.swing.JButton jButton_currentPage;
     private javax.swing.JButton jButton_delete;
     private javax.swing.JButton jButton_first;
@@ -515,14 +517,20 @@ public class CategoriesViewPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton_resest;
     private javax.swing.JButton jButton_update;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable_category;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable jTable_publisher;
+    private javax.swing.JTextArea jTextArea_address;
     private javax.swing.JTextField jTextField_createdDate;
     private javax.swing.JTextField jTextField_id;
+    private javax.swing.JTextField jTextField_name;
+    private javax.swing.JTextField jTextField_phone;
     private javax.swing.JTextField jTextField_status;
     private javax.swing.JTextField jTextField_updatedDate;
     // End of variables declaration//GEN-END:variables

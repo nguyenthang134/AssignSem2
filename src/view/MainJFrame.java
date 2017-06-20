@@ -21,27 +21,40 @@ public class MainJFrame extends javax.swing.JFrame {
     private MenuViewJPanel menu;
     private AuthorViewPanel author;
     private CategoriesViewPanel category;
+    private PublisherViewPanel pulisher;
     public MainJFrame() {
         initComponents();
         book = new BookViewJPanel();
         author = new AuthorViewPanel();
         category = new CategoriesViewPanel();
+        pulisher = new PublisherViewPanel();
         
-        book.setBounds(10, 100, 900, 400);
-        author.setBounds(10, 100, 900, 500);
-        category.setBounds(10, 100, 900, 500);
+        book.setBounds(0, 50, 1200, 650);
+        author.setBounds(0, 50, 1200, 650);
+        category.setBounds(0, 50, 1200, 650);
+        pulisher.setBounds(0, 50, 1200, 650);
        
         add(book);
         add(author);
         add(category);
+        add(pulisher);
         
-        book.setVisible(false);
+        book.setVisible(true);
         author.setVisible(false);
         category.setVisible(false);
+        pulisher.setVisible(false);
 
         getContentPane().setBackground(Color.WHITE);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+    
+    // Hiding Panels
+    public void hidePanel() {
+        book.setVisible(false);
+        author.setVisible(false);
+        category.setVisible(false);
+        pulisher.setVisible(false);
     }
 
     /**
@@ -59,6 +72,7 @@ public class MainJFrame extends javax.swing.JFrame {
         jButton_book = new javax.swing.JButton();
         jButton_author = new javax.swing.JButton();
         jButton_catagory = new javax.swing.JButton();
+        jButton_publisher = new javax.swing.JButton();
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -67,6 +81,7 @@ public class MainJFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setPreferredSize(new java.awt.Dimension(1200, 700));
 
         jPanel_menu.setBackground(new java.awt.Color(255, 255, 255));
         jPanel_menu.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -93,62 +108,74 @@ public class MainJFrame extends javax.swing.JFrame {
             }
         });
 
+        jButton_publisher.setText("Publisher");
+        jButton_publisher.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_publisherActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel_menuLayout = new javax.swing.GroupLayout(jPanel_menu);
         jPanel_menu.setLayout(jPanel_menuLayout);
         jPanel_menuLayout.setHorizontalGroup(
             jPanel_menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_menuLayout.createSequentialGroup()
                 .addGap(52, 52, 52)
-                .addComponent(jButton_book)
+                .addComponent(jButton_book, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton_author)
+                .addComponent(jButton_author, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton_catagory)
-                .addContainerGap(655, Short.MAX_VALUE))
+                .addComponent(jButton_catagory, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton_publisher, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(802, Short.MAX_VALUE))
         );
         jPanel_menuLayout.setVerticalGroup(
             jPanel_menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_menuLayout.createSequentialGroup()
-                .addContainerGap(13, Short.MAX_VALUE)
+                .addContainerGap(23, Short.MAX_VALUE)
                 .addGroup(jPanel_menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton_book)
                     .addComponent(jButton_author)
-                    .addComponent(jButton_catagory)))
+                    .addComponent(jButton_catagory)
+                    .addComponent(jButton_publisher)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel_menu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel_menu, javax.swing.GroupLayout.DEFAULT_SIZE, 1200, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel_menu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 569, Short.MAX_VALUE))
+                .addComponent(jPanel_menu, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 650, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton_bookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_bookActionPerformed
+        hidePanel();
         book.setVisible(true);
-        author.setVisible(false);
-        category.setVisible(false);
     }//GEN-LAST:event_jButton_bookActionPerformed
 
     private void jButton_authorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_authorActionPerformed
-        book.setVisible(false);
+        hidePanel();
         author.setVisible(true);
-        category.setVisible(false);
     }//GEN-LAST:event_jButton_authorActionPerformed
 
     private void jButton_catagoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_catagoryActionPerformed
-        book.setVisible(false);
-        author.setVisible(false);
+        hidePanel();
         category.setVisible(true);
     }//GEN-LAST:event_jButton_catagoryActionPerformed
+
+    private void jButton_publisherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_publisherActionPerformed
+       hidePanel();
+       pulisher.setVisible(true);
+    }//GEN-LAST:event_jButton_publisherActionPerformed
 
     /**
      * @param args the command line arguments
@@ -190,6 +217,7 @@ public class MainJFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton_author;
     private javax.swing.JButton jButton_book;
     private javax.swing.JButton jButton_catagory;
+    private javax.swing.JButton jButton_publisher;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel_menu;
