@@ -8,7 +8,6 @@ package model;
 import entity.Dao;
 import entity.Books;
 import entity.Categories;
-import entity.Publisher;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

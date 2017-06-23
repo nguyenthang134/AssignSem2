@@ -55,13 +55,13 @@ public class PanelBorrowers extends JPanel {
 
 	private DefaultTableModel tableModel;
 
-	// private BorrowerController validate;
+	 private BorrowerController validate;
 	private BorrowerModel model;
 	private ButtonController bc;
 	private int action = 1; // 1-> create, 2-> edit.
 
 	public PanelBorrowers() {
-		// this.validate = new BorrowerController();
+		 this.validate = new BorrowerController();
 		this.bc = new ButtonController();
 		this.model = new BorrowerModel();
 		this.setBounds(0, 0, 1200, 700);
@@ -112,9 +112,9 @@ public class PanelBorrowers extends JPanel {
 		btnSave.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// System.out.println("1");
-				// validate.Validate();
-				// System.out.println("2");
+				 System.out.println("1");
+				 validate.Validate();
+				 System.out.println("2");
 
 				try {
 					// Cần validate đối tượng trước khi lưu.
@@ -166,12 +166,12 @@ public class PanelBorrowers extends JPanel {
 					int id = Integer.parseInt(txtId.getText());
 					Borrowers borrower = model.getById(id);
 					if (borrower == null) {
-						JOptionPane.showMessageDialog(null, "Not found or has been deleted!", "Error Massage",
+						JOptionPane.showMessageDialog(null, "Not found or has been deleted!", "Error Message",
 								JOptionPane.ERROR_MESSAGE);
 					} else if (borrower != null && model.delete(id)) {
 						JOptionPane.showMessageDialog(null, "Action success!");
 					} else {
-						JOptionPane.showMessageDialog(null, "Action fails!", "Error Massage",
+						JOptionPane.showMessageDialog(null, "Action fails!", "Error Message",
 								JOptionPane.ERROR_MESSAGE);
 					}
 				}
@@ -260,10 +260,10 @@ public class PanelBorrowers extends JPanel {
 			public void mousePressed(MouseEvent me) {
 				try {
 					action = 2;
-					int id = Integer.parseInt(String.valueOf(tableModel.getValueAt(borrowerTable.getSelectedRow(), 0)));
+					int id = Integer.parseInt(String.valueOf(tableModel.getValueAt(borrowerTable.getSelectedRow(), 1)));
 					Borrowers borrower = model.getById(id);
 					if (borrower == null) {
-						JOptionPane.showMessageDialog(null, "Not found or has been deleted!", "Error Massage",
+						JOptionPane.showMessageDialog(null, "Not found or has been deleted!", "Error Message",
 								JOptionPane.ERROR_MESSAGE);
 						return;
 					}
@@ -274,7 +274,7 @@ public class PanelBorrowers extends JPanel {
 					txtphone.setText(String.valueOf(borrower.getBorrowers_phone()));
 					btnDel.setEnabled(true);
 				} catch (Exception e) {
-					JOptionPane.showMessageDialog(null, e.getMessage(), "Error Massage", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, e.getMessage(), "Error Message", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});

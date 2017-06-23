@@ -33,6 +33,7 @@ public class BorrowerController {
 
 	public void Validate() {
 		// try{
+		System.out.println(0);
 		if (pb.txtphone.getText().length() > 11 || pb.txtId.getText().length() == 0 || RegexInt() != true) {
 			pb.txtId.setBorder(BorderFactory.createLineBorder(Color.RED));
 		}
