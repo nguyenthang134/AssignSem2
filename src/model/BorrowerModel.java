@@ -147,6 +147,7 @@ public class BorrowerModel {
 				borrower.setBorrowers_address(rs.getString("address"));
 				borrower.setBorrowers_phone(rs.getInt("phone"));
 			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

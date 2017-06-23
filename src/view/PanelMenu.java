@@ -33,7 +33,7 @@ public class PanelMenu extends JPanel {
 	private JButton btnReport;
 	private ArrayList<JButton> btnList;
 
-	public ButtonController bc;
+	private ButtonController bc;
 
 	public PanelMenu() {
 		this.bc = new ButtonController();
@@ -75,13 +75,6 @@ public class PanelMenu extends JPanel {
 		btnBook = new JButton("Sách", new ImageIcon(btnIconBook));
 		btnBorrow = new JButton("Mượn/Trả", new ImageIcon(btnIconBorrow));
 		btnSearch = new JButton("Tìm kiếm", new ImageIcon(btnIconSearch));
-		btnSearch.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				LibraryFrame.cl.show(LibraryFrame.mainPanel, "Search");
-			}
-		});
 		btnReport = new JButton("Thống kê", new ImageIcon(btnIconReport));
 
 		btnBorrowers.addActionListener(new ActionListener() {
@@ -91,7 +84,15 @@ public class PanelMenu extends JPanel {
 				LibraryFrame.cl.show(LibraryFrame.mainPanel, "Borrowers");
 			}
 		});
-		
+
+		btnSearch.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LibraryFrame.cl.show(LibraryFrame.mainPanel, "Search");
+			}
+		});
+
 		btnReport.addActionListener(new ActionListener() {
 
 			@Override
