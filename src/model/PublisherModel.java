@@ -5,10 +5,9 @@
  */
 package model;
 
-import entity.Dao;
-import entity.Authors;
-import entity.Books;
 import entity.Categories;
+import entity.Dao;
+import entity.Publisher;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,21 +19,25 @@ import java.util.ArrayList;
  *
  * @author nnd2890
  */
-public class CategoryModel {
+public class PublisherModel {
      // Insert Catagory
-    public void insertCategory(Categories category) {
+    public void insertPublisher(Publisher publisher) {
         java.util.Date date = new java.util.Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         try {
-            String query = "insert into categories ("
+            String query = "insert into publishers ("
                     + " name,"
+                    + " address,"
+                    + " phone,"
                     + " created_at,"
                     + " updated_at)"
-                    + "VALUES (?, ?, ?)";
+                    + "VALUES (?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = Dao.getConnection().prepareStatement(query);
-            preparedStatement.setString(1, category.getName());
-            preparedStatement.setTimestamp(2, timestamp);
-            preparedStatement.setTimestamp(3, timestamp);
+            preparedStatement.setString(1, publisher.getName());
+            preparedStatement.setString(2, publisher.getAddress());
+            preparedStatement.setInt(3, publisher.getPhone());
+            preparedStatement.setTimestamp(4, timestamp);
+            preparedStatement.setTimestamp(5, timestamp);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -42,56 +45,60 @@ public class CategoryModel {
     }
 
     // List Catagory
-    public ArrayList<Categories> listCategory() {
-        ArrayList<Categories> categoryList = new ArrayList<>();
+    public ArrayList<Publisher> listPublisher() {
+        ArrayList<Publisher> publisherList = new ArrayList<>();
         try {
             Statement statement = Dao.getConnection().createStatement();
-            String query = "select * from categories";
+            String query = "select * from publishers";
             ResultSet rs = statement.executeQuery(query);
-            Categories category;
+            Publisher publisher;
             while (rs.next()) {
-                category = new Categories();
-                category.setId(rs.getInt("id"));
-                category.setName(rs.getString("name"));
-                category.setCreated_at(rs.getDate("created_at").toString());
-                category.setUpdated_at(rs.getDate("updated_at").toString());
-                category.setStatus(rs.getInt("status"));
-                categoryList.add(category);
+                publisher = new Publisher();
+                publisher.setId(rs.getInt("id"));
+                publisher.setName(rs.getString("name"));
+                publisher.setAddress(rs.getString("address"));
+                publisher.setPhone(rs.getInt("phone"));
+                publisher.setCreated_at(rs.getDate("created_at").toString());
+                publisher.setUpdated_at(rs.getDate("updated_at").toString());
+                publisher.setStatus(rs.getInt("status"));
+                publisherList.add(publisher);
             }
 
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
-        return categoryList;
+        return publisherList;
     }
     
      // get list from databse limit row 
-    public ArrayList<Categories> listCategoryLimit(int limit, int offset) {
-        ArrayList<Categories> categoryList = new ArrayList<>();
+    public ArrayList<Publisher> listPublisherLimit(int limit, int offset) {
+        ArrayList<Publisher> publisherList = new ArrayList<>();
         try {
-            String sql = "select * from categories limit " + limit + " OFFSET " + offset + "";
+            String sql = "select * from publishers limit " + limit + " OFFSET " + offset + "";
             Statement statement = Dao.getConnection().createStatement();
             ResultSet rs = statement.executeQuery(sql);
-            Categories category;
+            Publisher publisher;
             while (rs.next()) {
-                category = new Categories();
-                category.setId(rs.getInt("id"));
-                category.setName(rs.getString("name"));
-                category.setCreated_at(rs.getString("created_at"));
-                category.setUpdated_at(rs.getString("updated_at"));
-                category.setStatus(rs.getInt("status"));
-                categoryList.add(category);
+                publisher = new Publisher();
+                publisher.setId(rs.getInt("id"));
+                publisher.setName(rs.getString("name"));
+                publisher.setAddress(rs.getString("address"));
+                publisher.setPhone(rs.getInt("phone"));
+                publisher.setCreated_at(rs.getString("created_at"));
+                publisher.setUpdated_at(rs.getString("updated_at"));
+                publisher.setStatus(rs.getInt("status"));
+                publisherList.add(publisher);
             }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
-        return categoryList;
+        return publisherList;
     }
     
     // count database row
     public int countRow() throws SQLException {
         int total = 0;
-        String sql = "select count(*) from categories";
+        String sql = "select count(*) from publishers";
         Statement statement = Dao.getConnection().createStatement();
         ResultSet rs = statement.executeQuery(sql);
         while (rs.next()) {
@@ -101,15 +108,17 @@ public class CategoryModel {
     }
 
     // Update Catagory
-    public void updateCategory(Categories category) {
+    public void updatePublisher(Publisher publisher) {
         java.util.Date date = new java.util.Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         try {
             Statement statement = Dao.getConnection().createStatement();
-            String query = "update categories "
-                    + "set name='" + category.getName() + "'"
+            String query = "update publishers "
+                    + "set name='" + publisher.getName() + "'"
+                    + ", address = '" + publisher.getAddress()+ "'"
+                    + ", phone = '" + publisher.getPhone()+ "'"
                     + ", updated_at = '" + timestamp + "'"
-                    + " where id='" + category.getId() + "'";
+                    + " where id='" + publisher.getId() + "'";
             statement.executeUpdate(query);
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -117,13 +126,13 @@ public class CategoryModel {
     }
     
     // Delete Catagory
-    public void deleteCategory(Categories category) {
+    public void deletePublisher(Publisher publisher) {
         java.util.Date date = new java.util.Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         try {
             Statement statement = Dao.getConnection().createStatement();
-            String query = "delete from categories "
-                    + " where id='" + category.getId() + "'";
+            String query = "delete from publishers "
+                    + " where id='" + publisher.getId() + "'";
             statement.executeUpdate(query);
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -146,17 +155,5 @@ public class CategoryModel {
             System.out.println(ex.getMessage());
         }
         return bl;
-    }
-    
-    // Query trong bang book_category join voi bang book de lay ra tat ca sach thuoc 1 category nao do.
-    public ArrayList<Books> getBooksByCategoryId(int categoryId){
-        ArrayList<Books> result = new ArrayList<>();
-        return result;
-    }
-    
-    // Lay ra tat ca category cua mot quyen sach.
-    public ArrayList<Categories> getBookCategories(int bookId){
-        ArrayList<Categories> result = new ArrayList<>();
-        return result;
     }
 }

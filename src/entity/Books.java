@@ -10,6 +10,8 @@ package entity;
  * @author nnd2890
  */
 public class Books {
+    
+    private int id;
     private String name;
     private int author;
     private int publisher;
@@ -17,7 +19,17 @@ public class Books {
     private int price;
     private int quantity;
     private String publishDate;
-    private String CreatedDate;
+    private String createdDate;
+    private String updateDate;
+    private int status;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -76,12 +88,28 @@ public class Books {
     }
 
     public String getCreatedDate() {
-        return CreatedDate;
+        return createdDate;
     }
 
-    public void setCreatedDate(String CreatedDate) {
-        this.CreatedDate = CreatedDate;
+    public void setCreatedDate(String createdDate) {
+        this.createdDate = createdDate;
     }
+
+    public String getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(String updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     
-
 }
