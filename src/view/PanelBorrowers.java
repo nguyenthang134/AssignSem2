@@ -55,13 +55,13 @@ public class PanelBorrowers extends JPanel {
 
 	private DefaultTableModel tableModel;
 
-	 private BorrowerController validate;
+	private BorrowerController validate;
 	private BorrowerModel model;
 	private ButtonController bc;
 	private int action = 1; // 1-> create, 2-> edit.
 
 	public PanelBorrowers() {
-		 this.validate = new BorrowerController();
+		this.validate = new BorrowerController();
 		this.bc = new ButtonController();
 		this.model = new BorrowerModel();
 		this.setBounds(0, 0, 1200, 700);
@@ -112,10 +112,7 @@ public class PanelBorrowers extends JPanel {
 		btnSave.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				 System.out.println("1");
-				 validate.Validate();
-				 System.out.println("2");
-
+				
 				try {
 					// Cần validate đối tượng trước khi lưu.
 					Borrowers borrower = new Borrowers();
@@ -124,6 +121,9 @@ public class PanelBorrowers extends JPanel {
 					borrower.setBorrowers_mail(txtmail.getText());
 					borrower.setBorrowers_address(txtadd.getText());
 					borrower.setBorrowers_phone(Integer.parseInt(txtphone.getText()));
+					
+					validate.Validate();
+					
 					if (action == 1) {
 						if (model.insert(borrower)) {
 							JOptionPane.showMessageDialog(null, "Action success!");
@@ -148,7 +148,7 @@ public class PanelBorrowers extends JPanel {
 					resetForm();
 				} catch (Exception e2) {
 					e2.printStackTrace();
-					JOptionPane.showMessageDialog(null, e2.getMessage(), "Error Message", JOptionPane.ERROR_MESSAGE);
+//					JOptionPane.showMessageDialog(null, e2.getMessage(), "Error Message", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});

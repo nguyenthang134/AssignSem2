@@ -84,7 +84,6 @@ public class PanelStat1 extends JPanel {
 							// System.out.println(getDay2().toString());
 							ArrayList<Borrowers> getDay = model.checkDate(p1);
 							Show(getDay);
-							model.checkDate(p1);
 						} catch (Exception e1) {
 							System.out.println(e1);
 //							JOptionPane.showMessageDialog(null, "Please enter your choosed date");

@@ -15,7 +15,6 @@ public class SearchModel {
 	}
 	
 	public void search(SearchPanel searchPanel){
-//		JOptionPane.showMessageDialog(null, "abc");
 		try {
 			searchPanel.getModel().setRowCount(0);
 			String field = searchPanel.getTxtSearchby().getText();
@@ -45,8 +44,7 @@ public class SearchModel {
 				}
 				Object[] bookInfo = { bookId, bookName, bookCategory, bookAuthor, bookPublisher, bookPrice, bookStatus };
 				searchPanel.getModel().addRow(bookInfo);				
-			}
-			
+			}			
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e);

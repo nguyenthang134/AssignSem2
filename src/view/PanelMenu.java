@@ -85,6 +85,14 @@ public class PanelMenu extends JPanel {
 			}
 		});
 
+		btnBorrow.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LibraryFrame.cl.show(LibraryFrame.mainPanel, "Borrow/Return");
+			}
+		});
+		
 		btnSearch.addActionListener(new ActionListener() {
 
 			@Override
