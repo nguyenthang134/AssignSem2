@@ -2,32 +2,34 @@ package view;
 
 import java.awt.Color;
 
-import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
-public class BorrowReturnMainPanel extends JFrame{
+public class BorrowReturnMainPanel extends JTabbedPane{
 	
-	public static void main(String[] args) {
-		BorrowPanel borrowPanel = new BorrowPanel();
-		ReturnPanel returnPanel = new ReturnPanel();
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private BorrowPanel borrowPanel;
+	private ReturnPanel returnPanel;
+	private BorrowReturnMainPanel bar;
+	
+	public BorrowReturnMainPanel getBar() {
+		return bar;
+	}
+
+	public void setBar(BorrowReturnMainPanel bar) {
+		this.bar = bar;
+	}
+
+	public BorrowReturnMainPanel(){
+		this.borrowPanel = new BorrowPanel();
 		borrowPanel.setBorrow(borrowPanel);
+		this.returnPanel = new ReturnPanel();
 		returnPanel.setReturnPanel(returnPanel);
-		BorrowReturnMainPanel bar = new BorrowReturnMainPanel();
-		JFrame frame = new JFrame();
-		frame.setSize(1200, 700);
-		frame.getContentPane().setBackground(Color.WHITE);
-		
-		JTabbedPane mainPanel = new JTabbedPane();
-		mainPanel.setBackground(Color.WHITE);
-		mainPanel.setBounds(0, 0,1185, 660);
-		mainPanel.add("Borrow",borrowPanel.borrowPanel());
-		mainPanel.add("Return",returnPanel.returnPanel());
-		
-		frame.add(mainPanel);
-		
-		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		frame.setLocationRelativeTo(null);
-		frame.setLayout(null);
-		frame.setVisible(true);
+		this.setBackground(Color.WHITE);
+		this.setBounds(0, 0,1185, 660);
+		this.add("Borrow",borrowPanel.borrowPanel());
+		this.add("Return",returnPanel.returnPanel());
 	}
 }

@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import controller.DatabaseLibConnection;
+import entity.Books;
 import entity.Borrowers;
 import view.PanelStat1;
 import view.PanelStat2;
@@ -16,8 +17,7 @@ public class StatisticModel {
 		try {
 			String checkDate = "SELECT DISTINCT borrowers.identification, borrowers.name, borrowers.borrowed_books "
 					+ "FROM borrowers " + "JOIN orders ON borrowers.identification = orders.user_id "
-					+ "WHERE orders.status = 1 AND orders.created_at BETWEEN " + p1.getDay1() + " AND " + p1.getDay2()
-					+ " OR orders.return_date BETWEEN " + p1.getDay1() + " AND " + p1.getDay2();
+					+ "WHERE orders.status = 1 AND orders.created_at BETWEEN '" + p1.getDay1() + "' AND '" + p1.getDay2() + "'";
 			// System.out.println(checkDate);
 			Connection connect = DatabaseLibConnection.getConnection();
 			Statement stt = connect.createStatement();
@@ -40,8 +40,8 @@ public class StatisticModel {
 		try {
 			String checkMonth = "SELECT DISTINCT borrowers.identification, borrowers.name, borrowers.borrowed_books "
 					+ "FROM borrowers " + "JOIN orders ON borrowers.identification = orders.user_id "
-					+ "WHERE orders.status = 1 AND MONTH(created_at) = " + p1.getMc() + " AND YEAR(created_at) = "
-					+ p1.getYc();
+					+ "WHERE orders.status = 1 AND MONTH(orders.created_at) = " + p1.getMc()
+					+ " AND YEAR(orders.created_at) = " + p1.getYc();
 			Connection connect = DatabaseLibConnection.getConnection();
 			Statement stt = connect.createStatement();
 			ResultSet rs = stt.executeQuery(checkMonth);
@@ -58,30 +58,53 @@ public class StatisticModel {
 		return borrowerList;
 	}
 
-	public ArrayList<Borrowers> checkDate1(PanelStat2 p2) {
-		ArrayList<Borrowers> borrowerList = new ArrayList<Borrowers>();
+	public ArrayList<Books> checkDate1(PanelStat1 p1) {
+		ArrayList<Books> bookList = new ArrayList<Books>();
 		try {
-			String checkDate = "SELECT DISTINCT borrowers.identification, borrowers.name, borrowers.borrowed_books "
-					+ "FROM borrowers " + "JOIN orders ON borrowers.identification = orders.user_id "
-					+ "WHERE orders.status = 1 AND orders.created_at BETWEEN " + p2.getDay1() + " AND " + p2.getDay2()
-					+ " OR orders.return_date BETWEEN " + p2.getDay1() + " AND " + p2.getDay2();
-			// System.out.println(checkDate);
+			String checkDate = "SELECT books.id, books.name, books.price " + "FROM books "
+					+ "JOIN orders ON books.id = orders.book_id "
+					+ "WHERE orders.status = 1 AND orders.created_at BETWEEN '" + p1.getDay1() + "' AND '" + p1.getDay2()
+					+ "'";
+			System.out.println(checkDate);
 			Connection connect = DatabaseLibConnection.getConnection();
 			Statement stt = connect.createStatement();
 			ResultSet rs = stt.executeQuery(checkDate);
 			while (rs.next()) {
-				Borrowers borrower = new Borrowers();
-				borrower.setIdentification(rs.getInt("identification"));
-				borrower.setBorrowers_name(rs.getString("name"));
-				borrower.setBorrowed_books(rs.getInt("borrowed_books"));
-				borrowerList.add(borrower);
+				Books book = new Books();
+				book.setId(rs.getInt("id"));
+				book.setName(rs.getString("name"));
+				book.setPrice(rs.getInt("price"));
+				bookList.add(book);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return borrowerList;
+		return bookList;
 	}
-	
+
+	public ArrayList<Books> checkMonth1(PanelStat1 p1) {
+		ArrayList<Books> bookList = new ArrayList<Books>();
+		try {
+			String checkMonth = "SELECT books.id, books.name, books.price " + "FROM books "
+					+ "JOIN orders ON books.id = orders.book_id "
+					+ "WHERE orders.status = 1 AND MONTH(orders.created_at) = " + p1.getMc()
+					+ " AND YEAR(orders.created_at) = " + p1.getYc();
+			Connection connect = DatabaseLibConnection.getConnection();
+			Statement stt = connect.createStatement();
+			ResultSet rs = stt.executeQuery(checkMonth);
+			while (rs.next()) {
+				Books book = new Books();
+				book.setId(rs.getInt("id"));
+				book.setName(rs.getString("name"));
+				book.setPrice(rs.getInt("price"));
+				bookList.add(book);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return bookList;
+	}
+
 	public static void main(String[] args) {
 		// StatisticModel sm = new StatisticModel();
 		// sm.checkMonth();

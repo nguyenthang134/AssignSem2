@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -27,7 +28,6 @@ import controller.ButtonController;
 import model.SearchModel;
 
 public class SearchPanel extends JPanel{
-	private JFrame frame;
 	private DefaultTableModel model;
 	private JTable table;
 	private JLabel lblSearchBy;
@@ -36,6 +36,14 @@ public class SearchPanel extends JPanel{
 	private SearchModel searchModel = new SearchModel();
 	private static SearchPanel searchPanel = new SearchPanel();
 	
+	public static SearchPanel getSearchPanel() {
+		return searchPanel;
+	}
+
+	public static void setSearchPanel(SearchPanel searchPanel) {
+		SearchPanel.searchPanel = searchPanel;
+	}
+
 	public DefaultTableModel getModel() {
 		return model;
 	}
@@ -61,7 +69,6 @@ public class SearchPanel extends JPanel{
 	}
 
 	public SearchPanel() {
-		frame = new JFrame();
 		this.setSize(1200, 700);
 		this.setBackground(Color.WHITE);
 				
@@ -159,6 +166,9 @@ public class SearchPanel extends JPanel{
 				
 			}
 		});
+		
+//		Object[] bookInfo = { 1, 1, 1, 1, 1, 1, 1 };
+//		model.addRow(bookInfo);
 		
 		ButtonController bc = new ButtonController();
 		this.add(panel);

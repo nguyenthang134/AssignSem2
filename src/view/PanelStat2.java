@@ -22,7 +22,7 @@ import com.toedter.calendar.JMonthChooser;
 import com.toedter.calendar.JYearChooser;
 
 import controller.ButtonController;
-import entity.Borrowers;
+import entity.Books;
 import model.StatisticModel;
 
 public class PanelStat2 extends JPanel {
@@ -40,18 +40,16 @@ public class PanelStat2 extends JPanel {
 	private JYearChooser byYear;
 	private JButton btnShowDay;
 	private JButton btnShowMonth;
-	private java.sql.Date day1;
-	private java.sql.Date day2;
-	private Long mc;
-	private Long yc;
 	private ButtonController bc;
 	private StatisticModel model;
+	private PanelStat1 p1;
 	private PanelStat2 p2;
 	private JTable statTable;
 	private DefaultTableModel statModel;
 
 	public PanelStat2() {
-
+		this.p1 = new PanelStat1();
+		p1.setP1(p1);
 		this.bc = new ButtonController();
 		this.model = new StatisticModel();
 		this.setBackground(Color.WHITE);
@@ -78,13 +76,12 @@ public class PanelStat2 extends JPanel {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						try {
-							setDay1(new Date(byDay1.getDate().getTime()));
-							setDay2(new Date(byDay2.getDate().getTime()));
+							p1.setDay1(new Date(byDay1.getDate().getTime()));
+							p1.setDay2(new Date(byDay2.getDate().getTime()));
 							// System.out.println(getDay1().toString());
 							// System.out.println(getDay2().toString());
-							ArrayList<Borrowers> getDay = model.checkDate(p1);
+							ArrayList<Books> getDay = model.checkDate1(p1);
 							Show(getDay);
-							model.checkDate(p1);
 						} catch (Exception e1) {
 							System.out.println(e1);
 							// JOptionPane.showMessageDialog(null, "Please enter
@@ -110,9 +107,9 @@ public class PanelStat2 extends JPanel {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						try {
-							setMc((long) (byMonth.getMonth() + 1));
-							setYc((long) byYear.getYear());
-							ArrayList<Borrowers> getMonth = model.checkMonth(p1);
+							p1.setMc((long) (byMonth.getMonth() + 1));
+							p1.setYc((long) byYear.getYear());
+							ArrayList<Books> getMonth = model.checkMonth1(p1);
 							Show(getMonth);
 						} catch (Exception e1) {
 							JOptionPane.showMessageDialog(null, e1.getMessage(), "Error Message",
@@ -185,16 +182,16 @@ public class PanelStat2 extends JPanel {
 		return scrollTable;
 	}
 
-	public void Show(ArrayList<Borrowers> borrowerList) {
+	public void Show(ArrayList<Books> bookList) {
 		statModel.setRowCount(0);
 		statModel.setColumnCount(0);
-		String borrowerColumn[] = { "Orders", "Identification", "Name", "Borrowed_Books" };
-		for (String item : borrowerColumn) {
+		String bookColumn[] = { "Orders", "ID", "Name", "Price" };
+		for (String item : bookColumn) {
 			statModel.addColumn(item);
 		}
 		int i = 1;
-		for (Borrowers item : borrowerList) {
-			Object row[] = { i++, item.getIdentification(), item.getBorrowers_name(), item.getBorrowed_books() };
+		for (Books item : bookList) {
+			Object row[] = { i++, item.getId(), item.getName(), item.getPrice() };
 			statModel.addRow(row);
 		}
 	}
@@ -205,37 +202,5 @@ public class PanelStat2 extends JPanel {
 
 	public void setP2(PanelStat2 p2) {
 		this.p2 = p2;
-	}
-
-	public java.sql.Date getDay1() {
-		return day1;
-	}
-
-	public void setDay1(java.sql.Date day1) {
-		this.day1 = day1;
-	}
-
-	public java.sql.Date getDay2() {
-		return day2;
-	}
-
-	public void setDay2(java.sql.Date day2) {
-		this.day2 = day2;
-	}
-
-	public Long getMc() {
-		return mc;
-	}
-
-	public void setMc(Long mc) {
-		this.mc = mc;
-	}
-
-	public Long getYc() {
-		return yc;
-	}
-
-	public void setYc(Long yc) {
-		this.yc = yc;
 	}
 }
