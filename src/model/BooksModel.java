@@ -222,6 +222,21 @@ public class BooksModel {
             System.err.println(e.getMessage());
         }
     }
+    
+ // Update status books 
+    public void updateBookStatus(Books book) {
+        java.util.Date date = new java.util.Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+        try {
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
+            String query = "update books "
+                    + "set status = 2"
+                    + " where id='" + book.getId() + "'";
+            statement.executeUpdate(query);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
 
     // Delete book
     public void deleteBook(Books book) {
