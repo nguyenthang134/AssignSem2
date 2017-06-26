@@ -5,7 +5,7 @@
  */
 package model;
 
-import entity.Dao;
+import controller.DatabaseLibConnection;
 import entity.Authors;
 import entity.Books;
 import entity.Categories;
@@ -31,7 +31,7 @@ public class CategoryModel {
                     + " created_at,"
                     + " updated_at)"
                     + "VALUES (?, ?, ?)";
-            PreparedStatement preparedStatement = Dao.getConnection().prepareStatement(query);
+            PreparedStatement preparedStatement = DatabaseLibConnection.getConnection().prepareStatement(query);
             preparedStatement.setString(1, category.getName());
             preparedStatement.setTimestamp(2, timestamp);
             preparedStatement.setTimestamp(3, timestamp);
@@ -45,7 +45,7 @@ public class CategoryModel {
     public ArrayList<Categories> listCategory() {
         ArrayList<Categories> categoryList = new ArrayList<>();
         try {
-            Statement statement = Dao.getConnection().createStatement();
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
             String query = "select * from categories";
             ResultSet rs = statement.executeQuery(query);
             Categories category;
@@ -70,7 +70,7 @@ public class CategoryModel {
         ArrayList<Categories> categoryList = new ArrayList<>();
         try {
             String sql = "select * from categories limit " + limit + " OFFSET " + offset + "";
-            Statement statement = Dao.getConnection().createStatement();
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
             ResultSet rs = statement.executeQuery(sql);
             Categories category;
             while (rs.next()) {
@@ -92,7 +92,7 @@ public class CategoryModel {
     public int countRow() throws SQLException {
         int total = 0;
         String sql = "select count(*) from categories";
-        Statement statement = Dao.getConnection().createStatement();
+        Statement statement = DatabaseLibConnection.getConnection().createStatement();
         ResultSet rs = statement.executeQuery(sql);
         while (rs.next()) {
             total = rs.getInt(1);
@@ -105,7 +105,7 @@ public class CategoryModel {
         java.util.Date date = new java.util.Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         try {
-            Statement statement = Dao.getConnection().createStatement();
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
             String query = "update categories "
                     + "set name='" + category.getName() + "'"
                     + ", updated_at = '" + timestamp + "'"
@@ -121,7 +121,7 @@ public class CategoryModel {
         java.util.Date date = new java.util.Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         try {
-            Statement statement = Dao.getConnection().createStatement();
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
             String query = "delete from categories "
                     + " where id='" + category.getId() + "'";
             statement.executeUpdate(query);
@@ -134,7 +134,7 @@ public class CategoryModel {
     public boolean checkName(String tblName, String name) {
         boolean bl = true;
         try {
-            Statement statement = Dao.getConnection().createStatement();
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
             String sql = "select * from " + tblName + " where name = '" + name + "'";
             ResultSet rs = statement.executeQuery(sql);
             if (rs.next()) {
