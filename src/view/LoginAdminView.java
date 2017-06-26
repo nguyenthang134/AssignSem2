@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
-import entity.Dao;
+import controller.DatabaseLibConnection;
 
 /**
  *
@@ -140,7 +140,7 @@ public class LoginAdminView extends javax.swing.JFrame {
     // ActionEvent Login
     private void accessedLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accessedLoginActionPerformed
         try {
-            Statement statement = Dao.getConnection().createStatement();
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
             String query = "select * from admins";
             ResultSet rs = statement.executeQuery(query);
             String acountField = accountLogin.getText();
