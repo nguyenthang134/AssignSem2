@@ -86,7 +86,7 @@ public class PanelStat1 extends JPanel {
 							Show(getDay);
 						} catch (Exception e1) {
 							System.out.println(e1);
-//							JOptionPane.showMessageDialog(null, "Please enter your choosed date");
+							JOptionPane.showMessageDialog(null, "Please enter your choosed date");
 						}
 					}
 				});

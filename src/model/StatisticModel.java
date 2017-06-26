@@ -61,7 +61,7 @@ public class StatisticModel {
 	public ArrayList<Books> checkDate1(PanelStat1 p1) {
 		ArrayList<Books> bookList = new ArrayList<Books>();
 		try {
-			String checkDate = "SELECT books.id, books.name, books.price " + "FROM books "
+			String checkDate = "SELECT DISTINCT books.id, books.name, books.price " + "FROM books "
 					+ "JOIN orders ON books.id = orders.book_id "
 					+ "WHERE orders.status = 1 AND orders.created_at BETWEEN '" + p1.getDay1() + "' AND '" + p1.getDay2()
 					+ "'";
@@ -85,7 +85,7 @@ public class StatisticModel {
 	public ArrayList<Books> checkMonth1(PanelStat1 p1) {
 		ArrayList<Books> bookList = new ArrayList<Books>();
 		try {
-			String checkMonth = "SELECT books.id, books.name, books.price " + "FROM books "
+			String checkMonth = "SELECT DISTINCT books.id, books.name, books.price " + "FROM books "
 					+ "JOIN orders ON books.id = orders.book_id "
 					+ "WHERE orders.status = 1 AND MONTH(orders.created_at) = " + p1.getMc()
 					+ " AND YEAR(orders.created_at) = " + p1.getYc();
