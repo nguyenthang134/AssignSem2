@@ -6,7 +6,7 @@
 package model;
 
 import entity.Categories;
-import entity.Dao;
+import controller.DatabaseLibConnection;
 import entity.Publisher;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,7 +32,7 @@ public class PublisherModel {
                     + " created_at,"
                     + " updated_at)"
                     + "VALUES (?, ?, ?, ?, ?)";
-            PreparedStatement preparedStatement = Dao.getConnection().prepareStatement(query);
+            PreparedStatement preparedStatement = DatabaseLibConnection.getConnection().prepareStatement(query);
             preparedStatement.setString(1, publisher.getName());
             preparedStatement.setString(2, publisher.getAddress());
             preparedStatement.setInt(3, publisher.getPhone());
@@ -48,7 +48,7 @@ public class PublisherModel {
     public ArrayList<Publisher> listPublisher() {
         ArrayList<Publisher> publisherList = new ArrayList<>();
         try {
-            Statement statement = Dao.getConnection().createStatement();
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
             String query = "select * from publishers";
             ResultSet rs = statement.executeQuery(query);
             Publisher publisher;
@@ -75,7 +75,7 @@ public class PublisherModel {
         ArrayList<Publisher> publisherList = new ArrayList<>();
         try {
             String sql = "select * from publishers limit " + limit + " OFFSET " + offset + "";
-            Statement statement = Dao.getConnection().createStatement();
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
             ResultSet rs = statement.executeQuery(sql);
             Publisher publisher;
             while (rs.next()) {
@@ -99,7 +99,7 @@ public class PublisherModel {
     public int countRow() throws SQLException {
         int total = 0;
         String sql = "select count(*) from publishers";
-        Statement statement = Dao.getConnection().createStatement();
+        Statement statement = DatabaseLibConnection.getConnection().createStatement();
         ResultSet rs = statement.executeQuery(sql);
         while (rs.next()) {
             total = rs.getInt(1);
@@ -112,7 +112,7 @@ public class PublisherModel {
         java.util.Date date = new java.util.Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         try {
-            Statement statement = Dao.getConnection().createStatement();
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
             String query = "update publishers "
                     + "set name='" + publisher.getName() + "'"
                     + ", address = '" + publisher.getAddress()+ "'"
@@ -130,7 +130,7 @@ public class PublisherModel {
         java.util.Date date = new java.util.Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         try {
-            Statement statement = Dao.getConnection().createStatement();
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
             String query = "delete from publishers "
                     + " where id='" + publisher.getId() + "'";
             statement.executeUpdate(query);
@@ -143,7 +143,7 @@ public class PublisherModel {
     public boolean checkName(String tblName, String name) {
         boolean bl = true;
         try {
-            Statement statement = Dao.getConnection().createStatement();
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
             String sql = "select * from " + tblName + " where name = '" + name + "'";
             ResultSet rs = statement.executeQuery(sql);
             if (rs.next()) {

@@ -5,7 +5,7 @@
  */
 package model;
 
-import entity.Dao;
+import controller.DatabaseLibConnection;
 import entity.Authors;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -34,7 +34,7 @@ public class AuthorModel {
                     + " created_at,"
                     + " updated_at)"
                     + "VALUES (?, ?, ?)";
-            PreparedStatement preparedStatement = Dao.getConnection().prepareStatement(query);
+            PreparedStatement preparedStatement = DatabaseLibConnection.getConnection().prepareStatement(query);
             preparedStatement.setString(1, author.getName());
             preparedStatement.setTimestamp(2, timestamp);
             preparedStatement.setTimestamp(3, timestamp);
@@ -48,7 +48,7 @@ public class AuthorModel {
     public ArrayList<Authors> listAuthor() {
         ArrayList<Authors> authorList = new ArrayList<>();
         try {
-            Statement statement = Dao.getConnection().createStatement();
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
             String query = "select * from authors";
             ResultSet rs = statement.executeQuery(query);
             Authors author;
@@ -73,7 +73,7 @@ public class AuthorModel {
         ArrayList<Authors> authorList = new ArrayList<>();
         try {
             String sql = "select * from authors limit " + limit + " OFFSET " + offset + "";
-            Statement statement = Dao.getConnection().createStatement();
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
             ResultSet rs = statement.executeQuery(sql);
             Authors author;
             while (rs.next()) {
@@ -96,7 +96,7 @@ public class AuthorModel {
         java.util.Date date = new java.util.Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         try {
-            Statement statement = Dao.getConnection().createStatement();
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
             String query = "update authors "
                     + "set name='" + author.getName() + "'"
                     + ", updated_at = '" + timestamp + "'"
@@ -112,7 +112,7 @@ public class AuthorModel {
         java.util.Date date = new java.util.Date();
         Timestamp timestamp = new Timestamp(date.getTime());
         try {
-            Statement statement = Dao.getConnection().createStatement();
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
             String query = "delete from authors "
                     + " where id='" + author.getId() + "'";
             statement.executeUpdate(query);
@@ -125,7 +125,7 @@ public class AuthorModel {
     public int countRow() throws SQLException {
         int total = 0;
         String sql = "select count(*) from authors";
-        Statement statement = Dao.getConnection().createStatement();
+        Statement statement = DatabaseLibConnection.getConnection().createStatement();
         ResultSet rs = statement.executeQuery(sql);
         while (rs.next()) {
             total = rs.getInt(1);
@@ -138,7 +138,7 @@ public class AuthorModel {
     public boolean checkName(String tblName, String name) {
         boolean bl = true;
         try {
-            Statement statement = Dao.getConnection().createStatement();
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
             String sql = "select * from " + tblName + " where name = '" + name + "'";
             ResultSet rs = statement.executeQuery(sql);
             if (rs.next()) {

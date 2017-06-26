@@ -7,7 +7,7 @@ package view;
 
 import entity.Books;
 import entity.Categories;
-import entity.Dao;
+import controller.DatabaseLibConnection;
 import entity.Publisher;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,10 +16,14 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import model.BooksModel;
@@ -35,23 +39,23 @@ public class BookViewJPanel extends javax.swing.JPanel {
     /**
      * Creates new form BookViewJPanel
      */
-    
     // set next/previous page 
     private int currentPage = 1;
     private int limit = 5;
     private int totalPage;
-    
+
     public BookViewJPanel() {
         initComponents();
 
         // Add list to comboBox
         listComboBox();
+        listJList();
 
         // show listPage
         loadData();
         jButton_currentPage.setText(String.valueOf(this.currentPage));
     }
-    
+
     // Add list to comboBox
     public void listComboBox() {
         BooksModel bookModel = new BooksModel();
@@ -59,10 +63,34 @@ public class BookViewJPanel extends javax.swing.JPanel {
         jComboBox_author.setModel(new DefaultComboBoxModel(list.toArray()));
         list = bookModel.comboBox("publishers");
         jComboBox_publisher.setModel(new DefaultComboBoxModel(list.toArray()));
-        list = bookModel.comboBox("categories");
-        jComboBox_category.setModel(new DefaultComboBoxModel(list.toArray()));
+//        list = bookModel.comboBox("categories");
+//        jComboBox_category.setModel(new DefaultComboBoxModel(list.toArray()));
     }
 
+    // Add list to jList
+    public void listJList() {
+        BooksModel bookModel = new BooksModel();
+        ArrayList list = bookModel.comboBox("categories");
+        DefaultListModel<String> model = new DefaultListModel<>();
+        for (Object object : list) {
+            model.addElement((String) object);
+        }
+        jList_category.setModel(model);
+        jList_category.setSelectedIndex(0);
+        jList_category.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+    }
+
+    // insert books's name and mutiple category_id into book_category table
+    public void insertBookCategory() {
+        BooksModel bookModel = new BooksModel();
+        // get selected categories
+        List<String> listCategory = jList_category.getSelectedValuesList();
+        for (String categoryName : listCategory) {
+            // get category Id
+            int categoryId = bookModel.getId("categories", categoryName);
+            bookModel.insertBookCategory(jTextField_name.getText(), categoryId);
+        }
+    }
 
     // Resest funtion
     public void resetFuntion() {
@@ -70,8 +98,8 @@ public class BookViewJPanel extends javax.swing.JPanel {
         jTextField_price.setText("");
         jDateChooser_publishDate.setDate(null);
     }
-    
-     // next/previous page
+
+    // next/previous page
     public void doFirst() {
         this.currentPage = 1;
         jButton_first.setEnabled(false);
@@ -119,7 +147,7 @@ public class BookViewJPanel extends javax.swing.JPanel {
         jButton_currentPage.setText(this.totalPage + "");
         loadData();
     }
-    
+
     public void loadData() {
         BooksModel bookModel = new BooksModel();
         ArrayList<Books> list = bookModel.listBookLimit(this.limit, (this.currentPage - 1) * this.limit);
@@ -128,7 +156,11 @@ public class BookViewJPanel extends javax.swing.JPanel {
         for (Books book : list) {
             String nameAuthor = bookModel.getName("authors", book.getAuthor());
             String namePublsiher = bookModel.getName("publishers", book.getPublisher());
-            String nameCategory = bookModel.getName("categories", book.getCategory());
+
+            // get nameCategory
+            int idCategory = bookModel.getIdBookCategory("book_categories", book.getName());
+            String nameCategory = bookModel.getName("categories", idCategory);
+
             Object[] row = {
                 book.getId(),
                 book.getName(),
@@ -184,13 +216,14 @@ public class BookViewJPanel extends javax.swing.JPanel {
         jTable_book = new javax.swing.JTable();
         jComboBox_author = new javax.swing.JComboBox<>();
         jComboBox_publisher = new javax.swing.JComboBox<>();
-        jComboBox_category = new javax.swing.JComboBox<>();
         jDateChooser_publishDate = new com.toedter.calendar.JDateChooser();
         jButton_first = new javax.swing.JButton();
         jButton_previous = new javax.swing.JButton();
         jButton_currentPage = new javax.swing.JButton();
         jButton_next = new javax.swing.JButton();
         jButton_last = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jList_category = new javax.swing.JList<>();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -210,6 +243,12 @@ public class BookViewJPanel extends javax.swing.JPanel {
         jTextField_name.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField_nameActionPerformed(evt);
+            }
+        });
+
+        jTextField_price.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField_priceActionPerformed(evt);
             }
         });
 
@@ -329,6 +368,13 @@ public class BookViewJPanel extends javax.swing.JPanel {
             }
         });
 
+        jList_category.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane3.setViewportView(jList_category);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -348,27 +394,26 @@ public class BookViewJPanel extends javax.swing.JPanel {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jComboBox_category, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(jComboBox_publisher, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGap(18, 18, 18)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jButton_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jButton_resest, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(jDateChooser_publishDate, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jTextField_price, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE))))
+                                        .addComponent(jButton_resest, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jDateChooser_publishDate, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jTextField_price, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
                                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jComboBox_author, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField_name, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jTextField_name, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jComboBox_author, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jButton_insert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButton_update, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(jButton_update, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jButton_delete, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 680, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -382,13 +427,22 @@ public class BookViewJPanel extends javax.swing.JPanel {
                         .addComponent(jButton_next)
                         .addGap(18, 18, 18)
                         .addComponent(jButton_last)))
-                .addContainerGap())
+                .addContainerGap(88, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(28, 28, 28)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton_first)
+                            .addComponent(jButton_previous)
+                            .addComponent(jButton_currentPage, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton_next)
+                            .addComponent(jButton_last)))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
@@ -405,27 +459,19 @@ public class BookViewJPanel extends javax.swing.JPanel {
                             .addComponent(jButton_delete)
                             .addComponent(jComboBox_publisher, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton_resest)
-                            .addComponent(jComboBox_category, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                            .addComponent(jLabel4)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(19, 19, 19)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(jTextField_price, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTextField_price, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(jDateChooser_publishDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(24, 24, 24)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton_first)
-                    .addComponent(jButton_previous)
-                    .addComponent(jButton_currentPage, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton_next)
-                    .addComponent(jButton_last))
-                .addContainerGap(271, Short.MAX_VALUE))
+                            .addComponent(jDateChooser_publishDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6))))
+                .addContainerGap(260, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -439,12 +485,16 @@ public class BookViewJPanel extends javax.swing.JPanel {
     private void jButton_insertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_insertActionPerformed
         // get date
         java.util.Date d = jDateChooser_publishDate.getDate();
+        Books book = new Books();
+        BooksModel bookModel = new BooksModel();
+
+        // check book_name was exist or not
+        boolean bl = bookModel.checkName("book_categories","book_name", jTextField_name.getText());
+
         if (jTextField_name.getText().equals("") || jTextField_price.getText().equals("") || d == null) {
             JOptionPane.showMessageDialog(null, "Your characters are not valid", "Error", JOptionPane.ERROR_MESSAGE);
             resetFuntion();
         } else {
-            Books book = new Books();
-            BooksModel bookModel = new BooksModel();
             String name = jTextField_name.getText();
             book.setName(name);
             // Author Id
@@ -457,11 +507,6 @@ public class BookViewJPanel extends javax.swing.JPanel {
             int publisherId = bookModel.getId(tblName, jComboBox_publisher.getSelectedItem().toString());
             book.setPublisher(publisherId);
 
-            // Category Id
-            tblName = "categories";
-            int categoryId = bookModel.getId(tblName, jComboBox_category.getSelectedItem().toString());
-            book.setCategory(categoryId);
-
             // set price
             int price = Integer.parseInt(jTextField_price.getText());
             book.setPrice(price);
@@ -471,14 +516,36 @@ public class BookViewJPanel extends javax.swing.JPanel {
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             String reportDate = df.format(publishDate);
             book.setPublishDate(reportDate);
-            try {
-                bookModel.insertBooks(book);
-                JOptionPane.showMessageDialog(null, "Successful!");
-//                showList();
-                doLast();
-                resetFuntion();
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+
+            // check book_name was exit in book_category
+            if (bl == true) {
+                // don't insert more bookCategory
+                try {
+                    // insert Book
+                    bookModel.insertBooks(book);
+
+                    JOptionPane.showMessageDialog(null, "Successful!");
+                    doLast();
+                    resetFuntion();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+
+            } else {
+                try {
+                    // insert more book_category
+                    // insert Book
+                    bookModel.insertBooks(book);
+
+                    // insert books's name and mutiple category_id into book_category table
+                    insertBookCategory();
+
+                    JOptionPane.showMessageDialog(null, "Successful!");
+                    doLast();
+                    resetFuntion();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
             }
         }
     }//GEN-LAST:event_jButton_insertActionPerformed
@@ -494,8 +561,8 @@ public class BookViewJPanel extends javax.swing.JPanel {
             String name = jTextField_name.getText();
             int authorId = bookModel.getId("authors", jComboBox_author.getSelectedItem().toString());// Get author id
             int publsiherId = bookModel.getId("publishers", jComboBox_publisher.getSelectedItem().toString());// Get publsiher id
-            int categoryId = bookModel.getId("categories", jComboBox_category.getSelectedItem().toString());// Get category id
             int price = Integer.parseInt(jTextField_price.getText());
+
             // set date
             java.util.Date publishDate = jDateChooser_publishDate.getDate();
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -507,14 +574,18 @@ public class BookViewJPanel extends javax.swing.JPanel {
             book.setName(name);
             book.setAuthor(authorId);
             book.setPublisher(publsiherId);
-            book.setCategory(categoryId);
-            book.setCategory(categoryId);
             book.setPrice(price);
             book.setPublishDate(publisDate);
             try {
-                bookModel = new BooksModel();
+                // update book
                 bookModel.updateBook(book);
-//                showList();
+
+                // delete book_category by book_name
+                bookModel.deleteBookCategory(name);
+
+                // reinsert book_category by book_name
+                insertBookCategory();
+
                 loadData();
                 resetFuntion();
             } catch (Exception e) {
@@ -534,7 +605,7 @@ public class BookViewJPanel extends javax.swing.JPanel {
         jTextField_name.setText(model.getValueAt(i, 1).toString());
         jComboBox_author.setSelectedItem(model.getValueAt(i, 2).toString());
         jComboBox_publisher.setSelectedItem(model.getValueAt(i, 3).toString());
-        jComboBox_category.setSelectedItem(model.getValueAt(i, 4).toString());
+//        jComboBox_category.setSelectedItem(model.getValueAt(i, 4).toString());
         jTextField_price.setText(model.getValueAt(i, 5).toString());
 
         // set date
@@ -556,16 +627,34 @@ public class BookViewJPanel extends javax.swing.JPanel {
         // Delete
         int op = JOptionPane.showConfirmDialog(null, "Do you really want delete", "Delete", JOptionPane.YES_NO_OPTION);
         if (op == 0) {
+            BooksModel bookModel = new BooksModel();
+            Books book = new Books();
+            // get list book_category by book_name where book_categories table
+            ArrayList<Books> list = bookModel.getBookCategory("book_categories", jTextField_name.getText());
             try {
-                BooksModel bookModel = new BooksModel();
-                Books book = new Books();
+                // get id book
                 int i = jTable_book.getSelectedRow();
                 TableModel model = jTable_book.getModel();
                 int id = Integer.parseInt(model.getValueAt(i, 0).toString());
                 book.setId(id);
+
+                // delete book_category by name
+                bookModel.deleteBookCategory(jTextField_name.getText());
+
+                // delete book
                 bookModel.deleteBook(book);
+
+                
+                // check book_name was exist or not
+                boolean bl = bookModel.checkName("books","name", jTextField_name.getText());
+                if (bl == true) {
+                    // reinset book_category 
+                    for (Books bookList : list) {
+                        bookModel.insertBookCategory(jTextField_name.getText(), bookList.getCategory());
+                    }
+                }
+
                 JOptionPane.showMessageDialog(null, "Successful!");
-//                showList();
                 loadData();
                 resetFuntion();
             } catch (Exception e) {
@@ -590,6 +679,10 @@ public class BookViewJPanel extends javax.swing.JPanel {
         doLast();
     }//GEN-LAST:event_jButton_lastActionPerformed
 
+    private void jTextField_priceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_priceActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField_priceActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_currentPage;
@@ -602,7 +695,6 @@ public class BookViewJPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton_resest;
     private javax.swing.JButton jButton_update;
     private javax.swing.JComboBox<String> jComboBox_author;
-    private javax.swing.JComboBox<String> jComboBox_category;
     private javax.swing.JComboBox<String> jComboBox_publisher;
     private com.toedter.calendar.JDateChooser jDateChooser_publishDate;
     private javax.swing.JLabel jLabel1;
@@ -611,7 +703,9 @@ public class BookViewJPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JList<String> jList_category;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable_book;
     private javax.swing.JTextField jTextField_name;
     private javax.swing.JTextField jTextField_price;
