@@ -15,7 +15,7 @@ import java.sql.SQLException;
  */
 public class Dao {
     public static Connection getConnection() throws SQLException{
-        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/library?useUnicode=true&characterEncoding=utf-8","root","");            
+        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/library3_nodescription?useUnicode=true&characterEncoding=utf-8","root","");            
         return conn;
     }
 }

@@ -18,7 +18,6 @@ public class MainJFrame extends javax.swing.JFrame {
      * Creates new form NewJFrame
      */
     private BookViewJPanel book;
-    private MenuViewJPanel menu;
     private AuthorViewPanel author;
     private CategoriesViewPanel category;
     private PublisherViewPanel pulisher;
