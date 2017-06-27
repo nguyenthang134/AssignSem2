@@ -7,6 +7,7 @@ package view;
 
 import entity.Books;
 import entity.Categories;
+import controller.ButtonController;
 import controller.DatabaseLibConnection;
 import entity.Publisher;
 import java.sql.ResultSet;
@@ -46,7 +47,9 @@ public class BookViewJPanel extends javax.swing.JPanel {
 
     public BookViewJPanel() {
         initComponents();
-
+        this.add(bc.btnBack());
+        this.add(bc.btnExit());
+        
         // Add list to comboBox
         listComboBox();
         listJList();
@@ -709,6 +712,7 @@ public class BookViewJPanel extends javax.swing.JPanel {
     private javax.swing.JTable jTable_book;
     private javax.swing.JTextField jTextField_name;
     private javax.swing.JTextField jTextField_price;
+    private ButtonController bc = new ButtonController();
     // End of variables declaration//GEN-END:variables
 
 }

@@ -19,7 +19,7 @@ public class ButtonController {
 	private JButton btnExit;
 	private BufferedImage btnIconBack;
 	private JButton btnBack;
-	private JButton btnBackMenu;
+	private JButton btnBackLogin;
 
 	public JButton btnExit() {
 		try {
@@ -67,20 +67,20 @@ public class ButtonController {
 		return btnBack;
 	}
 
-	public JButton btnBackMenu() {
+	public JButton btnBackLogin() {
 		try {
 			btnIconBack = ImageIO.read(new File("../AssignSem2/src/assets/back-icon.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		btnBackMenu = new JButton(new ImageIcon(btnIconBack));
-		btnBackMenu.setBounds(0, 575, 80, 80);
-		btnBackMenu.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
-		btnBackMenu.setContentAreaFilled(false);
-		btnBackMenu.setFocusPainted(false);
+		btnBackLogin = new JButton(new ImageIcon(btnIconBack));
+		btnBackLogin.setBounds(0, 575, 80, 80);
+		btnBackLogin.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+		btnBackLogin.setContentAreaFilled(false);
+		btnBackLogin.setFocusPainted(false);
 
-		btnBackMenu.addActionListener(new ActionListener() {
+		btnBackLogin.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -88,6 +88,6 @@ public class ButtonController {
 			}
 		});
 
-		return btnBackMenu;
+		return btnBackLogin;
 	}
 }

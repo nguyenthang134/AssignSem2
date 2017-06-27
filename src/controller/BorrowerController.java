@@ -1,69 +1,62 @@
 package controller;
 
-import java.awt.Color;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.BorderFactory;
-
-import entity.Borrowers;
-import view.PanelBorrowers;
 
 public class BorrowerController {
-	String regexInt = "[\\d]+";
+	String regexInt = "[0-9]";
 	String regexEmail = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
-	String regexName = "[\\w\\s]+";
-	private Borrowers val = new Borrowers();
-	private static PanelBorrowers pb;
-	
-	public boolean RegexInt() {
+	String regexName = "^[\\p{L} .'-]+$";
+
+	public boolean regexInt(String number) {
 		Pattern p = Pattern.compile(regexInt);
-		Matcher m = p.matcher(String.valueOf(val.getIdentification()));
+		Matcher m = p.matcher(number);
 		return m.find();
 	}
 
-	public boolean RegexMail() {
+	public boolean regexMail(String mail) {
 		Pattern p = Pattern.compile(regexEmail, Pattern.CASE_INSENSITIVE);
-		Matcher m = p.matcher(val.getBorrowers_mail());
+		Matcher m = p.matcher(mail);
 		return m.find();
 	}
 
-	public boolean RegexName() {
+	public boolean regexName(String name) {
 		Pattern p = Pattern.compile(regexName);
-		Matcher m = p.matcher(val.getBorrowers_name());
+		Matcher m = p.matcher(name);
 		return m.find();
 	}
 
-	public void Validate() {
-		// try{
-		System.out.println(0);
-		if (String.valueOf(val.getIdentification()).length() > 11 || String.valueOf(val.getIdentification()).length() == 0 || RegexInt() != true) {
-			pb.txtId.setBorder(BorderFactory.createLineBorder(Color.RED));
+	public HashMap<String, String> validate(String txtId, String txtname, String txtmail, String txtadd,
+			String txtphone) {
+		HashMap<String, String> mapError = new HashMap<>();
+		if (txtId == null || txtId.isEmpty()) {
+			mapError.put("txtId", "ID cannot be empty");
 		}
-
-		if (val.getBorrowers_mail().length() > 50 || RegexMail() != true || val.getBorrowers_mail().length() == 0) {
-			pb.txtmail.setBorder(BorderFactory.createLineBorder(Color.RED));
-			pb.txtmail.setText("");
+//		if (regexInt(txtId)) {
+//			mapError.put("txtId1", "ID MUST be a number");
+//		}
+		if (txtname == null || txtname.isEmpty()) {
+			mapError.put("txtname", "Name cannot be empty");
 		}
-
-		if (val.getBorrowers_name().length() > 20 || RegexName() != true || val.getBorrowers_name().length() == 0) {
-			pb.txtname.setBorder(BorderFactory.createLineBorder(Color.RED));
-			pb.txtname.setText("");
+//		if (regexName(txtname)) {
+//			mapError.put("txtname1", "Name MUST be an alphabet");
+//		}
+		if (txtmail == null || txtmail.isEmpty()) {
+			mapError.put("txtmail", "Email cannot be empty");
 		}
-
-		if (val.getBorrowers_address().length() == 0) {
-			pb.txtadd.setBorder(BorderFactory.createLineBorder(Color.RED));
-			pb.txtadd.setText("");
+//		if (regexMail(txtmail)) {
+//			mapError.put("txtmail1", "Email is invalid");
+//		}
+		if (txtadd == null || txtadd.isEmpty()) {
+			mapError.put("txtadd", "Address cannot be empty");
 		}
-
-		if (String.valueOf(val.getBorrowers_phone()).length() > 11 || RegexInt() != true || String.valueOf(val.getBorrowers_phone()).length() == 0) {
-			pb.txtphone.setBorder(BorderFactory.createLineBorder(Color.RED));
-			pb.txtphone.setText("");
+		if (txtphone == null || txtphone.isEmpty()) {
+			mapError.put("txtphone", "Phone cannot be empty");
 		}
-		// }
-		// catch (Exception e) {
-		// e.printStackTrace();
-		// JOptionPane.showMessageDialog(null, "Please input your form
-		// first","Error Message",JOptionPane.ERROR_MESSAGE);
-		// }
+//		if (regexInt(txtphone)) {
+//			mapError.put("txtphone1", "Phone MUST be a number");
+//		}
+		return mapError;
 	}
 }

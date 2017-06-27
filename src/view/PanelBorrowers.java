@@ -9,6 +9,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
+
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -47,21 +50,27 @@ public class PanelBorrowers extends JPanel {
 	private JButton btnDel;
 	private JButton btnShow;
 
-	public JTextField txtId;
-	public JTextField txtname;
-	public JTextField txtmail;
-	public JTextField txtadd;
-	public JTextField txtphone;
+	private JTextField txtId;
+	private JTextField txtname;
+	private JTextField txtmail;
+	private JTextField txtadd;
+	private JTextField txtphone;
 
+	private JLabel lblIdErr;
+	private JLabel lblNameErr;
+	private JLabel lblMailErr;
+	private JLabel lblAddErr;
+	private JLabel lblPhoneErr;
+	
 	private DefaultTableModel tableModel;
 
-	private BorrowerController validate;
+	private BorrowerController controller;
 	private BorrowerModel model;
 	private ButtonController bc;
 	private int action = 1; // 1-> create, 2-> edit.
 
 	public PanelBorrowers() {
-		this.validate = new BorrowerController();
+		this.controller = new BorrowerController();
 		this.bc = new ButtonController();
 		this.model = new BorrowerModel();
 		this.setBounds(0, 0, 1200, 700);
@@ -85,26 +94,31 @@ public class PanelBorrowers extends JPanel {
 		lblid.setBounds(10, 0, 100, 30);
 		txtId = new JTextField();
 		txtId.setBounds(10, 30, 250, 30);
+		lblIdErr = new JLabel();
 
 		lblname = new JLabel("Borrower's name");
 		lblname.setBounds(10, 80, 100, 30);
 		txtname = new JTextField();
 		txtname.setBounds(10, 110, 250, 30);
+		lblNameErr = new JLabel();
 
 		lblmail = new JLabel("Email");
 		lblmail.setBounds(10, 160, 100, 30);
 		txtmail = new JTextField();
 		txtmail.setBounds(10, 190, 250, 30);
+		lblMailErr = new JLabel();
 
 		lbladd = new JLabel("Address");
 		lbladd.setBounds(10, 240, 100, 30);
 		txtadd = new JTextField();
 		txtadd.setBounds(10, 270, 250, 30);
+		lblAddErr = new JLabel();
 
 		lblphone = new JLabel("Phone");
 		lblphone.setBounds(10, 320, 100, 30);
 		txtphone = new JTextField();
 		txtphone.setBounds(10, 350, 250, 30);
+		lblPhoneErr = new JLabel();
 
 		btnSave = new JButton("Save");
 		btnSave.setBounds(15, 410, 110, 30);
@@ -112,43 +126,89 @@ public class PanelBorrowers extends JPanel {
 		btnSave.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
 				try {
-					// Cần validate đối tượng trước khi lưu.
-					Borrowers borrower = new Borrowers();
-					borrower.setIdentification(Integer.parseInt(txtId.getText()));
-					borrower.setBorrowers_name(txtname.getText());
-					borrower.setBorrowers_mail(txtmail.getText());
-					borrower.setBorrowers_address(txtadd.getText());
-					borrower.setBorrowers_phone(Integer.parseInt(txtphone.getText()));
-					
-					validate.Validate();
-					
-					if (action == 1) {
-						if (model.insert(borrower)) {
-							JOptionPane.showMessageDialog(null, "Action success!");
+					HashMap<String, String> mapError = controller.validate(txtId.getText(), txtname.getText(), txtmail.getText(), txtadd.getText(), txtphone.getText());
+					if(mapError.size() == 0){
+						Borrowers borrower = new Borrowers();
+						borrower.setIdentification(Integer.parseInt(txtId.getText()));
+						borrower.setBorrowers_name(txtname.getText());
+						borrower.setBorrowers_mail(txtmail.getText());
+						borrower.setBorrowers_address(txtadd.getText());
+						borrower.setBorrowers_phone(Integer.parseInt(txtphone.getText()));
+						
+						if (action == 1) {
+							if (model.insert(borrower)) {
+								JOptionPane.showMessageDialog(null, "Action success!");
+							} else {
+								JOptionPane.showMessageDialog(null, "Action fails!", "Error Message",
+										JOptionPane.ERROR_MESSAGE);
+							}
+						} else if (action == 2) {
+							if (model.modify(borrower)) {
+								JOptionPane.showMessageDialog(null, "Action success!");
+							} else {
+								JOptionPane.showMessageDialog(null, "Action fails!", "Error Message",
+										JOptionPane.ERROR_MESSAGE);
+							}
 						} else {
-							JOptionPane.showMessageDialog(null, "Action fails!", "Error Message",
+							System.err.println("Invalid action.");
+							JOptionPane.showMessageDialog(null, "Invalid action!", "Error Message",
 									JOptionPane.ERROR_MESSAGE);
 						}
-					} else if (action == 2) {
-						if (model.modify(borrower)) {
-							JOptionPane.showMessageDialog(null, "Action success!");
-						} else {
-							JOptionPane.showMessageDialog(null, "Action fails!", "Error Message",
-									JOptionPane.ERROR_MESSAGE);
+						ArrayList<Borrowers> borrowersList = model.getList();
+						showBorrowers(borrowersList);
+						resetForm();
+					}else{
+						for (Entry<String, String> item : mapError.entrySet()) {
+							if(item.getKey().equals("txtId")){
+								lblIdErr.setText(item.getValue());
+								lblIdErr.setForeground(Color.RED);
+								lblIdErr.setBounds(10, 60, 250, 30);
+							}
+							if(item.getKey().equals("txtId1")){
+								lblIdErr.setText(item.getValue());
+								lblIdErr.setForeground(Color.RED);
+								lblIdErr.setBounds(10, 60, 250, 30);
+							}
+							if(item.getKey().equals("txtname")){
+								lblNameErr.setText(item.getValue());
+								lblNameErr.setForeground(Color.RED);
+								lblNameErr.setBounds(10, 140, 250, 30);
+							}
+							if(item.getKey().equals("txtname1")){
+								lblNameErr.setText(item.getValue());
+								lblNameErr.setForeground(Color.RED);
+								lblNameErr.setBounds(10, 140, 250, 30);
+							}
+							if(item.getKey().equals("txtmail")){
+								lblMailErr.setText(item.getValue());
+								lblMailErr.setForeground(Color.RED);
+								lblMailErr.setBounds(10, 220, 250, 30);
+							}
+							if(item.getKey().equals("txtmail1")){
+								lblMailErr.setText(item.getValue());
+								lblMailErr.setForeground(Color.RED);
+								lblMailErr.setBounds(10, 220, 250, 30);
+							}
+							if(item.getKey().equals("txtadd")){
+								lblAddErr.setText(item.getValue());
+								lblAddErr.setForeground(Color.RED);
+								lblAddErr.setBounds(10, 300, 250, 30);
+							}
+							if(item.getKey().equals("txtphone")){
+								lblPhoneErr.setText(item.getValue());
+								lblPhoneErr.setForeground(Color.RED);
+								lblPhoneErr.setBounds(10, 380, 250, 30);
+							}
+							if(item.getKey().equals("txtphone1")){
+								lblPhoneErr.setText(item.getValue());
+								lblPhoneErr.setForeground(Color.RED);
+								lblPhoneErr.setBounds(10, 380, 250, 30);
+							}
 						}
-					} else {
-						System.err.println("Invalid action.");
-						JOptionPane.showMessageDialog(null, "Invalid action!", "Error Message",
-								JOptionPane.ERROR_MESSAGE);
 					}
-					ArrayList<Borrowers> borrowersList = model.getList();
-					showBorrowers(borrowersList);
-					resetForm();
 				} catch (Exception e2) {
-					e2.printStackTrace();
-//					JOptionPane.showMessageDialog(null, e2.getMessage(), "Error Message", JOptionPane.ERROR_MESSAGE);
+					e2.printStackTrace();	
 				}
 			}
 		});
@@ -224,7 +284,12 @@ public class PanelBorrowers extends JPanel {
 		panelForm.add(txtadd);
 		panelForm.add(lblphone);
 		panelForm.add(txtphone);
-
+		panelForm.add(lblIdErr);
+		panelForm.add(lblNameErr);
+		panelForm.add(lblMailErr);
+		panelForm.add(lblAddErr);
+		panelForm.add(lblPhoneErr);
+		
 		panelForm.add(btnSave);
 		panelForm.add(btnDel);
 		panelForm.add(btnShow);
@@ -369,9 +434,14 @@ public class PanelBorrowers extends JPanel {
 		resetList.add(txtadd);
 		resetList.add(txtphone);
 		for (JTextField item : resetList) {
-			item.setText("");
+			item.setText(null);
 			item.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 		}
+		lblIdErr.setText(null);
+		lblNameErr.setText(null);
+		lblMailErr.setText(null);
+		lblAddErr.setText(null);
+		lblPhoneErr.setText(null);
 	}
 
 	public void showBorrowers(ArrayList<Borrowers> borrowersList) {
