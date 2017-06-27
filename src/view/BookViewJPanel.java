@@ -644,8 +644,8 @@ public class BookViewJPanel extends javax.swing.JPanel {
                 // delete book_category by name
                 bookModel.deleteBookCategory(jTextField_name.getText());
 
-                // delete book
-                bookModel.deleteBook(book);
+                // change status of book when choose delete
+                bookModel.updateBookStatus(book);
 
                 
                 // check book_name was exist or not
