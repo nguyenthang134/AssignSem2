@@ -19,6 +19,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
+import controller.ButtonController;
 import model.ReturnModel;
 
 public class ReturnPanel {
@@ -39,6 +40,7 @@ public class ReturnPanel {
 	private JTable table;
 	private ReturnPanel returnPanel;
 	private ReturnModel returnModel = new ReturnModel();
+	private ButtonController bc = new ButtonController();
 
 	public JTextField getTxtBorrowerId() {
 		return txtBorrowerId;
@@ -266,6 +268,8 @@ public class ReturnPanel {
 		returnBook.add(returnPanel.panel());
 		returnBook.add(returnPanel.table());
 		returnBook.setLayout(null);
+		returnBook.add(bc.btnBack());
+		returnBook.add(bc.btnExit());
 		return returnBook;
 	}
 }

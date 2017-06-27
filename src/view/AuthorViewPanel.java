@@ -23,6 +23,8 @@ import entity.Authors;
 import java.awt.Color;
 import javax.swing.JOptionPane;
 import javax.swing.table.TableModel;
+
+import controller.ButtonController;
 import controller.DatabaseLibConnection;
 
 /**
@@ -45,6 +47,9 @@ public class AuthorViewPanel extends javax.swing.JPanel {
 
     public AuthorViewPanel() {
         initComponents();
+        this.setBackground(Color.WHITE);
+        this.add(bc.btnBack());
+        this.add(bc.btnExit());
 //        showList();
         loadData();
         jButton_currentPage.setText(String.valueOf(this.currentPage));
@@ -543,5 +548,6 @@ public class AuthorViewPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextField_id;
     private javax.swing.JTextField jTextField_status;
     private javax.swing.JTextField jTextField_updatedDate;
+    private ButtonController bc = new ButtonController();
     // End of variables declaration//GEN-END:variables
 }

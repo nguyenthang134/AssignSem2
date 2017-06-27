@@ -26,6 +26,8 @@ import javax.swing.table.DefaultTableModel;
 
 import com.mysql.cj.api.jdbc.Statement;
 import com.mysql.cj.api.mysqla.result.Resultset;
+
+import controller.ButtonController;
 import controller.DatabaseLibConnection;
 import model.BorrowModel;
 
@@ -55,6 +57,7 @@ public class BorrowPanel{
 	private JButton btnCancel;
 	private BorrowPanel borrow;
 	private BorrowModel borrowModel = new BorrowModel();
+	private ButtonController bc = new ButtonController();
 	
 	public JTable getTable() {
 		return table;
@@ -332,6 +335,8 @@ public class BorrowPanel{
 		borrowBook.add(borrow.booksTable());
 		borrowBook.add(borrow.userPanel());
 		borrowBook.add(borrow.bookPanel());
+		borrowBook.add(bc.btnBack());
+		borrowBook.add(bc.btnExit());
 		borrowBook.setLayout(null);
 		return borrowBook;
 	}

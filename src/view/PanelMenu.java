@@ -41,7 +41,7 @@ public class PanelMenu extends JPanel {
 		this.setBackground(Color.WHITE);
 		this.add(lblTitleMenu());
 		this.add(panelMenu());
-		this.add(bc.btnBackMenu());
+		this.add(bc.btnBackLogin());
 		this.add(bc.btnExit());
 		this.setLayout(null);
 	}
@@ -85,6 +85,14 @@ public class PanelMenu extends JPanel {
 			}
 		});
 
+		btnBook.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LibraryFrame.cl.show(LibraryFrame.mainPanel, "Books");
+			}
+		});
+		
 		btnBorrow.addActionListener(new ActionListener() {
 			
 			@Override

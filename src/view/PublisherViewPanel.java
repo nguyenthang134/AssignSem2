@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+
+import controller.ButtonController;
 import model.AuthorModel;
 import model.CategoryModel;
 import model.PublisherModel;
@@ -32,6 +34,8 @@ public class PublisherViewPanel extends javax.swing.JPanel {
     
     public PublisherViewPanel() {
         initComponents();
+        this.add(bc.btnBack());
+        this.add(bc.btnExit());
 //        showList();
 
         loadData();
@@ -533,5 +537,6 @@ public class PublisherViewPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextField_phone;
     private javax.swing.JTextField jTextField_status;
     private javax.swing.JTextField jTextField_updatedDate;
+    private ButtonController bc = new ButtonController();
     // End of variables declaration//GEN-END:variables
 }

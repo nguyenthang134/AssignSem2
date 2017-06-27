@@ -10,6 +10,7 @@ public class LibraryFrame extends JFrame {
 
 	private PanelMenu panelMenu;
 	private PanelBorrowers panelBorrowers;
+	private PanelBook panelBook;
 	private PanelStatistic panelStatistic;
 	private SearchPanel panelSearch;
 	private BorrowReturnMainPanel panelBorrowReturn;
@@ -26,18 +27,21 @@ public class LibraryFrame extends JFrame {
 
 		this.panelMenu = new PanelMenu();
 		this.panelBorrowers = new PanelBorrowers();
+		this.panelBook = new PanelBook();
 		this.panelStatistic = new PanelStatistic();
 		this.panelSearch = new SearchPanel();
 		this.panelBorrowReturn = new BorrowReturnMainPanel();
 		panelStatistic.setPs(panelStatistic);
 		panelSearch.setSearchPanel(panelSearch);
 		panelBorrowReturn.setBar(panelBorrowReturn);
+		panelBook.setPbook(panelBook);
 		
 		mainPanel.setLayout(cl);
 		mainPanel.setBounds(0, 0, 1200, 700);
 		mainPanel.setBackground(Color.WHITE);
 		mainPanel.add(this.panelMenu, "Menu");
 		mainPanel.add(this.panelBorrowers, "Borrowers");
+		mainPanel.add(this.panelBook, "Books");
 		mainPanel.add(this.panelStatistic, "Statistic");
 		mainPanel.add(this.panelSearch, "Search");
 		mainPanel.add(this.panelBorrowReturn, "Borrow/Return");

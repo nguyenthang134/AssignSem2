@@ -25,7 +25,7 @@ public class LoginAdminView extends javax.swing.JFrame {
 	/**
      * Creates new form LoginAdmind
      */
-    private MainJFrame mainJFrame;
+    private LibraryFrame mainJFrame;
     public LoginAdminView() {
         initComponents();
         setLocationRelativeTo(null);
@@ -130,7 +130,7 @@ public class LoginAdminView extends javax.swing.JFrame {
 
     private void accountLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accountLoginActionPerformed
         // TODO add your handling code here:
-        mainJFrame = new MainJFrame();
+        mainJFrame = new LibraryFrame();
         mainJFrame.setVisible(true);
         
     }//GEN-LAST:event_accountLoginActionPerformed
@@ -155,7 +155,7 @@ public class LoginAdminView extends javax.swing.JFrame {
                 String account = rs.getString("name");
                 String password = rs.getString("password");
                 if (account.equals(acountField) && password.equals(passwordField)) {
-                    MainJFrame main = new MainJFrame();
+                    LibraryFrame main = new LibraryFrame();
                     main.setVisible(true);
                 } else {
                     JOptionPane.showMessageDialog(null,  "User name and password do"

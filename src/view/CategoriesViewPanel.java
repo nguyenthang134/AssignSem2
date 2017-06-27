@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+
+import controller.ButtonController;
 import model.AuthorModel;
 import model.CategoryModel;
 
@@ -21,6 +23,10 @@ import model.CategoryModel;
 public class CategoriesViewPanel extends javax.swing.JPanel {
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
      * Creates new form CategoriesViewPanel
      */
     // set next/previous page
@@ -30,6 +36,8 @@ public class CategoriesViewPanel extends javax.swing.JPanel {
 
     public CategoriesViewPanel() {
         initComponents();
+        this.add(bc.btnBack());
+        this.add(bc.btnExit());
 //        showList();
 
         loadData();
@@ -525,5 +533,6 @@ public class CategoriesViewPanel extends javax.swing.JPanel {
     private javax.swing.JTextField jTextField_id;
     private javax.swing.JTextField jTextField_status;
     private javax.swing.JTextField jTextField_updatedDate;
+    private ButtonController bc = new ButtonController();
     // End of variables declaration//GEN-END:variables
 }
