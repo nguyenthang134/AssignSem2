@@ -132,7 +132,7 @@ public class PanelMenu extends JPanel {
 		}
 		return panelMenu;
 	}
-
+	
 	public static void main(String[] agrs) throws IOException {
 		// LibraryFrame frmLib = new LibraryFrame();
 		// Menu panelMenu = new Menu();

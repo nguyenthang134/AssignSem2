@@ -1,7 +1,11 @@
 package controller;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -10,8 +14,12 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import view.LibraryFrame;
+import view.LoginAdminView;
+import view.PanelMenu;
 
 public class ButtonController {
 
@@ -20,7 +28,9 @@ public class ButtonController {
 	private BufferedImage btnIconBack;
 	private JButton btnBack;
 	private JButton btnBackLogin;
-
+	private LoginAdminView log;
+	private PanelMenu pm;
+	
 	public JButton btnExit() {
 		try {
 			btnIconExit = ImageIO.read(new File("../AssignSem2/src/assets/exit-icon.png"));
@@ -84,7 +94,12 @@ public class ButtonController {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// trở lại giao diện login
+				Component component = (Component) e.getSource();
+		        JFrame frame = (JFrame) SwingUtilities.getRoot(component);
+		        frame.setVisible(false);
+		        frame.dispose();
+				log = new LoginAdminView();
+				log.setVisible(true);
 			}
 		});
 

@@ -269,7 +269,7 @@ public class AuthorViewPanel extends javax.swing.JPanel {
 
         jButton_reset.setBackground(new java.awt.Color(0, 153, 153));
         jButton_reset.setForeground(new java.awt.Color(255, 255, 255));
-        jButton_reset.setText("Resest");
+        jButton_reset.setText("Reset");
         jButton_reset.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_resetActionPerformed(evt);
