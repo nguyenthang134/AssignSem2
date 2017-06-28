@@ -238,7 +238,7 @@ public class PublisherViewPanel extends javax.swing.JPanel {
 
         jButton_resest.setBackground(new java.awt.Color(0, 153, 153));
         jButton_resest.setForeground(new java.awt.Color(255, 255, 255));
-        jButton_resest.setText("Resest");
+        jButton_resest.setText("Reset");
         jButton_resest.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_resestActionPerformed(evt);

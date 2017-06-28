@@ -5,6 +5,7 @@ import java.awt.Color;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 
 public class LibraryFrame extends JFrame {
 
@@ -35,7 +36,7 @@ public class LibraryFrame extends JFrame {
 		panelSearch.setSearchPanel(panelSearch);
 		panelBorrowReturn.setBar(panelBorrowReturn);
 		panelBook.setPbook(panelBook);
-		
+
 		mainPanel.setLayout(cl);
 		mainPanel.setBounds(0, 0, 1200, 700);
 		mainPanel.setBackground(Color.WHITE);
@@ -49,13 +50,13 @@ public class LibraryFrame extends JFrame {
 		cl.show(mainPanel, "Menu");
 
 		this.add(mainPanel);
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setLayout(null);
 	}
 
-	public static void main(String[] args) {
-		LibraryFrame mainFrm = new LibraryFrame();
-		mainFrm.setVisible(true);
-	}
+	// public static void main(String[] args) {
+	// LibraryFrame mainFrm = new LibraryFrame();
+	// mainFrm.setVisible(true);
+	// }
 }

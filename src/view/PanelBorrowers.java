@@ -61,7 +61,7 @@ public class PanelBorrowers extends JPanel {
 	private JLabel lblMailErr;
 	private JLabel lblAddErr;
 	private JLabel lblPhoneErr;
-	
+
 	private DefaultTableModel tableModel;
 
 	private BorrowerController controller;
@@ -127,15 +127,16 @@ public class PanelBorrowers extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					HashMap<String, String> mapError = controller.validate(txtId.getText(), txtname.getText(), txtmail.getText(), txtadd.getText(), txtphone.getText());
-					if(mapError.size() == 0){
+					HashMap<String, String> mapError = controller.validate(txtId.getText(), txtname.getText(),
+							txtmail.getText(), txtadd.getText(), txtphone.getText());
+					if (mapError.size() == 0) {
 						Borrowers borrower = new Borrowers();
 						borrower.setIdentification(Integer.parseInt(txtId.getText()));
 						borrower.setBorrowers_name(txtname.getText());
 						borrower.setBorrowers_mail(txtmail.getText());
 						borrower.setBorrowers_address(txtadd.getText());
 						borrower.setBorrowers_phone(Integer.parseInt(txtphone.getText()));
-						
+
 						if (action == 1) {
 							if (model.insert(borrower)) {
 								JOptionPane.showMessageDialog(null, "Action success!");
@@ -158,49 +159,49 @@ public class PanelBorrowers extends JPanel {
 						ArrayList<Borrowers> borrowersList = model.getList();
 						showBorrowers(borrowersList);
 						resetForm();
-					}else{
+					} else {
 						for (Entry<String, String> item : mapError.entrySet()) {
-							if(item.getKey().equals("txtId")){
+							if (item.getKey().equals("txtId")) {
 								lblIdErr.setText(item.getValue());
 								lblIdErr.setForeground(Color.RED);
 								lblIdErr.setBounds(10, 60, 250, 30);
 							}
-							if(item.getKey().equals("txtId1")){
+							if (item.getKey().equals("txtId1")) {
 								lblIdErr.setText(item.getValue());
 								lblIdErr.setForeground(Color.RED);
 								lblIdErr.setBounds(10, 60, 250, 30);
 							}
-							if(item.getKey().equals("txtname")){
+							if (item.getKey().equals("txtname")) {
 								lblNameErr.setText(item.getValue());
 								lblNameErr.setForeground(Color.RED);
 								lblNameErr.setBounds(10, 140, 250, 30);
 							}
-							if(item.getKey().equals("txtname1")){
+							if (item.getKey().equals("txtname1")) {
 								lblNameErr.setText(item.getValue());
 								lblNameErr.setForeground(Color.RED);
 								lblNameErr.setBounds(10, 140, 250, 30);
 							}
-							if(item.getKey().equals("txtmail")){
+							if (item.getKey().equals("txtmail")) {
 								lblMailErr.setText(item.getValue());
 								lblMailErr.setForeground(Color.RED);
 								lblMailErr.setBounds(10, 220, 250, 30);
 							}
-							if(item.getKey().equals("txtmail1")){
+							if (item.getKey().equals("txtmail1")) {
 								lblMailErr.setText(item.getValue());
 								lblMailErr.setForeground(Color.RED);
 								lblMailErr.setBounds(10, 220, 250, 30);
 							}
-							if(item.getKey().equals("txtadd")){
+							if (item.getKey().equals("txtadd")) {
 								lblAddErr.setText(item.getValue());
 								lblAddErr.setForeground(Color.RED);
 								lblAddErr.setBounds(10, 300, 250, 30);
 							}
-							if(item.getKey().equals("txtphone")){
+							if (item.getKey().equals("txtphone")) {
 								lblPhoneErr.setText(item.getValue());
 								lblPhoneErr.setForeground(Color.RED);
 								lblPhoneErr.setBounds(10, 380, 250, 30);
 							}
-							if(item.getKey().equals("txtphone1")){
+							if (item.getKey().equals("txtphone1")) {
 								lblPhoneErr.setText(item.getValue());
 								lblPhoneErr.setForeground(Color.RED);
 								lblPhoneErr.setBounds(10, 380, 250, 30);
@@ -208,7 +209,7 @@ public class PanelBorrowers extends JPanel {
 						}
 					}
 				} catch (Exception e2) {
-					e2.printStackTrace();	
+					e2.printStackTrace();
 				}
 			}
 		});
@@ -289,7 +290,7 @@ public class PanelBorrowers extends JPanel {
 		panelForm.add(lblMailErr);
 		panelForm.add(lblAddErr);
 		panelForm.add(lblPhoneErr);
-		
+
 		panelForm.add(btnSave);
 		panelForm.add(btnDel);
 		panelForm.add(btnShow);
@@ -457,12 +458,12 @@ public class PanelBorrowers extends JPanel {
 
 	public static void main(String[] args) {
 		// LibraryFrame frmLib = new LibraryFrame();
-		JFrame frm = new JFrame("Test");
-		frm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frm.setSize(1200, 700);
-		PanelBorrowers pb = new PanelBorrowers();
-		frm.add(pb);
-		frm.setLayout(null);
-		frm.setVisible(true);
+		// JFrame frm = new JFrame("Test");
+		// frm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// frm.setSize(1200, 700);
+		// PanelBorrowers pb = new PanelBorrowers();
+		// frm.add(pb);
+		// frm.setLayout(null);
+		// frm.setVisible(true);
 	}
 }

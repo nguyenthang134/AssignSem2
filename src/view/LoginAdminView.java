@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
 
 import controller.DatabaseLibConnection;
 
@@ -31,6 +32,10 @@ public class LoginAdminView extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }
     
+    public void close(){
+    	this.setVisible(false);
+    	this.dispose();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -49,7 +54,7 @@ public class LoginAdminView extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         passwordLogin = new javax.swing.JPasswordField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("Account: ");
 
@@ -130,8 +135,8 @@ public class LoginAdminView extends javax.swing.JFrame {
 
     private void accountLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_accountLoginActionPerformed
         // TODO add your handling code here:
-        mainJFrame = new LibraryFrame();
-        mainJFrame.setVisible(true);
+//        mainJFrame = new LibraryFrame();
+//        mainJFrame.setVisible(true);
         
     }//GEN-LAST:event_accountLoginActionPerformed
 
@@ -155,8 +160,9 @@ public class LoginAdminView extends javax.swing.JFrame {
                 String account = rs.getString("name");
                 String password = rs.getString("password");
                 if (account.equals(acountField) && password.equals(passwordField)) {
-                    LibraryFrame main = new LibraryFrame();
-                    main.setVisible(true);
+                	close();
+                    mainJFrame = new LibraryFrame();
+                    mainJFrame.setVisible(true);
                 } else {
                     JOptionPane.showMessageDialog(null,  "User name and password do"
                                        + " not match!","ALERT!",
