@@ -17,7 +17,7 @@ public class StatisticModel {
 		try {
 			String checkDate = "SELECT DISTINCT borrowers.identification, borrowers.name, borrowers.borrowed_books "
 					+ "FROM borrowers " + "JOIN orders ON borrowers.identification = orders.user_id "
-					+ "WHERE orders.status = 1 AND orders.created_at BETWEEN '" + p1.getDay1() + "' AND '" + p1.getDay2() + "'";
+					+ "WHERE orders.created_at BETWEEN '" + p1.getDay1() + "' AND '" + p1.getDay2() + "'";
 			// System.out.println(checkDate);
 			Connection connect = DatabaseLibConnection.getConnection();
 			Statement stt = connect.createStatement();
@@ -40,7 +40,7 @@ public class StatisticModel {
 		try {
 			String checkMonth = "SELECT DISTINCT borrowers.identification, borrowers.name, borrowers.borrowed_books "
 					+ "FROM borrowers " + "JOIN orders ON borrowers.identification = orders.user_id "
-					+ "WHERE orders.status = 1 AND MONTH(orders.created_at) = " + p1.getMc()
+					+ "WHERE MONTH(orders.created_at) = " + p1.getMc()
 					+ " AND YEAR(orders.created_at) = " + p1.getYc();
 			Connection connect = DatabaseLibConnection.getConnection();
 			Statement stt = connect.createStatement();
@@ -63,7 +63,7 @@ public class StatisticModel {
 		try {
 			String checkDate = "SELECT DISTINCT books.id, books.name, books.price " + "FROM books "
 					+ "JOIN orders ON books.id = orders.book_id "
-					+ "WHERE orders.status = 1 AND orders.created_at BETWEEN '" + p1.getDay1() + "' AND '" + p1.getDay2()
+					+ "WHERE orders.created_at BETWEEN '" + p1.getDay1() + "' AND '" + p1.getDay2()
 					+ "'";
 			System.out.println(checkDate);
 			Connection connect = DatabaseLibConnection.getConnection();
@@ -87,7 +87,7 @@ public class StatisticModel {
 		try {
 			String checkMonth = "SELECT DISTINCT books.id, books.name, books.price " + "FROM books "
 					+ "JOIN orders ON books.id = orders.book_id "
-					+ "WHERE orders.status = 1 AND MONTH(orders.created_at) = " + p1.getMc()
+					+ "WHERE MONTH(orders.created_at) = " + p1.getMc()
 					+ " AND YEAR(orders.created_at) = " + p1.getYc();
 			Connection connect = DatabaseLibConnection.getConnection();
 			Statement stt = connect.createStatement();

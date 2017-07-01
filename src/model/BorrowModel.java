@@ -31,9 +31,35 @@ public class BorrowModel {
 	// Check borrower infomation
 	public void checkBorrowerInfo(BorrowPanel borrowPanel) {
 		try {
+			borrowPanel.getBorrowerModel().setRowCount(0);
 			arr.removeAll(arr);
 			java.sql.Statement stm = DatabaseLibConnection.getConnection().createStatement();
-			String sql = "Select * from borrowers where identification = " + borrowPanel.getTxtUserId().getText()
+			String sql = "Select * from borrowers where identification Like '%" + borrowPanel.getTxtUserId().getText()
+					+ "%' and Status = 1";
+			ResultSet rs = stm.executeQuery(sql);
+			while (rs.next()) {
+				String name = rs.getString(2);
+//				int borrow = rs.getInt(6);
+//				int overdue = rs.getInt(7);
+//				int limit = rs.getInt(8);
+				int id = rs.getInt(1);
+//				borrowPanel.getTxtUserName().setText(name);
+//				borrowPanel.getTxtBorrowedBooks().setText(String.valueOf(borrow));
+//				borrowPanel.getTxtOverdueBooks().setText(String.valueOf(overdue));
+//				borrowPanel.getTxtLimit().setText(String.valueOf(limit));
+				
+				Object[] borrowerInfo = {name, id};
+				borrowPanel.getBorrowerModel().addRow(borrowerInfo);
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+	}
+	//Set borrower info to borrower table
+	public void setFields(BorrowPanel borrowPanel, JTable borrowerTable){
+		try {
+			java.sql.Statement stm = DatabaseLibConnection.getConnection().createStatement();
+			String sql = "Select * from borrowers where identification =" + borrowerTable.getValueAt(borrowerTable.getSelectedRow(), 1)
 					+ " and Status = 1";
 			ResultSet rs = stm.executeQuery(sql);
 			while (rs.next()) {
@@ -41,13 +67,15 @@ public class BorrowModel {
 				int borrow = rs.getInt(6);
 				int overdue = rs.getInt(7);
 				int limit = rs.getInt(8);
+				int id = rs.getInt(1);
+				borrowPanel.getTxtUserId().setText(String.valueOf(id));
 				borrowPanel.getTxtUserName().setText(name);
 				borrowPanel.getTxtBorrowedBooks().setText(String.valueOf(borrow));
 				borrowPanel.getTxtOverdueBooks().setText(String.valueOf(overdue));
 				borrowPanel.getTxtLimit().setText(String.valueOf(limit));
 			}
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 
@@ -59,7 +87,8 @@ public class BorrowModel {
 			String field = borrowPanel.getTxtBookId().getText();
 			String sql = "Select books.id, books.name, books.price, books.status, authors.name, publishers.name, books.status "
 					+ "From books " + "Join authors " + "On authors.id = books.author_id " + "Join publishers "
-					+ "On publishers.id = books.publisher_id where " + selectBy + "'%" + field
+					+ "On publishers.id = books.publisher_id "
+					+ "where " + selectBy + "'%" + field
 					+ "%' order by books.status DESC";
 			// System.out.println("SQL: " + sql);
 			ResultSet rs = stm.executeQuery(sql);
@@ -67,6 +96,7 @@ public class BorrowModel {
 				int id = rs.getInt("books.id");
 				String name = rs.getString("books.name");
 				double price = rs.getDouble("books.price");
+//				String category = rs.getString("categories.name");
 				String status;
 				if (rs.getInt("books.status") == 1) {
 					status = "Ready";
@@ -94,12 +124,13 @@ public class BorrowModel {
 				JOptionPane.showMessageDialog(null, "Please choose book to borrow ");
 			} else {
 				String sqlId = table.getValueAt(table.getSelectedRow(), 0).toString();
+				String sqlName = table.getValueAt(table.getSelectedRow(), 1).toString();
 				String sql = "Select * from books where id = " + table.getValueAt(table.getSelectedRow(), 0)
 						+ " and status = 1";
 				ResultSet rs = DatabaseLibConnection.getConnection().createStatement().executeQuery(sql);
 				if (rs.next()) {
 					arr.add(sqlId);
-					borrowPanel.getTxtArea().append(sqlId + "\n");
+					borrowPanel.getTxtArea().append(sqlName + "\n");
 					String[] lines = borrowPanel.getTxtArea().getText().split("\n");
 					lineCount = lines.length;
 					if (lineCount == 3) {

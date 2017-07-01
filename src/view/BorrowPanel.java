@@ -3,6 +3,9 @@ package view;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.ResultSet;
 
 import javax.swing.BorderFactory;
@@ -35,17 +38,19 @@ public class BorrowPanel{
 	private JPanel user;
 	private JLabel lblUserId;
 	private JTextField txtUserId;
-	private JButton btnTest;
+	private JTable borrowerTable;
+	private DefaultTableModel borrowerModel;
+//	private JButton btnTest;
 	private JLabel lblUserName;
 	private JTextField txtUserName;
 	private JLabel lblBorrowedBooks;
 	private JTextField txtBorrowedBooks;
 	private JLabel lblOverdueBooks;
 	private JTextField txtOverdueBooks;
-	private DefaultTableModel model;
 	private JLabel lblLimit;
 	private JTextField txtLimit;
 	private JTable table;
+	private DefaultTableModel model;
 	private JPanel book;
 	private JLabel lblBookId;
 	private JComboBox cb;
@@ -59,6 +64,10 @@ public class BorrowPanel{
 	private BorrowModel borrowModel = new BorrowModel();
 	private ButtonController bc = new ButtonController();
 	
+	public DefaultTableModel getBorrowerModel() {
+		return borrowerModel;
+	}
+
 	public JTable getTable() {
 		return table;
 	}
@@ -115,41 +124,42 @@ public class BorrowPanel{
 	public JPanel userPanel() {
 		user = new JPanel();
 		user.setBackground(Color.WHITE);
-		user.setBounds(20, 50, 200, 420);
+		user.setBounds(5, 50, 245, 500);
 		user.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 
 		lblUserId = new JLabel("Borrower ID: ");
 		lblUserId.setBounds(10, 10, 100, 30);
 		txtUserId = new JTextField();
 		txtUserId.setBounds(10, 50, 180, 30);
-		btnTest = new JButton("Check infomation");
-		btnTest.setBounds(35, 90, 135, 30);
-		btnTest.setBackground(new Color(50, 166, 254));
-		btnTest.setForeground(Color.WHITE);
+//		btnTest = new JButton("Check infomation");
+//		btnTest.setBounds(35, 90, 135, 30);
+//		btnTest.setBackground(new Color(50, 166, 254));
+//		btnTest.setForeground(Color.WHITE);
 		lblUserName = new JLabel("Borrower name: ");
-		lblUserName.setBounds(10, 130, 100, 30);
+		lblUserName.setBounds(10, 290, 100, 30);
 		txtUserName = new JTextField();
-		txtUserName.setBounds(10, 170, 180, 30);
+		txtUserName.setBounds(10, 330, 180, 30);
 		txtUserName.setEditable(false);
 		lblBorrowedBooks = new JLabel("Borrowed books: ");
-		lblBorrowedBooks.setBounds(10, 220, 100, 30);
+		lblBorrowedBooks.setBounds(10, 370, 100, 30);
 		txtBorrowedBooks = new JTextField();
-		txtBorrowedBooks.setBounds(110, 220, 50, 30);
+		txtBorrowedBooks.setBounds(110, 370, 50, 30);
 		txtBorrowedBooks.setEditable(false);
 		lblOverdueBooks = new JLabel("Overdue books: ");
-		lblOverdueBooks.setBounds(10, 290, 100, 30);
+		lblOverdueBooks.setBounds(10, 410, 100, 30);
 		txtOverdueBooks = new JTextField();
-		txtOverdueBooks.setBounds(110, 290, 50, 30);
+		txtOverdueBooks.setBounds(110, 410, 50, 30);
 		txtOverdueBooks.setEditable(false);
 		lblLimit = new JLabel("Limit:");
-		lblLimit.setBounds(70, 360, 100, 30);
+		lblLimit.setBounds(70, 450, 100, 30);
 		txtLimit = new JTextField();
-		txtLimit.setBounds(110, 360, 50, 30);
+		txtLimit.setBounds(110, 450, 50, 30);
 		txtLimit.setEditable(false);
 
 		user.add(lblUserId);
 		user.add(txtUserId);
-		user.add(btnTest);
+		user.add(borrowerTable());
+//		user.add(btnTest);
 		user.add(lblUserName);
 		user.add(txtUserName);
 		user.add(lblBorrowedBooks);
@@ -158,23 +168,99 @@ public class BorrowPanel{
 		user.add(txtOverdueBooks);
 		user.add(lblLimit);
 		user.add(txtLimit);
-
-		btnTest.addActionListener(new ActionListener() {
+		
+		txtUserId.getDocument().addDocumentListener(new DocumentListener() {
+			
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void removeUpdate(DocumentEvent e) {
 				borrowModel.checkBorrowerInfo(borrow);
+				
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				borrowModel.checkBorrowerInfo(borrow);
+				
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
+
+//		btnTest.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				borrowModel.checkBorrowerInfo(borrow);
+//			}
+//		});
 		user.setLayout(null);
 		return user;
 	}
 
+	//Borrower table
+	public JScrollPane borrowerTable() {
+		borrowerModel = new DefaultTableModel();
+		borrowerTable = new JTable();
+		JScrollPane scrollPane = new JScrollPane(borrowerTable);
+		scrollPane.setBounds(2, 90, 243, 200);
+		scrollPane.getViewport().setBackground(Color.WHITE);
+		borrowerModel.addColumn("Name");
+		borrowerModel.addColumn("ID");
+		borrowerTable.setModel(borrowerModel);
+//		ListSelectionModel listModel = table.getSelectionModel();
+//		listModel.addListSelectionListener(new ListSelectionListener() {
+//			
+//			@Override
+//			public void valueChanged(ListSelectionEvent e) {
+//				// TODO Auto-generated method stub
+//				int rowIndex = table.getSelectedRow();
+//				
+//			}
+//		});
+		borrowerTable.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				borrowModel.setFields(borrow, borrowerTable);
+				
+			}
+		});
+		return scrollPane;
+	}
+	
 	//Book table in main borrow panel
 	public JScrollPane booksTable() {
 		model = new DefaultTableModel();
 		table = new JTable();
 		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.setBounds(460, 50, 700, 420);
+		scrollPane.setBounds(460, 50, 700, 500);
 		scrollPane.getViewport().setBackground(Color.WHITE);
 		model.addColumn("ID");
 		model.addColumn("Name");
@@ -185,9 +271,9 @@ public class BorrowPanel{
 		table.setModel(model);
 		table.getColumnModel().getColumn(0).setMaxWidth(50);
 		table.getColumnModel().getColumn(1).setMinWidth(120);
-		table.getColumnModel().getColumn(2).setMinWidth(120);
-		table.getColumnModel().getColumn(3).setMinWidth(120);
-		table.getColumnModel().getColumn(4).setMaxWidth(50);
+		table.getColumnModel().getColumn(2).setMinWidth(90);
+		table.getColumnModel().getColumn(3).setMinWidth(90);
+		table.getColumnModel().getColumn(4).setMinWidth(70);
 		table.getColumnModel().getColumn(5).setMaxWidth(70);
 //		ListSelectionModel listModel = table.getSelectionModel();
 //		listModel.addListSelectionListener(new ListSelectionListener() {
@@ -206,12 +292,12 @@ public class BorrowPanel{
 	public JPanel bookPanel() {
 		book = new JPanel();
 		book.setBackground(Color.WHITE);
-		book.setBounds(240, 50, 200, 420);
+		book.setBounds(255, 50, 200, 500);
 		book.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 
 		lblBookId = new JLabel("Books: ");
 		lblBookId.setBounds(10, 10, 50, 30);
-		String[] comboList = {"--------Choose-------","Book ID","Book name"};
+		String[] comboList = { "------Choose-----", "Book ID", "Book name", "Book author", "Book publisher"};
 		cb = new JComboBox(comboList);
 		cb.setBounds(60, 10, 130, 30);
 		txtBookId = new JTextField();
@@ -297,6 +383,12 @@ public class BorrowPanel{
 					borrowModel.setSelectBy("books.name Like ");
 				} else if(choice == 0){
 					txtBookId.setEditable(false);
+				} else if(choice == 3){
+					txtBookId.setEditable(true);
+					borrowModel.setSelectBy("authors.name Like ");
+				} else if(choice == 4){
+					txtBookId.setEditable(true);
+					borrowModel.setSelectBy("publishers.name Like ");
 				}
 			}
 		});
