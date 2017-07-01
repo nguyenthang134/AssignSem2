@@ -3,110 +3,66 @@ package model;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 import controller.DatabaseLibConnection;
-import entity.Books;
-import entity.Borrowers;
-import view.PanelStat1;
-import view.PanelStat2;
+import view.PanelStatistic;
 
 public class StatisticModel {
 
-	public ArrayList<Borrowers> checkDate(PanelStat1 p1) {
-		ArrayList<Borrowers> borrowerList = new ArrayList<Borrowers>();
+	public int countBorrower(PanelStatistic ps) {
+		int count = 0;
 		try {
-			String checkDate = "SELECT DISTINCT borrowers.identification, borrowers.name, borrowers.borrowed_books "
-					+ "FROM borrowers " + "JOIN orders ON borrowers.identification = orders.user_id "
-					+ "WHERE orders.created_at BETWEEN '" + p1.getDay1() + "' AND '" + p1.getDay2() + "'";
-			// System.out.println(checkDate);
+			String borrower = "SELECT COUNT(DISTINCT orders.user_id) FROM orders WHERE orders.created_at BETWEEN '"
+					+ ps.getDay1() + "' AND '" + ps.getDay2() + "'";
 			Connection connect = DatabaseLibConnection.getConnection();
 			Statement stt = connect.createStatement();
-			ResultSet rs = stt.executeQuery(checkDate);
+			ResultSet rs = stt.executeQuery(borrower);
 			while (rs.next()) {
-				Borrowers borrower = new Borrowers();
-				borrower.setIdentification(rs.getInt("identification"));
-				borrower.setBorrowers_name(rs.getString("name"));
-				borrower.setBorrowed_books(rs.getInt("borrowed_books"));
-				borrowerList.add(borrower);
+				count = rs.getInt("COUNT(DISTINCT orders.user_id)");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return borrowerList;
+		return count;
 	}
 
-	public ArrayList<Borrowers> checkMonth(PanelStat1 p1) {
-		ArrayList<Borrowers> borrowerList = new ArrayList<Borrowers>();
+	public int countBook(PanelStatistic ps) {
+		int count = 0;
 		try {
-			String checkMonth = "SELECT DISTINCT borrowers.identification, borrowers.name, borrowers.borrowed_books "
-					+ "FROM borrowers " + "JOIN orders ON borrowers.identification = orders.user_id "
-					+ "WHERE MONTH(orders.created_at) = " + p1.getMc()
-					+ " AND YEAR(orders.created_at) = " + p1.getYc();
+			String book = "SELECT COUNT(orders.book_id) FROM orders WHERE orders.created_at BETWEEN '"
+					+ ps.getDay1() + "' AND '" + ps.getDay2() + "'";
 			Connection connect = DatabaseLibConnection.getConnection();
 			Statement stt = connect.createStatement();
-			ResultSet rs = stt.executeQuery(checkMonth);
+			ResultSet rs = stt.executeQuery(book);
 			while (rs.next()) {
-				Borrowers borrower = new Borrowers();
-				borrower.setIdentification(rs.getInt("identification"));
-				borrower.setBorrowers_name(rs.getString("name"));
-				borrower.setBorrowed_books(rs.getInt("borrowed_books"));
-				borrowerList.add(borrower);
+				count = rs.getInt("COUNT(orders.book_id)");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return borrowerList;
+		return count;
 	}
 
-	public ArrayList<Books> checkDate1(PanelStat1 p1) {
-		ArrayList<Books> bookList = new ArrayList<Books>();
+	public void order(PanelStatistic ps) {
 		try {
-			String checkDate = "SELECT DISTINCT books.id, books.name, books.price " + "FROM books "
-					+ "JOIN orders ON books.id = orders.book_id "
-					+ "WHERE orders.created_at BETWEEN '" + p1.getDay1() + "' AND '" + p1.getDay2()
-					+ "'";
-			System.out.println(checkDate);
+			String order = "SELECT borrowers.name, books.name, orders.status " + "FROM orders "
+					+ "JOIN borrowers ON orders.user_id = borrowers.identification "
+					+ "JOIN books ON orders.book_id = books.id " + "WHERE orders.created_at BETWEEN '" + ps.getDay1()
+					+ "' AND '" + ps.getDay2() + "'";
 			Connection connect = DatabaseLibConnection.getConnection();
 			Statement stt = connect.createStatement();
-			ResultSet rs = stt.executeQuery(checkDate);
+			ResultSet rs = stt.executeQuery(order);
+			int i = 1;
 			while (rs.next()) {
-				Books book = new Books();
-				book.setId(rs.getInt("id"));
-				book.setName(rs.getString("name"));
-				book.setPrice(rs.getInt("price"));
-				bookList.add(book);
+				Object[] values = null;
+				int orders = i++;
+				String borrowers = rs.getString("borrowers.name");
+				String book = rs.getString("books.name");
+				int status = rs.getInt("status");
+				values = new Object[]{orders, borrowers, book, status};
+				ps.statModel.addRow(values);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return bookList;
-	}
-
-	public ArrayList<Books> checkMonth1(PanelStat1 p1) {
-		ArrayList<Books> bookList = new ArrayList<Books>();
-		try {
-			String checkMonth = "SELECT DISTINCT books.id, books.name, books.price " + "FROM books "
-					+ "JOIN orders ON books.id = orders.book_id "
-					+ "WHERE MONTH(orders.created_at) = " + p1.getMc()
-					+ " AND YEAR(orders.created_at) = " + p1.getYc();
-			Connection connect = DatabaseLibConnection.getConnection();
-			Statement stt = connect.createStatement();
-			ResultSet rs = stt.executeQuery(checkMonth);
-			while (rs.next()) {
-				Books book = new Books();
-				book.setId(rs.getInt("id"));
-				book.setName(rs.getString("name"));
-				book.setPrice(rs.getInt("price"));
-				bookList.add(book);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return bookList;
-	}
-
-	public static void main(String[] args) {
-		// StatisticModel sm = new StatisticModel();
-		// sm.checkMonth();
 	}
 }
