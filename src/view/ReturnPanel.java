@@ -66,7 +66,7 @@ public class ReturnPanel {
 		model = new DefaultTableModel();
 		table = new JTable();
 		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.setBounds(240, 50, 920, 420);
+		scrollPane.setBounds(240, 50, 920, 500);
 		scrollPane.getViewport().setBackground(Color.WHITE);
 		model.addColumn("Order_ID");
 		model.addColumn("Borrower_ID");
@@ -84,13 +84,13 @@ public class ReturnPanel {
 	// Check borrower's order info
 	public JPanel panel() {
 		panel = new JPanel();
-		panel.setBounds(20, 50, 200, 420);
+		panel.setBounds(20, 50, 200, 500);
 		panel.setBackground(Color.WHITE);
 		panel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 
 		lblBorrowerId = new JLabel("Borrower: ");
 		lblBorrowerId.setBounds(10, 10, 70, 30);
-		String[] comboListBorrower = { "------Choose-----", "Borrower ID", "Borrower name" };
+		String[] comboListBorrower = { "Choose", "Borrower ID", "Borrower name" };
 		cbBorrower = new JComboBox(comboListBorrower);
 		cbBorrower.setBounds(80, 10, 115, 30);
 		txtBorrowerId = new JTextField();
@@ -98,7 +98,7 @@ public class ReturnPanel {
 		txtBorrowerId.setEditable(false);
 		lblBookId = new JLabel("Search book: ");
 		lblBookId.setBounds(10, 110, 100, 30);
-		String[] comboList = { "------Choose-----", "Book ID", "Book name" };
+		String[] comboList = { "Choose", "Book ID", "Book name" };
 		cbBook = new JComboBox(comboList);
 		cbBook.setBounds(90, 110, 105, 30);
 		txtBookId = new JTextField();
