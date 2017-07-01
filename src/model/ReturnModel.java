@@ -13,6 +13,7 @@ import view.ReturnPanel;
 public class ReturnModel {
 	private String selectBy;
 	private String selectBookBy;
+	private int searchBy;
 
 	public void setSelectBy(String selectBy) {
 		this.selectBy = selectBy;
@@ -56,10 +57,13 @@ public class ReturnModel {
 
 				Object[] bookInfo = { orderId, borrowerId, borrowerName, bookId, bookName, borrowDate, status, fine };
 				returnPanel.getModel().addRow(bookInfo);
+				searchBy = 1;
 			}
 		} catch (Exception e1) {
 			System.out.println(e1);
+			
 		}
+		
 	}
 
 	// Check order infomation by book
@@ -93,16 +97,20 @@ public class ReturnModel {
 
 				Object[] bookInfo = { orderId, borrowerId, borrowerName, bookId, bookName, borrowDate, status, fine };
 				returnPanel.getModel().addRow(bookInfo);
+				searchBy = 2;
 			}
 		} catch (Exception e1) {
 			System.out.println(e1);
+			
 		}
+		
 	}
 
-	// Select book to return
+	// Return selected book 
 	public void returnBook(ReturnPanel returnPanel, JTable table) {
 		try {
 			String bookId = table.getValueAt(table.getSelectedRow(), 3).toString();
+			String bookName = table.getValueAt(table.getSelectedRow(), 4).toString();
 			String borrowerId = table.getValueAt(table.getSelectedRow(), 1).toString();
 			// Set book status to 1
 			String bookStatus = "Update books set status = 1 where id = " + bookId;
@@ -119,7 +127,13 @@ public class ReturnModel {
 			// Remove that book from current order
 			String removeBookFromOrder = "Update orders set status = 0 where book_id = " + bookId;
 			DatabaseLibConnection.getConnection().createStatement().execute(removeBookFromOrder);
-			JOptionPane.showMessageDialog(null, "Returned book: " + bookId);
+//			JOptionPane.showConfirmDialog(null, "Are you");
+			JOptionPane.showMessageDialog(null, "Returned book: " + bookName);
+			if(searchBy == 1){
+				checkBorrowerInfo(returnPanel);
+			}else if(searchBy == 2){
+				checkBookInfo(returnPanel);
+			}
 		} catch (Exception e) {
 			System.out.println(e);
 		}
