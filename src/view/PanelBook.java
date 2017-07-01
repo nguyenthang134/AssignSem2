@@ -19,10 +19,10 @@ public class PanelBook extends JTabbedPane{
         category = new CategoriesViewPanel();
         publisher = new PublisherViewPanel();
         this.setBounds(0, 0, 1200, 725);
-		this.addTab("Sách", book);
-		this.addTab("Tác giả", author);
-		this.addTab("Thể loại", category);
-		this.addTab("Nhà xuất bản", publisher);
+		this.addTab("Book", book);
+		this.addTab("Author", author);
+		this.addTab("Category", category);
+		this.addTab("Publisher", publisher);
     }
     
 	public PanelBook getPbook() {
