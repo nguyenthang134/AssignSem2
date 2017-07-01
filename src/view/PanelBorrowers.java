@@ -427,7 +427,7 @@ public class PanelBorrowers extends JPanel {
 		return panelSearch;
 	}
 
-	public void resetForm() {
+	public void resetForm() {		
 		ArrayList<JTextField> resetList = new ArrayList<JTextField>();
 		resetList.add(txtId);
 		resetList.add(txtname);
@@ -443,6 +443,7 @@ public class PanelBorrowers extends JPanel {
 		lblMailErr.setText(null);
 		lblAddErr.setText(null);
 		lblPhoneErr.setText(null);
+		
 	}
 
 	public void showBorrowers(ArrayList<Borrowers> borrowersList) {

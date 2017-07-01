@@ -75,7 +75,7 @@ public class PanelMenu extends JPanel {
 		btnBook = new JButton("Sách", new ImageIcon(btnIconBook));
 		btnBorrow = new JButton("Mượn/Trả", new ImageIcon(btnIconBorrow));
 		btnSearch = new JButton("Tìm kiếm", new ImageIcon(btnIconSearch));
-		btnReport = new JButton("Thống kê", new ImageIcon(btnIconReport));
+		btnReport = new JButton("Thống kê", new ImageIcon(btnIconReport));		
 
 		btnBorrowers.addActionListener(new ActionListener() {
 
@@ -89,6 +89,8 @@ public class PanelMenu extends JPanel {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				PanelBorrowers pb = new PanelBorrowers();
+				pb.resetForm();
 				LibraryFrame.cl.show(LibraryFrame.mainPanel, "Books");
 			}
 		});
