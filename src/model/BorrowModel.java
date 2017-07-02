@@ -75,6 +75,29 @@ public class BorrowModel {
 			e.printStackTrace();
 		}
 	}
+	public void setFields2(BorrowPanel borrowPanel){
+		try {
+			java.sql.Statement stm = DatabaseLibConnection.getConnection().createStatement();
+			String sql = "Select * from borrowers where identification =" + borrowPanel.getTxtDisplayUserId().getText()
+					+ " and status = 1";
+			ResultSet rs = stm.executeQuery(sql);
+			while (rs.next()) {
+				String name = rs.getString(2);
+				int borrow = rs.getInt(6);
+				int overdue = rs.getInt(7);
+				int limit = rs.getInt(8);
+				int id = rs.getInt(1);
+				borrowPanel.getTxtUserName().setText(name);
+				borrowPanel.getTxtDisplayUserId().setText(String.valueOf(id));
+				borrowPanel.getTxtBorrowedBooks().setText(String.valueOf(borrow));
+				borrowPanel.getTxtOverdueBooks().setText(String.valueOf(overdue));
+				borrowPanel.getTxtLimit().setText(String.valueOf(limit));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	// Check book infomation
 	public void checkBookInfo(BorrowPanel borrowPanel) {
@@ -149,9 +172,7 @@ public class BorrowModel {
 			// Number of rows in the area
 			String[] lines = borrowPanel.getTxtArea().getText().split("\n");
 			lineCount = lines.length;
-			if (borrowPanel.getTxtUserId().getText().equals("")) {
-				JOptionPane.showMessageDialog(null, "Please enter the borrower identification !");
-			} else if (borrowPanel.getTxtBorrowedBooks().getText().equals("")) {
+			if (borrowPanel.getTxtBorrowedBooks().getText().equals("")) {
 				JOptionPane.showMessageDialog(null, "Please check the borrower infomation !");
 			} else if (borrowPanel.getTxtArea().getText().equals("")) {
 				JOptionPane.showMessageDialog(null, "Please choose books to borrow !");
@@ -187,7 +208,7 @@ public class BorrowModel {
 						pstm.execute();
 					}
 					String currentBorrowedBooks = "Select borrowed_books from borrowers where identification ="
-							+ borrowPanel.getTxtUserId().getText();
+							+ borrowPanel.getTxtDisplayUserId().getText();
 					ResultSet rs1 = DatabaseLibConnection.getConnection().createStatement()
 							.executeQuery(currentBorrowedBooks);
 					int current = 0;
@@ -196,7 +217,7 @@ public class BorrowModel {
 					}
 					int total = current + lineCount;
 					String sql1 = "Update borrowers set borrowed_books = " + total + " where identification = "
-							+ borrowPanel.getTxtUserId().getText() + " and status = 1";
+							+ borrowPanel.getTxtDisplayUserId().getText() + " and status = 1";
 					DatabaseLibConnection.getConnection().createStatement().execute(sql1);
 					String sql2;
 					for (String string : arr) {
@@ -208,6 +229,7 @@ public class BorrowModel {
 					borrowPanel.getTxtArea().setText("");
 					checkBookInfo(borrowPanel);
 					checkBorrowerInfo(borrowPanel);
+					setFields2(borrowPanel);
 				}
 			}
 		} catch (Exception e) {
