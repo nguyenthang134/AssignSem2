@@ -4,7 +4,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -16,6 +20,7 @@ import javax.swing.table.DefaultTableModel;
 import com.toedter.calendar.JDateChooser;
 
 import controller.ButtonController;
+import controller.DatabaseLibConnection;
 import model.StatisticModel;
 
 public class PanelStatistic extends JPanel {
@@ -32,7 +37,15 @@ public class PanelStatistic extends JPanel {
 	private ButtonController bc;
 	private StatisticModel model;
 	private JTable statTable;
-	public static DefaultTableModel statModel;
+	private DefaultTableModel statModel;
+	private JButton btnfirst;
+	private JButton btnlast;
+	private JButton btnnext;
+	private JButton btnprevious;
+	private JButton btncurrentPage;
+	private int currentPage = 1;
+	private int limit = 5;
+	private int totalPage;
 
 	public PanelStatistic() {
 		this.setBounds(0, 0, 1200, 700);
@@ -62,11 +75,11 @@ public class PanelStatistic extends JPanel {
 
 		JLabel lblBorrower = new JLabel();
 		lblBorrower.setFont(myFont);
-		lblBorrower.setBounds(900, 510, 200, 30);
+		lblBorrower.setBounds(880, 510, 200, 30);
 
 		JLabel lblBook = new JLabel();
 		lblBook.setFont(myFont);
-		lblBook.setBounds(900, 550, 200, 30);
+		lblBook.setBounds(880, 550, 200, 30);
 
 		btnShow = new JButton("Show");
 		btnShow.setBounds(800, 80, 100, 30);
@@ -82,6 +95,8 @@ public class PanelStatistic extends JPanel {
 						JOptionPane.showMessageDialog(null, "Please re-choose your date");
 					} else {
 						Show();
+						btnnext.setEnabled(true);
+						btnlast.setEnabled(true);
 						lblBorrower.setText("Total: " + model.countBorrower(ps) + " Borrowers");
 						lblBook.setText("Total: " + model.countBook(ps) + " Books");
 					}
@@ -103,6 +118,7 @@ public class PanelStatistic extends JPanel {
 		this.add(displayTable());
 		this.add(lblBorrower);
 		this.add(lblBook);
+		this.add(panelPagination());
 		this.setLayout(null);
 	}
 
@@ -124,9 +140,156 @@ public class PanelStatistic extends JPanel {
 		for (String item : borrowerColumn) {
 			statModel.addColumn(item);
 		}
-		model.order(ps);
+		order();
 	}
 
+	public JPanel panelPagination() {
+		JPanel pp = new JPanel();
+		pp.setBounds(380, 510, 500, 40);
+		pp.setBackground(Color.WHITE);
+		totalPage = countPage() / limit + (countPage() % limit);
+
+		btncurrentPage = new JButton();
+		btncurrentPage.setBounds(150, 10, 60, 20);
+		btncurrentPage.setText(currentPage + "");
+		btncurrentPage.setEnabled(false);
+
+		btnfirst = new JButton();
+		btnfirst.setBounds(10, 10, 60, 20);
+		btnfirst.setText("First");
+
+		btnprevious = new JButton();
+		btnprevious.setBounds(80, 10, 60, 20);
+		btnprevious.setText("Prev");
+
+		btnnext = new JButton();
+		btnnext.setBounds(220, 10, 60, 20);
+		btnnext.setText("Next");
+		btnnext.setEnabled(false);
+
+		btnlast = new JButton();
+		btnlast.setBounds(290, 10, 60, 20);
+		btnlast.setText("Last");
+		btnlast.setEnabled(false);
+
+		btnfirst.setEnabled(false);
+		btnprevious.setEnabled(false);
+		btnfirst.addActionListener((ActionEvent e) -> {
+			doFirst();
+		});
+
+		btnprevious.addActionListener((ActionEvent e) -> {
+			doPrevious();
+		});
+
+		btnnext.addActionListener((ActionEvent e) -> {
+			doNext();
+		});
+
+		btnlast.addActionListener((ActionEvent e) -> {
+			doLast();
+		});
+		
+		pp.add(btncurrentPage);
+		pp.add(btnfirst);
+		pp.add(btnprevious);
+		pp.add(btnnext);
+		pp.add(btnlast);
+		pp.setLayout(null);
+		return pp;
+	}
+
+	public void doFirst() {
+		currentPage = 1;
+		btnfirst.setEnabled(false);
+		btnprevious.setEnabled(false);
+		btnnext.setEnabled(true);
+		btnlast.setEnabled(true);
+		btncurrentPage.setText(currentPage + "");
+		statModel.setRowCount(0);
+		order();
+	}
+
+	public void doPrevious() {
+		if (currentPage > 1) {
+			currentPage--;
+			btnlast.setEnabled(true);
+			btnnext.setEnabled(true);
+		} else if (currentPage == 1) {
+			btnfirst.setEnabled(false);
+			btnprevious.setEnabled(false);
+		}
+		btncurrentPage.setText(currentPage + "");
+		statModel.setRowCount(0);
+		order();
+	}
+
+	public void doNext() {
+		if (currentPage < totalPage) {
+			currentPage++;
+			btnfirst.setEnabled(true);
+			btnprevious.setEnabled(true);
+		} else if (currentPage == totalPage) {
+			btnnext.setEnabled(false);
+			btnlast.setEnabled(false);
+		}
+		btncurrentPage.setText(currentPage + "");
+		statModel.setRowCount(0);
+		order();
+	}
+
+	public void doLast() {
+		currentPage = totalPage;
+		btnfirst.setEnabled(true);
+		btnprevious.setEnabled(true);
+		btnlast.setEnabled(false);
+		btnnext.setEnabled(false);
+		btncurrentPage.setText(totalPage + "");
+		statModel.setRowCount(0);
+		order();
+	}
+
+	public void order() {
+		try {
+			String order = "SELECT borrowers.name, books.name, orders.status " + "FROM orders "
+					+ "JOIN borrowers ON orders.user_id = borrowers.identification "
+					+ "JOIN books ON orders.book_id = books.id " + "WHERE orders.created_at BETWEEN '" + getDay1()
+					+ "' AND '" + getDay2() + "' LIMIT " + limit + " OFFSET " + ((currentPage - 1) * limit);
+			Connection connect = DatabaseLibConnection.getConnection();
+			Statement stt = connect.createStatement();
+			ResultSet rs = stt.executeQuery(order);
+			int i = 1;
+			while (rs.next()) {
+				Object[] values = null;
+				int orders = i++;
+				String borrowers = rs.getString("borrowers.name");
+				String book = rs.getString("books.name");
+				int status = rs.getInt("status");
+				values = new Object[] { orders, borrowers, book, status };
+				statModel.addRow(values);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public int countPage() {
+		int total = 0;
+		try {
+			String sql = "SELECT COUNT(*) FROM orders WHERE orders.created_at BETWEEN '" + getDay1() + "' AND '"
+					+ getDay2() + "'";
+			Connection connect = DatabaseLibConnection.getConnection();
+			Statement stt = connect.createStatement();
+			ResultSet rs = stt.executeQuery(sql);
+			while (rs.next()) {
+				total = rs.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return total;
+	}
+	
 	public PanelStatistic getPs() {
 		return ps;
 	}
