@@ -18,10 +18,11 @@ import view.BorrowPanel;
 public class BorrowModel {
 	private int lineCount;
 	private String selectBy;
+	private String selectBorrowerBy;
 	private ArrayList<String> arr = new ArrayList<String>();
 
-	public String getSelectBy() {
-		return selectBy;
+	public void setSelectBorrowerBy(String selectBorrowerBy) {
+		this.selectBorrowerBy = selectBorrowerBy;
 	}
 
 	public void setSelectBy(String selectBy) {
@@ -34,19 +35,12 @@ public class BorrowModel {
 			borrowPanel.getBorrowerModel().setRowCount(0);
 			arr.removeAll(arr);
 			java.sql.Statement stm = DatabaseLibConnection.getConnection().createStatement();
-			String sql = "Select * from borrowers where identification Like '%" + borrowPanel.getTxtUserId().getText()
+			String sql = "Select * from borrowers where " + selectBorrowerBy + " Like '%" + borrowPanel.getTxtUserId().getText()
 					+ "%' and Status = 1";
 			ResultSet rs = stm.executeQuery(sql);
 			while (rs.next()) {
 				String name = rs.getString(2);
-//				int borrow = rs.getInt(6);
-//				int overdue = rs.getInt(7);
-//				int limit = rs.getInt(8);
 				int id = rs.getInt(1);
-//				borrowPanel.getTxtUserName().setText(name);
-//				borrowPanel.getTxtBorrowedBooks().setText(String.valueOf(borrow));
-//				borrowPanel.getTxtOverdueBooks().setText(String.valueOf(overdue));
-//				borrowPanel.getTxtLimit().setText(String.valueOf(limit));
 				
 				Object[] borrowerInfo = {name, id};
 				borrowPanel.getBorrowerModel().addRow(borrowerInfo);
@@ -55,12 +49,14 @@ public class BorrowModel {
 			System.out.println(e);
 		}
 	}
-	//Set borrower info to borrower table
-	public void setFields(BorrowPanel borrowPanel, JTable borrowerTable){
+	
+	//Set borrower info to borrower table and set jtextfields
+	public void setFields(BorrowPanel borrowPanel){
 		try {
+			JTable borrowerTable = borrowPanel.getBorrowerTable();
 			java.sql.Statement stm = DatabaseLibConnection.getConnection().createStatement();
 			String sql = "Select * from borrowers where identification =" + borrowerTable.getValueAt(borrowerTable.getSelectedRow(), 1)
-					+ " and Status = 1";
+					+ " and status = 1";
 			ResultSet rs = stm.executeQuery(sql);
 			while (rs.next()) {
 				String name = rs.getString(2);
@@ -68,12 +64,13 @@ public class BorrowModel {
 				int overdue = rs.getInt(7);
 				int limit = rs.getInt(8);
 				int id = rs.getInt(1);
-				borrowPanel.getTxtUserId().setText(String.valueOf(id));
 				borrowPanel.getTxtUserName().setText(name);
+				borrowPanel.getTxtDisplayUserId().setText(String.valueOf(id));
 				borrowPanel.getTxtBorrowedBooks().setText(String.valueOf(borrow));
 				borrowPanel.getTxtOverdueBooks().setText(String.valueOf(overdue));
 				borrowPanel.getTxtLimit().setText(String.valueOf(limit));
 			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -182,7 +179,7 @@ public class BorrowModel {
 						java.sql.PreparedStatement pstm = DatabaseLibConnection.getConnection().prepareStatement(sql);
 						pstm.setInt(1, maxId);
 						pstm.setInt(2, Integer.parseInt(string));
-						pstm.setInt(3, Integer.parseInt(borrowPanel.getTxtUserId().getText()));
+						pstm.setInt(3, Integer.parseInt(borrowPanel.getTxtDisplayUserId().getText())); //Insert where borrower identification =
 						pstm.setDate(4, new java.sql.Date(date.getTime()));
 						pstm.setDate(5, new java.sql.Date(returnDate.getTime()));
 						// Day that the order has been updated
@@ -230,8 +227,9 @@ public class BorrowModel {
 			borrowPanel.getTxtArea().setText("");
 			if (!borrowPanel.getTxtBookId().getText().equals("")) {
 				borrowPanel.getBtnAdd().setEnabled(true);
+				checkBookInfo(borrowPanel);
 			}
-			checkBookInfo(borrowPanel);
+			
 		} catch (Exception e) {
 			System.out.println(e);
 		}
