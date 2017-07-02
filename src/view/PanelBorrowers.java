@@ -55,6 +55,7 @@ public class PanelBorrowers extends JPanel {
 	private JTextField txtmail;
 	private JTextField txtadd;
 	private JTextField txtphone;
+	private JTextField txtSearch;
 
 	private JLabel lblIdErr;
 	private JLabel lblNameErr;
@@ -364,9 +365,8 @@ public class PanelBorrowers extends JPanel {
 		btnIconSearch.setContentAreaFilled(false);
 		btnIconSearch.setFocusPainted(false);
 
-		JTextField txtSearch = new JTextField();
+		txtSearch = new JTextField();
 		txtSearch.setBounds(186, 5, 275, 30);
-		txtSearch.setEditable(false);
 		txtSearch.getDocument().addDocumentListener(new DocumentListener() {
 
 			public void changedUpdate(DocumentEvent e) {
@@ -396,7 +396,6 @@ public class PanelBorrowers extends JPanel {
 
 		JComboBox<String> cbSearch = new JComboBox<String>();
 		cbSearch.setBounds(40, 5, 145, 29);
-		cbSearch.addItem("----------Select----------");
 		cbSearch.addItem("Search by ID");
 		cbSearch.addItem("Search by Name");
 		cbSearch.addActionListener(new ActionListener() {
@@ -404,18 +403,10 @@ public class PanelBorrowers extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int slt = cbSearch.getSelectedIndex();
-				switch (slt) {
-				case 1:
-					txtSearch.setEditable(true);
+				if (slt == 0) {
 					model.setSearchBy("identification");
-					break;
-				case 2:
-					txtSearch.setEditable(true);
+				} else if (slt == 1) {
 					model.setSearchBy("name");
-					break;
-				default:
-					txtSearch.setEditable(false);
-					break;
 				}
 			}
 		});
@@ -427,13 +418,14 @@ public class PanelBorrowers extends JPanel {
 		return panelSearch;
 	}
 
-	public void resetForm() {		
+	public void resetForm() {
 		ArrayList<JTextField> resetList = new ArrayList<JTextField>();
 		resetList.add(txtId);
 		resetList.add(txtname);
 		resetList.add(txtmail);
 		resetList.add(txtadd);
 		resetList.add(txtphone);
+		resetList.add(txtSearch);
 		for (JTextField item : resetList) {
 			item.setText(null);
 			item.setBorder(BorderFactory.createLineBorder(Color.GRAY));
@@ -443,7 +435,7 @@ public class PanelBorrowers extends JPanel {
 		lblMailErr.setText(null);
 		lblAddErr.setText(null);
 		lblPhoneErr.setText(null);
-		
+		action = 1;
 	}
 
 	public void showBorrowers(ArrayList<Borrowers> borrowersList) {
