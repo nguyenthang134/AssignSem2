@@ -37,10 +37,12 @@ import model.BorrowModel;
 public class BorrowPanel{
 	private JPanel user;
 	private JLabel lblUserId;
+	private JComboBox cbBorrower;
 	private JTextField txtUserId;
 	private JTable borrowerTable;
 	private DefaultTableModel borrowerModel;
-//	private JButton btnTest;
+	private JLabel lblDisplayUserId;
+	private JTextField txtDisplayUserId;
 	private JLabel lblUserName;
 	private JTextField txtUserName;
 	private JLabel lblBorrowedBooks;
@@ -64,6 +66,14 @@ public class BorrowPanel{
 	private BorrowModel borrowModel = new BorrowModel();
 	private ButtonController bc = new ButtonController();
 	
+	public JTextField getTxtDisplayUserId() {
+		return txtDisplayUserId;
+	}
+
+	public JTable getBorrowerTable() {
+		return borrowerTable;
+	}
+
 	public DefaultTableModel getBorrowerModel() {
 		return borrowerModel;
 	}
@@ -127,19 +137,23 @@ public class BorrowPanel{
 		user.setBounds(5, 50, 245, 500);
 		user.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 
-		lblUserId = new JLabel("Borrower ID: ");
+		lblUserId = new JLabel("Borrower: ");
 		lblUserId.setBounds(10, 10, 100, 30);
+		String[] comboList = {"Name", "ID"};
+		cbBorrower = new JComboBox(comboList);
+		cbBorrower.setBounds(110, 10, 130, 30);
 		txtUserId = new JTextField();
-		txtUserId.setBounds(10, 50, 180, 30);
-//		btnTest = new JButton("Check infomation");
-//		btnTest.setBounds(35, 90, 135, 30);
-//		btnTest.setBackground(new Color(50, 166, 254));
-//		btnTest.setForeground(Color.WHITE);
-		lblUserName = new JLabel("Borrower name: ");
-		lblUserName.setBounds(10, 290, 100, 30);
+		txtUserId.setBounds(10, 50, 230, 30);
+		lblUserName = new JLabel("Name: ");
+		lblUserName.setBounds(10, 290, 50, 30);
 		txtUserName = new JTextField();
-		txtUserName.setBounds(10, 330, 180, 30);
+		txtUserName.setBounds(60, 290, 180, 30);
 		txtUserName.setEditable(false);
+		lblDisplayUserId = new JLabel("ID: ");
+		lblDisplayUserId.setBounds(10, 330, 50, 30);
+		txtDisplayUserId = new JTextField();
+		txtDisplayUserId.setBounds(60, 330, 180, 30);
+		txtDisplayUserId.setEditable(false);
 		lblBorrowedBooks = new JLabel("Borrowed books: ");
 		lblBorrowedBooks.setBounds(10, 370, 100, 30);
 		txtBorrowedBooks = new JTextField();
@@ -157,9 +171,11 @@ public class BorrowPanel{
 		txtLimit.setEditable(false);
 
 		user.add(lblUserId);
+		user.add(cbBorrower);
 		user.add(txtUserId);
 		user.add(borrowerTable());
-//		user.add(btnTest);
+		user.add(lblDisplayUserId);
+		user.add(txtDisplayUserId);
 		user.add(lblUserName);
 		user.add(txtUserName);
 		user.add(lblBorrowedBooks);
@@ -189,13 +205,19 @@ public class BorrowPanel{
 				
 			}
 		});
+		cbBorrower.addActionListener(new ActionListener() {
 
-//		btnTest.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				borrowModel.checkBorrowerInfo(borrow);
-//			}
-//		});
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int choice = cbBorrower.getSelectedIndex();
+				if(choice == 1){
+					borrowModel.setSelectBorrowerBy("identification");
+				}else if(choice == 0){
+					borrowModel.setSelectBorrowerBy("name");
+				}
+			}
+		});
+		cbBorrower.setSelectedIndex(0);
 		user.setLayout(null);
 		return user;
 	}
@@ -210,16 +232,6 @@ public class BorrowPanel{
 		borrowerModel.addColumn("Name");
 		borrowerModel.addColumn("ID");
 		borrowerTable.setModel(borrowerModel);
-//		ListSelectionModel listModel = table.getSelectionModel();
-//		listModel.addListSelectionListener(new ListSelectionListener() {
-//			
-//			@Override
-//			public void valueChanged(ListSelectionEvent e) {
-//				// TODO Auto-generated method stub
-//				int rowIndex = table.getSelectedRow();
-//				
-//			}
-//		});
 		borrowerTable.addMouseListener(new MouseListener() {
 			
 			@Override
@@ -248,7 +260,7 @@ public class BorrowPanel{
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				borrowModel.setFields(borrow, borrowerTable);
+				borrowModel.setFields(borrow);
 				
 			}
 		});
@@ -297,12 +309,11 @@ public class BorrowPanel{
 
 		lblBookId = new JLabel("Books: ");
 		lblBookId.setBounds(10, 10, 50, 30);
-		String[] comboList = { "------Choose-----", "Book ID", "Book name", "Book author", "Book publisher"};
+		String[] comboList = {"ID", "Name", "Author", "Publisher"};
 		cb = new JComboBox(comboList);
 		cb.setBounds(60, 10, 130, 30);
 		txtBookId = new JTextField();
 		txtBookId.setBounds(10, 50, 180, 30);
-		txtBookId.setEditable(false);
 		btnAdd = new JButton("Add");
 		btnAdd.setBounds(35, 90, 135, 30);;
 		btnAdd.setBackground(new Color(50, 166, 254));
@@ -375,23 +386,18 @@ public class BorrowPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int choice = cb.getSelectedIndex();
-				if(choice == 1){
-					txtBookId.setEditable(true);
+				if(choice == 0){
 					borrowModel.setSelectBy("books.id Like ");
-				}else if(choice == 2){
-					txtBookId.setEditable(true);
+				}else if(choice == 1){
 					borrowModel.setSelectBy("books.name Like ");
-				} else if(choice == 0){
-					txtBookId.setEditable(false);
-				} else if(choice == 3){
-					txtBookId.setEditable(true);
+				} else if(choice == 2){
 					borrowModel.setSelectBy("authors.name Like ");
-				} else if(choice == 4){
-					txtBookId.setEditable(true);
+				} else if(choice == 3){
 					borrowModel.setSelectBy("publishers.name Like ");
 				}
 			}
 		});
+		cb.setSelectedIndex(0);
 		
 		btnAdd.addActionListener(new ActionListener() {
 			
