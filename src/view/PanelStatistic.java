@@ -251,23 +251,28 @@ public class PanelStatistic extends JPanel {
 
 	public void order() {
 		try {
-			String order = "SELECT borrowers.name, books.name, orders.status " + "FROM orders "
-					+ "JOIN borrowers ON orders.user_id = borrowers.identification "
-					+ "JOIN books ON orders.book_id = books.id " + "WHERE orders.created_at BETWEEN '" + getDay1()
-					+ "' AND '" + getDay2() + "' LIMIT " + limit + " OFFSET " + ((currentPage - 1) * limit);
-			Connection connect = DatabaseLibConnection.getConnection();
-			Statement stt = connect.createStatement();
-			ResultSet rs = stt.executeQuery(order);
-			int i = 1;
-			while (rs.next()) {
-				Object[] values = null;
-				int orders = i++;
-				String borrowers = rs.getString("borrowers.name");
-				String book = rs.getString("books.name");
-				int status = rs.getInt("status");
-				values = new Object[] { orders, borrowers, book, status };
-				statModel.addRow(values);
-			}
+			if(((currentPage - 1) * limit)<0){
+				JOptionPane.showMessageDialog(null, "Action fails");
+			}else{
+				String order = "SELECT borrowers.name, books.name, orders.status " + "FROM orders "
+						+ "JOIN borrowers ON orders.user_id = borrowers.identification "
+						+ "JOIN books ON orders.book_id = books.id " + "WHERE orders.created_at BETWEEN '" + getDay1()
+						+ "' AND '" + getDay2() + "' LIMIT " + limit + " OFFSET " + ((currentPage - 1) * limit);
+				System.out.println(order);
+				Connection connect = DatabaseLibConnection.getConnection();
+				Statement stt = connect.createStatement();
+				ResultSet rs = stt.executeQuery(order);
+				int i = 1;
+				while (rs.next()) {
+					Object[] values = null;
+					int orders = i++;
+					String borrowers = rs.getString("borrowers.name");
+					String book = rs.getString("books.name");
+					int status = rs.getInt("status");
+					values = new Object[] { orders, borrowers, book, status };
+					statModel.addRow(values);
+				}
+			}		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
