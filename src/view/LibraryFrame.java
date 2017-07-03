@@ -55,8 +55,8 @@ public class LibraryFrame extends JFrame {
 		this.setLayout(null);
 	}
 
-	 public static void main(String[] args) {
-	 LibraryFrame mainFrm = new LibraryFrame();
-	 mainFrm.setVisible(true);
-	 }
+//	 public static void main(String[] args) {
+//	 LibraryFrame mainFrm = new LibraryFrame();
+//	 mainFrm.setVisible(true);
+//	 }
 }

@@ -26,6 +26,7 @@ public class BorrowerModel {
 	public boolean insert(Borrowers borrower) {
 		try {
 			String checkId = "INSERT INTO borrowers (identification, name, email, address, phone, status) VALUES(?,?,?,?,?,?)";
+			System.out.println(checkId);
 			Connection connect = DatabaseLibConnection.getConnection();
 			PreparedStatement stt = (PreparedStatement) connect.prepareStatement(checkId);
 			stt.setInt(1, borrower.getIdentification());
