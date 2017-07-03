@@ -26,26 +26,6 @@ import java.util.Date;
  */
 public class BooksModel {
 
-    // Select List book_category by book_name
-    public  ArrayList<Books> getBookCategory(String tblName, String name) {
-        ArrayList<Books> bookList = new ArrayList<>();
-        Books book;  
-        try {
-            Statement statement = DatabaseLibConnection.getConnection().createStatement();
-            String sql = "select * from " + tblName + " where book_name = '" + name + "'";
-            ResultSet rs = statement.executeQuery(sql);
-            while (rs.next()) {
-                book = new Books() ;
-                book.setName(rs.getString("book_name"));
-                book.setCategory(rs.getInt("category_id"));
-                bookList.add(book);
-            }
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
-        return bookList;
-    }
-
     // Insert books
     public static void insertBooks(Books book) throws ParseException {
         try {
@@ -78,6 +58,40 @@ public class BooksModel {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    // Update
+    public void updateBook(Books book) {
+        java.util.Date date = new java.util.Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+        try {
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
+            String query = "update books "
+                    + "set name='" + book.getName() + "'"
+                    + ", author_id = '" + book.getAuthor() + "'"
+                    + ", publisher_id = '" + book.getPublisher() + "'"
+                    + ", price = '" + book.getPrice() + "'"
+                    + ", publish_date = '" + book.getPublishDate() + "'"
+                    + ", updated_at = '" + timestamp + "'"
+                    + " where id='" + book.getId() + "'";
+            statement.executeUpdate(query);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    // Delete book
+    public void deleteBook(Books book) {
+        java.util.Date date = new java.util.Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+        try {
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
+            String query = "delete from books "
+                    + " where id='" + book.getId() + "'";
+            statement.executeUpdate(query);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
         }
     }
 
@@ -121,6 +135,26 @@ public class BooksModel {
             }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
+        }
+        return bookList;
+    }
+
+    // Select List book_category by book_name
+    public ArrayList<Books> getBookCategory(String tblName, String name) {
+        ArrayList<Books> bookList = new ArrayList<>();
+        Books book;
+        try {
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
+            String sql = "select * from " + tblName + " where book_name = '" + name + "'";
+            ResultSet rs = statement.executeQuery(sql);
+            while (rs.next()) {
+                book = new Books();
+                book.setName(rs.getString("book_name"));
+                book.setCategory(rs.getInt("category_id"));
+                bookList.add(book);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
         }
         return bookList;
     }
@@ -185,6 +219,36 @@ public class BooksModel {
         return name;
     }
 
+    // Delete book_category
+    public void deleteBookCategory(String bookName) {
+        try {
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
+            String query = "delete from book_categories "
+                    + " where book_name='" + bookName + "'";
+            statement.executeUpdate(query);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    // check book_name in book_categories that was exist
+    public boolean checkName(String tblName, String where, String name) {
+        boolean bl = true;
+        try {
+            Statement statement = DatabaseLibConnection.getConnection().createStatement();
+            String sql = "select * from " + tblName + " where " + where + " = '" + name + "'";
+            ResultSet rs = statement.executeQuery(sql);
+            if (rs.next()) {
+                bl = true;
+            } else {
+                bl = false;
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return bl;
+    }
+
     // Array for comboBox
     public ArrayList<String> comboBox(String from) {
         ArrayList<String> list = new ArrayList<>();
@@ -203,83 +267,33 @@ public class BooksModel {
         return list;
     }
 
-    // Update
-    public void updateBook(Books book) {
-        java.util.Date date = new java.util.Date();
-        Timestamp timestamp = new Timestamp(date.getTime());
+//    // search 
+    public ArrayList<Books> search(String table, String name, String like) {
+        ArrayList<Books> bookList = new ArrayList<>();
         try {
+            String sql = "SELECT * FROM " + table + ""
+                    + " WHERE " + name + " LIKE '%" + like + "%'";
+            System.out.println(sql);
             Statement statement = DatabaseLibConnection.getConnection().createStatement();
-            String query = "update books "
-                    + "set name='" + book.getName() + "'"
-                    + ", author_id = '" + book.getAuthor() + "'"
-                    + ", publisher_id = '" + book.getPublisher() + "'"
-                    + ", price = '" + book.getPrice() + "'"
-                    + ", publish_date = '" + book.getPublishDate() + "'"
-                    + ", updated_at = '" + timestamp + "'"
-                    + " where id='" + book.getId() + "'";
-            statement.executeUpdate(query);
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-    
- // Update status books 
-    public void updateBookStatus(Books book) {
-        java.util.Date date = new java.util.Date();
-        Timestamp timestamp = new Timestamp(date.getTime());
-        try {
-            Statement statement = DatabaseLibConnection.getConnection().createStatement();
-            String query = "update books "
-                    + "set status = 2"
-                    + " where id='" + book.getId() + "'";
-            statement.executeUpdate(query);
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-
-    // Delete book
-    public void deleteBook(Books book) {
-        java.util.Date date = new java.util.Date();
-        Timestamp timestamp = new Timestamp(date.getTime());
-        try {
-            Statement statement = DatabaseLibConnection.getConnection().createStatement();
-            String query = "delete from books "
-                    + " where id='" + book.getId() + "'";
-            statement.executeUpdate(query);
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-
-    // Delete book_category
-    public void deleteBookCategory(String bookName) {
-        try {
-            Statement statement = DatabaseLibConnection.getConnection().createStatement();
-            String query = "delete from book_categories "
-                    + " where book_name='" + bookName + "'";
-            statement.executeUpdate(query);
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-    
-     // check book_name in book_categories that was exist
-    public boolean checkName(String tblName,String where, String name) {
-        boolean bl = true;
-        try {
-            Statement statement = DatabaseLibConnection.getConnection().createStatement();
-            String sql = "select * from " + tblName + " where " + where + " = '" + name + "'";
             ResultSet rs = statement.executeQuery(sql);
-            if (rs.next()) {
-                bl = true;
-            }else {
-                bl = false;
+            Books book;
+            while (rs.next()) {
+                book = new Books();
+                book.setId(rs.getInt("id"));
+                book.setName(rs.getString("name"));
+                book.setAuthor(rs.getInt("author_id"));
+                book.setPublisher(rs.getInt("publisher_id"));
+//                book.setCategory(rs.getInt("category_id"));
+                book.setPrice(rs.getInt("price"));
+                book.setPublishDate(rs.getDate("publish_date").toString());
+                book.setCreatedDate(rs.getDate("created_at").toString());
+                book.setUpdateDate(rs.getDate("updated_at").toString());
+                book.setStatus(rs.getInt("status"));
+                bookList.add(book);
             }
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
         }
-        return bl;
+        return bookList;
     }
-
 }
